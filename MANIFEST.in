@@ -1,0 +1,8 @@
+recursive-include testaid *.py
+include README.rst CHANGELOG.rst
+include pylintrc
+include MANIFEST.in
+include ansible.cfg
+include dev-requirements.txt
+include test-requirements.txt
+include LICENSE
