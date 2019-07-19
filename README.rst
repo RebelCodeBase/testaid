@@ -30,3 +30,15 @@ Quick start
 Install testaid using pip::
 
     $ pip install testaid
+
+Tests
+=====
+
+Run molecule test by invoking tox::
+
+    $ tox
+
+Examples
+========
+
+Have a look at test/molecule for a complete example.
