@@ -1,0 +1,5 @@
+---
+var1: my_string_1
+var2: "{{ var1 }}"
+var3: "{{ var2 }}"
+var4: "{{ var1 }}+inline"
