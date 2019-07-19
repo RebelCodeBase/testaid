@@ -5,3 +5,4 @@ dist
 .eggs
 *.py~
 *.pyc
+.tox
