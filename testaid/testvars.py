@@ -5,10 +5,14 @@ import re
 
 @pytest.fixture(scope='module')
 def testvars(request, host):
-    testvars = request.config.cache.get("depot/testvars", None)
+    try:
+        cache_id = 'testvars' + os.environ['MOLECULE_EPHEMERAL_DIRECTORY']
+    except:
+        cache_id = 'testvars/global'
+    testvars = request.config.cache.get(cache_id, None)
     if testvars is None:
         testvars = Testvars(host).testvars
-        request.config.cache.set("depot/testvars", testvars)
+        request.config.cache.set(cache_id, testvars)
     return testvars
 
 
@@ -18,8 +22,13 @@ class Testvars(object):
         self.host = host
         self.testvars = {}
 
-        # use ephemeral molecule directory to store unresolved testvars
-        tempdir = os.environ['MOLECULE_EPHEMERAL_DIRECTORY']
+        # try to use ephemeral molecule directory to store unresolved testvars
+        try:
+            tempdir = os.environ['MOLECULE_EPHEMERAL_DIRECTORY']
+        except:
+            tempdir = '/tmp'
+
+        # create json file for unresolved testvars
         self.testvars_dumpfilename = tempdir + '/testvars_unresolved.json'
         testvars_dumpfile = open(self.testvars_dumpfilename, 'w')
 
@@ -46,7 +55,10 @@ class Testvars(object):
     def _get_roles_dir_(self):
 
         # use the molecule scenario directory as a starting point
-        path = os.environ['MOLECULE_SCENARIO_DIRECTORY']
+        try:
+            path = os.environ['MOLECULE_SCENARIO_DIRECTORY']
+        except:
+            return None
 
         # move up until we find a roles directory
         while path != '/':
