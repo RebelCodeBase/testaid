@@ -1,3 +1,4 @@
+import os
 import pytest
 from testaid.testpass import Testpass
 from testaid.testvars import Testvars
