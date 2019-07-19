@@ -32,7 +32,7 @@ Install the testaid plugin_ using pip_::
 
     $ pip install testaid
 
-.. _plugin:: https://pypi.org/project/testaid/
+.. _plugin: https://pypi.org/project/testaid/
 .. _pip: https://packaging.python.org/tutorials/installing-packages/
 
 Tests
