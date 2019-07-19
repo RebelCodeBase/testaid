@@ -16,6 +16,9 @@ provisioner:
   config_options:
     defaults:
       interpreter_python: auto_silent
+  inventory:
+    links:
+      group_vars: ../../group_vars/
   playbooks:
     converge: ../../site.yml
   lint:
@@ -24,6 +27,8 @@ verifier:
   name: testinfra
   options:
     p: cacheprovider
+  additional_files_or_dirs:
+    - ../../../roles/anarchism/molecule/default/tests/test_*.py
   lint:
     name: flake8
 scenario:
