@@ -1,19 +1,6 @@
 import json
 import os
-import pytest
 import re
-
-@pytest.fixture(scope='module')
-def testvars(request, host):
-    try:
-        cache_id = 'testvars' + os.environ['MOLECULE_EPHEMERAL_DIRECTORY']
-    except:
-        cache_id = 'testvars/global'
-    testvars = request.config.cache.get(cache_id, None)
-    if testvars is None:
-        testvars = Testvars(host).testvars
-        request.config.cache.set(cache_id, testvars)
-    return testvars
 
 
 class Testvars(object):

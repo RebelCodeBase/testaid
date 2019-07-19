@@ -1,11 +1,3 @@
-import pytest
-
-
-@pytest.fixture(scope='module')
-def testpass(host):
-    return Testpass(host).testpass
-
-
 class Testpass(object):
 
     def __init__(self, host):
