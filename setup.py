@@ -29,7 +29,7 @@ if __name__ == '__main__':
             'Intended Audience :: System Administrators',
             'License :: OSI Approved :: MIT License',
             'Operating System :: POSIX',
-            'Topic :: Software Development :: Libraries :: Python Modules'
+            'Topic :: Software Development :: Libraries :: Python Modules',
             'Topic :: Software Development :: Testing',
             'Topic :: System :: Systems Administration',
             'Framework :: Pytest',
