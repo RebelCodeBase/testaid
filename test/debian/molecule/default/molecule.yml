@@ -28,7 +28,10 @@ verifier:
   options:
     p: cacheprovider
   additional_files_or_dirs:
+    # integgration
     - ../../../roles/anarchism/molecule/default/tests/test_*.py
+    # system
+    - ../../../roles/anarchism/molecule/default/system/test_*.py
   lint:
     name: flake8
 scenario:
