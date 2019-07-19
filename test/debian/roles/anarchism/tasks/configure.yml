@@ -1,0 +1,10 @@
+---
+- name: (configure) call fortune from .bashrc
+  blockinfile:
+    path: /root/.bashrc
+    block: |
+      echo
+      /usr/games/fortune -s anarchism
+      echo
+    insertafter: EOF
+  when: "'fortune-anarchism' in anarchism_packages"

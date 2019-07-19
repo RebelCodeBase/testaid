@@ -1,4 +1,6 @@
 ---
-- name: "apt-get install {{ anarchism_packages|join(' ') }}"
-  apt:
-    name: "{{ anarchism_packages }}"
+- name: (main) include install tasks
+  import_tasks: install.yml
+
+- name: (main) include configure tasks
+  import_tasks: configure.yml
