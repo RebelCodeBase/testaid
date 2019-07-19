@@ -1,0 +1,6 @@
+ansible
+docker
+molecule
+pytest
+testaid
+testinfra
