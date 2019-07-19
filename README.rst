@@ -28,11 +28,12 @@ License
 Quick start
 ===========
 
-Install testaid using pip_::
+Install the `testaid plugin`_ using pip_::
 
     $ pip install testaid
 
-https://packaging.python.org/tutorials/installing-packages/
+.. _testaid plugin:: https://pypi.org/project/testaid/
+.. _pip: https://packaging.python.org/tutorials/installing-packages/
 
 Tests
 =====
