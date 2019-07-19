@@ -4,7 +4,7 @@ import setuptools
 if __name__ == '__main__':
     setuptools.setup(
         name='testaid',
-        version='0.1.1',
+        version='0.1.2',
         author='RebelCodeBase',
         author_email='rebelcodebase@riseup.net',
         description='Fixtures for testinfra and molecule',
@@ -13,9 +13,7 @@ if __name__ == '__main__':
         url='https://github.com/RebelCodeBase/testaid',
         license='Apache-2.0',
         packages=setuptools.find_packages(),
-            install_requires=['docutils>=0.3', 'testinfra>=3.0.5', 'molecule>=2.20.2'],
-        setup_requires=['pytest-runner'],
-        tests_require=['pytest', 'pytest-molecule', 'ansible>=2.8.2', 'docker>=4.0.2'],
+            install_requires=['docutils>=0.3', 'ansible>=2.8.2', 'testinfra>=3.0.5', 'molecule>=2.20.2'],
         package_data={
             '': ['*.rst'],
         },
