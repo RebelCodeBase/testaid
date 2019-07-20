@@ -38,13 +38,73 @@ Install the testaid plugin_ using pip_::
 Tests
 =====
 
-Run molecule test by invoking tox_::
+Run ``molecule test`` by invoking tox_::
 
     $ tox
 
 .. _tox: https://tox.readthedocs.io/en/latest/index.html#
 
-Examples
+Example
 ========
 
-Have a look at test/debian for a complete molecule example using ansible, testinfra and testaid.
+Have a look at *test/debian* for a complete example of a molecule project
+using ansible, testinfra and testaid.
+The molecule project doubles as a test for the testaid plugin.
+
+Boilerplate
+===========
+
+As a boilerplate for testinfra tests it is enough to do:
+
+.. code-block:: python
+
+    import testaid
+
+    testinfra_hosts = testaid.hosts()
+
+Fixture testpass
+================
+
+You can access gopass_ secrets by using the testpass fixture:
+
+.. code-block:: python
+
+    def test_mytest(host, testpass):
+
+    my_password = testpass('my_project/my_password')
+
+.. _gopass: https://www.gopass.pw/
+
+Fixture testvars
+================
+
+Arguably the most useful feature of the testaid plugin is the testvars fixture.
+The fixture exposes and resolves the role defaults as well as
+the project variables as a dictionary:
+
+.. code-block:: python
+
+    def test_mytest(host, testvars):
+
+    my_password = testpass['my_variable']
+
+Internally, the fixture uses the Ansible debug_ module to resolve templates.
+Thus, it can resolve any kind of template that the debug module can resolve
+including jinja2_ code and invoking lookup_ plugins.
+
+As resolving the templates is very slow the fixture will cache the results
+using the Pytest cache_ plugin. This allows fast test-driven development
+but remember to clear the cache when you add or change an Ansible variable::
+
+    pytest --cache-clear; molecule verify
+
+The cache will use the molecule ephemeral directory as the cache key which
+is unique for each molecule instance.
+When using the boilerplate you can inspect the cache by running::
+
+    pytest --cache-show
+
+.. _debug: https://docs.ansible.com/ansible/latest/modules/debug_module.html
+.. _jinja2: http://jinja.pocoo.org/
+.. _lookup: https://docs.ansible.com/ansible/latest/plugins/lookup.html
+.. _cache: https://docs.pytest.org/en/latest/cache.html
