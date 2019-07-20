@@ -20,7 +20,10 @@ class Testvars(object):
         testvars_dumpfile = open(self.testvars_dumpfilename, 'w')
 
         # get variables from defaults/main.yml files of all roles
-        testvars_unresolved = self._include_roles_defaults_()
+        testvars_unresolved = self. _include_roles_variables_('defaults')
+
+        # get variables from vars/main.yml files of all roles
+        testvars_unresolved.update(self. _include_roles_variables_('vars'))
 
         # respect variable precedence by updating variables with
         # global ansible variables provided by testinfra ansible module
@@ -39,7 +42,7 @@ class Testvars(object):
         # module through the testinfra ansible module
         self._resolve_vars_()
 
-    def _get_roles_dir_(self):
+    def _get_project_dir_(self):
 
         # use the molecule scenario directory as a starting point
         try:
@@ -51,36 +54,42 @@ class Testvars(object):
         while path != '/':
             path = os.path.dirname(path)
             if 'roles' in os.listdir(path):
-                return path + '/roles'
+                return path
 
         return None
 
-    def _include_roles_defaults_(self):
-        # filenames of the default/main.yml files
-        roles_defaults = {}
+    def _include_roles_variables_(self, path):
+        # filenames of the yml files
+        roles_variables = {}
 
         # get roles dir starting at the molecule scenario directory
-        roles_dir = self._get_roles_dir_()
+        roles_dir = self._get_project_dir_() + '/roles'
 
         if roles_dir:
             # get roles as subdirectories of the role directory
             roles = next(os.walk(roles_dir))[1]
 
             for role in roles:
-                file_role_defaults = roles_dir + '/' + role + "/defaults/main.yml"
-                if os.path.isfile(file_role_defaults):
 
-                    # use ansible include_vars module to read role defaults
+                # build target path
+                file_role_variables = roles_dir + '/' + role + \
+                                      '/' + path + '/main.yml'
+
+                print(file_role_variables)
+
+                if os.path.isfile(file_role_variables):
+
+                    # use ansible include_vars module to read role variables
                     role_defaults = \
                         self.host.ansible("include_vars",
                                           "file="
-                                          + file_role_defaults)['ansible_facts']
+                                          + file_role_variables)['ansible_facts']
 
-                    # the defaults of each role should be prefixed with the
+                    # the variables of each role should be prefixed with the
                     # role name to avoid collisions
-                    roles_defaults.update(role_defaults)
+                    roles_variables.update(role_defaults)
 
-        return roles_defaults
+        return roles_variables
 
     def _resolve_vars_(self):
 
