@@ -71,7 +71,7 @@ You can access gopass_ secrets by using the testpass fixture:
 
     def test_mytest(host, testpass):
 
-    my_password = testpass('my_project/my_password')
+        my_password = testpass('my_project/my_password')
 
 .. _gopass: https://www.gopass.pw/
 
@@ -86,7 +86,7 @@ the project variables as a dictionary:
 
     def test_mytest(host, testvars):
 
-    my_password = testpass['my_variable']
+        my_password = testpass['my_variable']
 
 Internally, the fixture uses the Ansible debug_ module to resolve templates.
 Thus, it can resolve any kind of template that the debug module can resolve
