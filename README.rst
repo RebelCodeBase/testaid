@@ -114,7 +114,8 @@ including jinja2_ code and invoking lookup_ plugins.
 
 As resolving the templates is very slow the fixture will cache the results
 using the Pytest cache_ plugin. The plugin is disabled by testinfra by default
-and must be explicitly enabled in *molecule.yml*, see above.
+and must be explicitly enabled through the ``p: cacheprovider`` option in
+*molecule.yml*, see above.
 The caching mechanism allows fast test-driven development
 but remember to clear the cache when you add or change an Ansible variable::
 
