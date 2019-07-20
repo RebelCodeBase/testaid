@@ -4,12 +4,12 @@ from testaid.testpass import Testpass
 from testaid.testvars import Testvars
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def testpass(host):
     return Testpass(host).testpass
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def testvars(request, host):
     try:
         cache_id = 'testvars' + os.environ['MOLECULE_EPHEMERAL_DIRECTORY']
