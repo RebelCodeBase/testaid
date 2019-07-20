@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import testaid
@@ -32,3 +33,27 @@ def test_testaid_templates_resolve_template_special_chars_2(testvars):
 def test_testaid_template_resolve_lookup(testvars):
     expected = os.environ['USER']
     assert re.search(expected, testvars['lookup1']) is not None
+
+
+def test_testaid_templates_resolve_template_list(testvars):
+    list1_json = '["first_list_item", "second_list_item"]'
+    assert json.dumps(testvars['list1']) == list1_json
+
+
+def test_testaid_templates_resolve_template_dict(testvars):
+    dict1_json = '{"first_key": "first_value", "second_key": "second_value"}'
+    assert json.dumps(testvars['dict1']) == dict1_json
+
+
+def test_testaid_templates_resolve_template_filter_zip(testvars):
+    filter_zip_json = '"[[\'first_list_item\', \'anarchism\'], '
+    filter_zip_json += '[\'second_list_item\', \'fortune-anarchism\']]"'
+    assert json.dumps(testvars['filter_zip']) == filter_zip_json
+
+
+def test_testaid_templates_resolve_template_filter_dict2items(testvars):
+    filter_dict_json = '"[{\'key\': \'first_key\', '
+    filter_dict_json += '\'value\': \'first_value\'}, '
+    filter_dict_json += '{\'key\': \'second_key\', '
+    filter_dict_json += '\'value\': \'second_value\'}]"'
+    assert json.dumps(testvars['filter_dict2items']) == filter_dict_json

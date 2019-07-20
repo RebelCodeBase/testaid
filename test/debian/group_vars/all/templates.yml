@@ -9,3 +9,15 @@ special1: "äöü'!)§$;~é"
 special2: 'ñô‰„}»"¯]¿¬'
 
 lookup1: "{{ lookup('env', 'USER') }}"
+
+list1:
+  - first_list_item
+  - second_list_item
+
+dict1:
+  first_key: first_value
+  second_key: second_value
+
+filter_zip: "{{ list1 | zip(anarchism_packages) | list }}"
+
+filter_dict2items: "{{ dict1 | dict2items }}"
