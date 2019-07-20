@@ -15,10 +15,12 @@ Changelog
 * Add molecule test project for Debian GNU/Linux
 * Add boilerplate function for testinfra invocation
 
-pre 0.3
-=======
+0.3
+===
 
 * Add example role: anarchism
 * Add resolve templates tests
 * Add escape special chars tests
 * Add resolve lookup plugin test
+* Add documentation to README file
+* Add makefile
