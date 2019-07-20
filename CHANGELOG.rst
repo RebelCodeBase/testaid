@@ -24,3 +24,8 @@ Changelog
 * Add resolve lookup plugin test
 * Add documentation to README file
 * Add makefile
+
+0.4
+===
+
+* Read role/vars/main.yml
