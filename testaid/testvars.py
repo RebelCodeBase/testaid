@@ -5,20 +5,15 @@ import re
 
 class Testvars(object):
 
-    def __init__(self, host):
+    def __init__(self, host, tmp_path):
         self.host = host
         self.testvars = {}
-        testvars_unresolved = {}
-
-        # try to use ephemeral molecule directory to store unresolved testvars
-        try:
-            tempdir = os.environ['MOLECULE_EPHEMERAL_DIRECTORY']
-        except:
-            tempdir = '/tmp'
 
         # create json file for unresolved testvars
-        self.testvars_dumpfilename = tempdir + '/testvars_unresolved.json'
+        self.testvars_dumpfilename = tmp_path + '/testvars_unresolved.json'
         testvars_dumpfile = open(self.testvars_dumpfilename, 'w')
+
+        testvars_unresolved = {}
 
         # -> roles defaults variables
         # get variables from defaults/main.yml file of all roles
@@ -154,8 +149,6 @@ class Testvars(object):
             extra_vars_filepath = os.path.join(
                 molecule_scenario_directory,
                 extra_vars_file)
-
-            extra_vars['debug'] = extra_vars_filepath
 
             if os.path.isfile(extra_vars_filepath):
     
