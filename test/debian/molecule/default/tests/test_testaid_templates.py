@@ -28,7 +28,7 @@ def test_testaid__templates_resolve_template_special_chars_1(testvars):
 def test_testaid__templates_resolve_template_special_chars_2(testvars):
     assert testvars['special2'] == 'ñô‰„}»"¯]¿¬'
 
+
 def test_testaid__template_resolve_lookup(testvars):
     expected = os.environ['USER']
     assert re.search(expected, testvars['lookup1']) is not None
-
