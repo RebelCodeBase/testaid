@@ -19,3 +19,6 @@ pre 0.3
 =======
 
 * Add example role: anarchism
+* Add resolve templates tests
+* Add escape special chars tests
+* Add resolve lookup plugin test
