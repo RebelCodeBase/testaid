@@ -8,8 +8,7 @@ if __name__ == '__main__':
         author='RebelCodeBase',
         author_email='rebelcodebase@riseup.net',
         description='Fixtures for testinfra and molecule',
-        long_description=open(os.path.join(
-            os.path.dirname(__file__), 'README.rst')).read(),
+        long_description='See [Testaid on GitHub](https://github.com/RebelCodeBase/testaid) for documentation.',
         url='https://github.com/RebelCodeBase/testaid',
         license='Apache-2.0',
         packages=setuptools.find_packages(),
