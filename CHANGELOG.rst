@@ -29,3 +29,4 @@ Changelog
 ===
 
 * Read role/vars/main.yml
+* Read project vars/*.yml
