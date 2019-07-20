@@ -8,6 +8,7 @@ class Testvars(object):
     def __init__(self, host):
         self.host = host
         self.testvars = {}
+        testvars_unresolved = {}
 
         # try to use ephemeral molecule directory to store unresolved testvars
         try:
@@ -19,18 +20,26 @@ class Testvars(object):
         self.testvars_dumpfilename = tempdir + '/testvars_unresolved.json'
         testvars_dumpfile = open(self.testvars_dumpfilename, 'w')
 
+        # -> roles defaults variables
         # get variables from defaults/main.yml file of all roles
-        testvars_unresolved = self. _include_roles_variables_('defaults')
+        testvars_unresolved.update(self. _include_roles_variables_('defaults'))
 
+        # -> testinfra ansible variables
         # respect variable precedence by updating variables with
         # global ansible variables provided by testinfra ansible module
         testvars_unresolved.update(self.host.ansible.get_variables())
 
+        # -> project vars variables
         # get variables from all files in vars directory of project
-        testvars_unresolved.update(self. _include_project_vars_('vars'))
+        testvars_unresolved.update(self._include_project_vars_('vars'))
 
+        # -> roles vars variables
         # get variables from vars/main.yml file of all roles
-        testvars_unresolved.update(self. _include_roles_variables_('vars'))
+        testvars_unresolved.update(self._include_roles_variables_('vars'))
+
+        # -> extra vars variables
+        # get variables from TESTAID_EXTRA_VARS_FILES environment variable
+        testvars_unresolved.update(self._include_extra_vars_())
 
         # convert unresolved test vars to json in order
         # to replace the templated variables through a regular exrpression
@@ -61,14 +70,19 @@ class Testvars(object):
 
         return None
 
+    def _include_vars_file_(self, filepath):
+        return self.host.ansible(
+            "include_vars",
+            "file=" + filepath)['ansible_facts']
+
     def _include_roles_variables_(self, path):
-        # filenames of the yml files
         roles_variables = {}
 
-        # get roles dir starting at the molecule scenario directory
-        roles_dir = self._get_project_dir_() + '/roles'
+        project_dir = self._get_project_dir_()
 
-        if roles_dir:
+        if project_dir:
+
+            roles_dir = os.path.join(project_dir, 'roles')
 
             # get roles as subdirectories of the role directory
             roles = next(os.walk(roles_dir))[1]
@@ -85,9 +99,8 @@ class Testvars(object):
                 if os.path.isfile(filepath_role_variables):
 
                     # use ansible include_vars module to read role variables
-                    role_defaults = self.host.ansible(
-                        "include_vars",
-                        "file=" + filepath_role_variables)['ansible_facts']
+                    role_defaults = self._include_vars_file_(
+                        filepath_role_variables)
 
                     # the variables of each role should be prefixed with the
                     # role name to avoid collisions
@@ -96,14 +109,13 @@ class Testvars(object):
         return roles_variables
 
     def _include_project_vars_(self, path):
+        vars = {}
 
-        # filenames of the yml files
-        vars_variables = {}
+        project_dir = self._get_project_dir_()
 
-        # get vars dir starting at the molecule scenario directory
-        vars_dir = self._get_project_dir_() + '/vars'
+        if project_dir:
 
-        if vars_dir:
+            vars_dir = os.path.join(project_dir, 'vars')
 
             # loop over files in vars directory
             for vars_file in os.listdir(vars_dir):
@@ -111,18 +123,49 @@ class Testvars(object):
                 # only care about .yml files
                 if vars_file.endswith(".yml"):
 
-                    filepath_vars_file = os.path.join(vars_dir, vars_file)
+                    vars_filepath = os.path.join(vars_dir, vars_file)
 
-                    # use ansible include_vars module to read role variables
-                    vars_file_variables = self.host.ansible(
-                        "include_vars",
-                        "file=" + filepath_vars_file)['ansible_facts']
+                    # use ansible include_vars module to read vars variables
+                    vars_file_variables = self._include_vars_file_(
+                        vars_filepath)
 
-                    # the variables of each role should be prefixed with the
-                    # role name to avoid collisions
-                    vars_variables.update(vars_file_variables)
+                    vars.update(vars_file_variables)
 
-        return vars_variables
+        return vars
+
+    def _include_extra_vars_(self):
+        extra_vars = {}
+
+        if 'MOLECULE_SCENARIO_DIRECTORY' not in os.environ.keys():
+            return extra_vars
+
+        molecule_scenario_directory = os.environ['MOLECULE_SCENARIO_DIRECTORY']
+
+        # only continue if environment variable is set:
+        # molecule.yml -> verifier -> env -> TESTAID_EXTRA_VARS_FILES
+        if 'TESTAID_EXTRA_VARS_FILES' not in os.environ.keys():
+            return extra_vars
+
+        # extra vars files must be separated wit a colon
+        extras_vars_files = os.environ['TESTAID_EXTRA_VARS_FILES'].split(':')
+
+        for extra_vars_file in extras_vars_files:
+
+            extra_vars_filepath = os.path.join(
+                molecule_scenario_directory,
+                extra_vars_file)
+
+            extra_vars['debug'] = extra_vars_filepath
+
+            if os.path.isfile(extra_vars_filepath):
+    
+                # use ansible include_vars module to read extra vars variables
+                extra_vars_file_variables = self._include_vars_file_(
+                    extra_vars_filepath)
+
+                extra_vars.update(extra_vars_file_variables)
+
+        return extra_vars
 
     def _resolve_vars_(self):
 
