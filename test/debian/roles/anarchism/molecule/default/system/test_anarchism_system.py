@@ -8,6 +8,5 @@ def test_anarchism_fortune_greeting(host, testvars):
     if 'fortune-anarchism' in testvars['anarchism_packages']:
         with host.sudo():
             output = host.check_output('. /root/.bashrc')
-            expected = r'---\+- [^-]* -\+----'
 
-            assert re.search(expected, output) is not None
+            assert '---+-' in output
