@@ -79,8 +79,7 @@ Fixture testvars
 ================
 
 Arguably the most useful feature of the testaid plugin is the testvars fixture.
-The fixture exposes and resolves the role defaults as well as
-the project variables as a dictionary:
+The fixture exposes and resolves the multiple vars files as a python dict:
 
 .. code-block:: python
 
@@ -88,12 +87,35 @@ the project variables as a dictionary:
 
         my_password = testpass['my_variable']
 
+The following variables are read respecting the Ansible variable precedence_:
+
+- roles: defaults/main.yml
+- testinfra host.get_variables()
+- project: vars/main.yml
+- roles: vars/*.yml
+- extra vars from TESTAID_EXTRA_VARS_FILES
+
+The TESTAID_EXTRA_VARS_FILES environment variable can be set in molecule.yml.
+It can contain relative filepaths to the MOLECULE_SCENARIO_DIRECTORY separated
+by colons:
+
+.. code-block:: yaml
+
+    verifier:
+      name: testinfra
+      options:
+        p: cacheprovider
+      env:
+        TESTAID_EXTRA_VARS_FILES: "../../extra_vars/my_extra_vars.yml:my_molecule_vars.yml"
+
 Internally, the fixture uses the Ansible debug_ module to resolve templates.
 Thus, it can resolve any kind of template that the debug module can resolve
 including jinja2_ code and invoking lookup_ plugins.
 
 As resolving the templates is very slow the fixture will cache the results
-using the Pytest cache_ plugin. This allows fast test-driven development
+using the Pytest cache_ plugin. The plugin is disabled by testinfra by default
+and must be explicitly enabled in *molecule.yml*, see above.
+The caching mechanism allows fast test-driven development
 but remember to clear the cache when you add or change an Ansible variable::
 
     pytest --cache-clear; molecule verify
@@ -105,6 +127,7 @@ When using the boilerplate you can inspect the cache by running::
     pytest --cache-show
 
 .. _debug: https://docs.ansible.com/ansible/latest/modules/debug_module.html
+.. _precedence: https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
 .. _jinja2: http://jinja.pocoo.org/
 .. _lookup: https://docs.ansible.com/ansible/latest/plugins/lookup.html
 .. _cache: https://docs.pytest.org/en/latest/cache.html
