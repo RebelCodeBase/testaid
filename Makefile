@@ -5,3 +5,5 @@ build:
 
 upload:
 	twine upload dist/*
+
+.PHONY: build upload
