@@ -1,5 +1,11 @@
 ---
-var1: my_string_1
-var2: "{{ var1 }}"
-var3: "{{ var2 }}"
-var4: "{{ var1 }}+inline"
+template1: my_string_1
+template2: "{{ template1 }}"
+template3: "{{ template2 }}"
+template4: "inline+{{ template1 }}"
+template5: "{{ template1 }}+inline"
+
+special1: "äöü'!)§$;~é"
+special2: 'ñô‰„}»"¯]¿¬'
+
+lookup1: "{{ lookup('env', 'USER') }}"
