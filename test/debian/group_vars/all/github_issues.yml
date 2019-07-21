@@ -1,0 +1,4 @@
+---
+
+# https://github.com/RebelCodeBase/testaid/issues/1
+github_issues_1_file: "{{ (ansible_facts['ansible_distribution_version'] is version('18.04', '>=')) |  ternary('foo', 'bar')}}"
