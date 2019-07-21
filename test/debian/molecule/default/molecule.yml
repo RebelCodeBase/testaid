@@ -31,7 +31,7 @@ verifier:
     # integgration
     - ../../../roles/anarchism/molecule/default/tests/test_*.py
     # system
-    - ../../../roles/anarchism/molecule/default/system /test_*.py
+    - ../../../roles/anarchism/molecule/default/system/test_*.py
   env:
     TESTAID_EXTRA_VARS_FILES: "../../extra_vars/extra_vars_first.yml:../../extra_vars/extra_vars_second.yml"
   lint:
