@@ -10,13 +10,18 @@ class Testvars(object):
         self.testvars = {}
 
         # create json file for unresolved testvars
-        self.testvars_unresolved_json = tmp_path / 'testvars_unresolved.json'
+        self.testvars_unresolved_json_file = \
+            tmp_path / 'testvars_unresolved.json'
 
         testvars_unresolved = {}
 
+        # -> ansible_facts
+        # get ansible_facts gathered by gather_facts: true
+        testvars_unresolved.update(self._add_ansible_facts_())
+
         # -> roles defaults variables
         # get variables from defaults/main.yml file of all roles
-        testvars_unresolved.update(self. _include_roles_variables_('defaults'))
+        testvars_unresolved.update(self._include_roles_variables_('defaults'))
 
         # -> testinfra ansible variables
         # respect variable precedence by updating variables with
@@ -41,7 +46,7 @@ class Testvars(object):
 
         # store unresolved testvars as json in a file as input to
         # the ansible debug module via command line --extra-vars
-        self.testvars_unresolved_json.write_text(self.testvars_unresolved_json)
+        self.testvars_unresolved_json_file.write_text(self.testvars_unresolved_json)
 
         # resolve jinja2 templates by leveraging the ansible debug
         # module through the testinfra ansible module
@@ -63,10 +68,13 @@ class Testvars(object):
 
         return None
 
+    def _add_ansible_facts_(self):
+        return self.host.ansible('setup')
+
     def _include_vars_file_(self, filepath):
         return self.host.ansible(
-            "include_vars",
-            "file=" + filepath)['ansible_facts']
+            'include_vars',
+            'file=' + filepath)['ansible_facts']
 
     def _include_roles_variables_(self, path):
         roles_variables = {}
@@ -175,7 +183,7 @@ class Testvars(object):
 
         # prepare arguments variable to pass
         # dumped testvars to ansible debug module
-        kwargs = {'extravars': '--extra-vars=@' + self.testvars_unresolved_json}
+        kwargs = {'extravars': '--extra-vars=@' + str(self.testvars_unresolved_json_file)}
 
         # use ansible debug module to resolve template
         template_resolved = str(self.host.ansible('debug', 'msg=' + template_unresolved, **kwargs)['msg'])

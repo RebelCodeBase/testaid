@@ -4,19 +4,19 @@ from testaid.testpass import Testpass
 from testaid.testvars import Testvars
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture()
 def testpass(host):
     return Testpass(host).testpass
 
 
-@pytest.fixture(scope='module')
-def testvars(request, host):
+@pytest.fixture()
+def testvars(request, host, tmp_path):
     try:
-        cache_id = 'testvars' + os.environ['MOLECULE_EPHEMERAL_DIRECTORY']
+        cache_id = 'testvars/' + os.environ['MOLECULE_EPHEMERAL_DIRECTORY']
     except:
         cache_id = 'testvars/global'
     testvars = request.config.cache.get(cache_id, None)
     if testvars is None:
-        testvars = Testvars(host).testvars
+        testvars = Testvars(host, tmp_path).testvars
         request.config.cache.set(cache_id, testvars)
     return testvars
