@@ -1,7 +1,7 @@
 import json
 import os
 import re
-
+from pathlib import Path
 
 class Testvars(object):
 
@@ -56,14 +56,14 @@ class Testvars(object):
 
         # use the molecule scenario directory as a starting point
         try:
-            path = os.environ['MOLECULE_SCENARIO_DIRECTORY']
+            path = Path(os.environ['MOLECULE_SCENARIO_DIRECTORY'])
         except:
             return None
 
         # move up until we find a roles directory
-        while path != '/':
-            path = os.path.dirname(path)
-            if 'roles' in os.listdir(path):
+        while path != Path('/'):
+            path = path.parent
+            if path / 'roles' in [d for d in path.iterdir() if d.is_dir()]:
                 return path
 
         return None
@@ -83,25 +83,22 @@ class Testvars(object):
 
         if project_dir:
 
-            roles_dir = os.path.join(project_dir, 'roles')
+            roles_dir = project_dir / 'roles'
 
             # get roles as subdirectories of the role directory
-            roles = next(os.walk(roles_dir))[1]
+            roles = [d for d in roles_dir.iterdir() if d.is_dir()]
 
             for role in roles:
 
                 # build target path
-                filepath_role_variables = os.path.join(
-                    roles_dir,
-                    role,
-                    path,
-                    'main.yml')
+                # ansible only permits main.yml in role defaults and vars
+                role_variables_file = role / path / 'main.yml'
 
-                if os.path.isfile(filepath_role_variables):
+                if role_variables_file.is_file():
 
                     # use ansible include_vars module to read role variables
                     role_defaults = self._include_vars_file_(
-                        filepath_role_variables)
+                        str(role_variables_file))
 
                     # the variables of each role should be prefixed with the
                     # role name to avoid collisions
@@ -116,21 +113,16 @@ class Testvars(object):
 
         if project_dir:
 
-            vars_dir = os.path.join(project_dir, 'vars')
+            vars_dir = project_dir / 'vars'
 
             # loop over files in vars directory
-            for vars_file in os.listdir(vars_dir):
+            for vars_file in vars_dir.rglob('*.yml'):
 
-                # only care about .yml files
-                if vars_file.endswith(".yml"):
+                # use ansible include_vars module to read vars variables
+                vars_file_variables = self._include_vars_file_(
+                    str(vars_dir / vars_file))
 
-                    vars_filepath = os.path.join(vars_dir, vars_file)
-
-                    # use ansible include_vars module to read vars variables
-                    vars_file_variables = self._include_vars_file_(
-                        vars_filepath)
-
-                    vars.update(vars_file_variables)
+                vars.update(vars_file_variables)
 
         return vars
 
@@ -140,27 +132,27 @@ class Testvars(object):
         if 'MOLECULE_SCENARIO_DIRECTORY' not in os.environ.keys():
             return extra_vars
 
-        molecule_scenario_directory = os.environ['MOLECULE_SCENARIO_DIRECTORY']
+        molecule_scenario_directory = \
+            Path(os.environ['MOLECULE_SCENARIO_DIRECTORY'])
 
         # only continue if environment variable is set:
         # molecule.yml -> verifier -> env -> TESTAID_EXTRA_VARS_FILES
         if 'TESTAID_EXTRA_VARS_FILES' not in os.environ.keys():
             return extra_vars
 
+        extra_vars_files = []
+
         # extra vars files must be separated wit a colon
-        extras_vars_files = os.environ['TESTAID_EXTRA_VARS_FILES'].split(':')
+        for file in os.environ['TESTAID_EXTRA_VARS_FILES'].split(':'):
+            extra_vars_files.append(molecule_scenario_directory / file)
 
-        for extra_vars_file in extras_vars_files:
+        for extra_vars_file in extra_vars_files:
 
-            extra_vars_filepath = os.path.join(
-                molecule_scenario_directory,
-                extra_vars_file)
-
-            if os.path.isfile(extra_vars_filepath):
+            if extra_vars_file.is_file():
     
                 # use ansible include_vars module to read extra vars variables
                 extra_vars_file_variables = self._include_vars_file_(
-                    extra_vars_filepath)
+                    str(extra_vars_file))
 
                 extra_vars.update(extra_vars_file_variables)
 
