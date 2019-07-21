@@ -31,3 +31,9 @@ Changelog
 * Read role/vars/main.yml
 * Read project vars/*.yml
 * Read TESTAID_EXTRA_VARS_FILES
+
+0.5
+===
+
+* Use tmp_path fixture
+* Add ansible_facts
