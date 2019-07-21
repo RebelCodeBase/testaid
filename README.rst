@@ -1,24 +1,24 @@
 ##############################
-Testaid fixtures for testinfra
+testaid fixtures for testinfra
 ##############################
 
 About
 =====
 
-With the Pytest_ plugin Testinfra_ you can write unit tests in Python to test
-your servers configured by the management tool Ansible_. Testinfra is the
-default verifier_ of Molecule_ testing environment.
+With the pytest_ plugin testinfra_ you can write unit tests in python to test
+your servers configured by the management tool ansible_. testinfra is the
+default verifier_ of the molecule_ testing environment.
 
-The Pytest plugin Testaid_ provides helper functions and fixtures to facilitate
-the use of Testinfra. It helps to not only unit test your Ansible roles but to
-integration and system test your whole Ansible project.
+The pytest plugin testaid_ provides helper functions and fixtures to facilitate
+the use of testinfra. It helps to not only unit test your ansible roles but to
+integration and system test your whole ansible project.
 
-.. _Pytest: https://pytest.org/
-.. _Testinfra: https://testinfra.readthedocs.io/en/latest/
-.. _Ansible: https://www.ansible.com/
+.. _pytest: https://pytest.org/
+.. _testinfra: https://testinfra.readthedocs.io/en/latest/
+.. _ansible: https://www.ansible.com/
 .. _verifier: https://molecule.readthedocs.io/en/stable/configuration.html#testinfra
-.. _Molecule: https://molecule.readthedocs.io/
-.. _Testaid: https://github.com/RebelCodeBase/testaid
+.. _molecule: https://molecule.readthedocs.io/
+.. _testaid: https://github.com/RebelCodeBase/testaid
 
 License
 =======
@@ -87,8 +87,9 @@ The fixture exposes and resolves the multiple vars files as a python dict:
 
         my_password = testpass['my_variable']
 
-The following variables are read respecting the Ansible variable precedence_:
+The following variables are read respecting the ansible variable precedence_:
 
+- ansible setup_ module: ansible_facts
 - roles: defaults/main.yml
 - testinfra host.get_variables()
 - project: vars/main.yml
@@ -108,16 +109,16 @@ by colons:
       env:
         TESTAID_EXTRA_VARS_FILES: "../../extra_vars/my_extra_vars.yml:my_molecule_vars.yml"
 
-Internally, the fixture uses the Ansible debug_ module to resolve templates.
+Internally, the fixture uses the ansible debug_ module to resolve templates.
 Thus, it can resolve any kind of template that the debug module can resolve
 including jinja2_ code and invoking lookup_ plugins.
 
 As resolving the templates is very slow the fixture will cache the results
-using the Pytest cache_ plugin. The plugin is disabled by testinfra by default
+using the pytest cache_ plugin. The plugin is disabled by testinfra by default
 and must be explicitly enabled through the ``p: cacheprovider`` option in
 *molecule.yml*, see above.
 The caching mechanism allows fast test-driven development
-but remember to clear the cache when you add or change an Ansible variable::
+but remember to clear the cache when you add or change an ansible variable::
 
     pytest --cache-clear; molecule verify
 
@@ -129,6 +130,7 @@ When using the boilerplate you can inspect the cache by running::
 
 .. _debug: https://docs.ansible.com/ansible/latest/modules/debug_module.html
 .. _precedence: https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
+.. _setup: https://docs.ansible.com/ansible/latest/modules/setup_module.html
 .. _jinja2: http://jinja.pocoo.org/
 .. _lookup: https://docs.ansible.com/ansible/latest/plugins/lookup.html
 .. _cache: https://docs.pytest.org/en/latest/cache.html
