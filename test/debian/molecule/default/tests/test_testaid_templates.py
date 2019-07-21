@@ -31,7 +31,7 @@ def test_testaid_templates_resolve_template_special_chars_2(testvars):
 
 
 def test_testaid_template_resolve_lookup(testvars):
-    expected = os.environ['USER']
+    expected = os.environ['HOME']
     assert re.search(expected, testvars['lookup1']) is not None
 
 
