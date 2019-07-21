@@ -12,11 +12,11 @@ def testpass(host):
 @pytest.fixture()
 def testvars(request, host, tmp_path):
     try:
-        cache_id = 'testvars/' + os.environ['MOLECULE_EPHEMERAL_DIRECTORY']
+        cache_key = 'testvars/' + os.environ['MOLECULE_EPHEMERAL_DIRECTORY']
     except:
-        cache_id = 'testvars/global'
-    testvars = request.config.cache.get(cache_id, None)
+        cache_key = 'testvars/global'
+    testvars = request.config.cache.get(cache_key, None)
     if testvars is None:
         testvars = Testvars(host, tmp_path).testvars
-        request.config.cache.set(cache_id, testvars)
+        request.config.cache.set(cache_key, testvars)
     return testvars
