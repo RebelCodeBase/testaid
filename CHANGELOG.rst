@@ -42,4 +42,4 @@ Changelog
 ===
 
 * Add github issues tests
-* Migrate from os to pathlib
+* Migrate from os.path to pathlib
