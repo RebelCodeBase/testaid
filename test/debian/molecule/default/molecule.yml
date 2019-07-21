@@ -26,7 +26,8 @@ provisioner:
 verifier:
   name: testinfra
   options:
-    p: cacheprovider
+    p: cacheprovider  # enable cache
+    s: true  # capture output
   additional_files_or_dirs:
     # integgration
     - ../../../roles/anarchism/molecule/default/tests/test_*.py
