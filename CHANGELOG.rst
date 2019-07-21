@@ -37,3 +37,9 @@ Changelog
 
 * Use tmp_path fixture
 * Add ansible_facts
+
+0.6
+===
+
+* Add github issues tests
+* Migrate from os to pathlib
