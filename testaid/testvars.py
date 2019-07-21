@@ -10,8 +10,7 @@ class Testvars(object):
         self.testvars = {}
 
         # create json file for unresolved testvars
-        self.testvars_dumpfilename = tmp_path + '/testvars_unresolved.json'
-        testvars_dumpfile = open(self.testvars_dumpfilename, 'w')
+        self.testvars_unresolved_json = tmp_path / 'testvars_unresolved.json'
 
         testvars_unresolved = {}
 
@@ -42,8 +41,7 @@ class Testvars(object):
 
         # store unresolved testvars as json in a file as input to
         # the ansible debug module via command line --extra-vars
-        testvars_dumpfile.write(self.testvars_unresolved_json)
-        testvars_dumpfile.close()
+        self.testvars_unresolved_json.write_text(self.testvars_unresolved_json)
 
         # resolve jinja2 templates by leveraging the ansible debug
         # module through the testinfra ansible module
@@ -177,7 +175,7 @@ class Testvars(object):
 
         # prepare arguments variable to pass
         # dumped testvars to ansible debug module
-        kwargs = {'extravars': '--extra-vars=@' + self.testvars_dumpfilename}
+        kwargs = {'extravars': '--extra-vars=@' + self.testvars_unresolved_json}
 
         # use ansible debug module to resolve template
         template_resolved = str(self.host.ansible('debug', 'msg=' + template_unresolved, **kwargs)['msg'])
