@@ -8,7 +8,7 @@ template5: "{{ template1 }}+inline"
 special1: "äöü'!)§$;~é"
 special2: 'ñô‰„}»"¯]¿¬'
 
-lookup1: "{{ lookup('env', 'HOME') }}"
+lookup1: "{{ lookup('list', list1) }}"
 
 list1:
   - first_list_item

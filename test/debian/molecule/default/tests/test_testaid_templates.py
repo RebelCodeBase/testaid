@@ -1,6 +1,4 @@
 import json
-import os
-import re
 import testaid
 
 testinfra_hosts = testaid.hosts()
@@ -31,8 +29,8 @@ def test_testaid_templates_resolve_template_special_chars_2(testvars):
 
 
 def test_testaid_template_resolve_lookup(testvars):
-    expected = os.environ['HOME']
-    assert re.search(expected, testvars['lookup1']) is not None
+    list1_json = '"[\'first_list_item\', \'second_list_item\']"'
+    assert json.dumps(testvars['lookup1']) == list1_json
 
 
 def test_testaid_templates_resolve_template_list(testvars):
