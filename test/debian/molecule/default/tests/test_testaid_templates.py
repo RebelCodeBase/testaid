@@ -29,8 +29,7 @@ def test_testaid_templates_resolve_template_special_chars_2(testvars):
 
 
 def test_testaid_template_resolve_lookup(testvars):
-    list1_json = '"[\'first_list_item\', \'second_list_item\']"'
-    assert json.dumps(testvars['lookup1']) == list1_json
+    assert testvars['lookup1'] == '[1, 2, 3, 4, 5, 6]'
 
 
 def test_testaid_templates_resolve_template_list(testvars):

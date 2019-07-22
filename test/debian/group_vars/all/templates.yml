@@ -8,8 +8,6 @@ template5: "{{ template1 }}+inline"
 special1: "äöü'!)§$;~é"
 special2: 'ñô‰„}»"¯]¿¬'
 
-lookup1: "{{ lookup('list', list1) }}"
-
 list1:
   - first_list_item
   - second_list_item
@@ -17,6 +15,8 @@ list1:
 dict1:
   first_key: first_value
   second_key: second_value
+
+lookup1: "{{ lookup('flattened', [1,2,3,[4,5,6]]) }}"
 
 filter_zip: "{{ list1 | zip(anarchism_packages) | list }}"
 
