@@ -28,8 +28,8 @@ def test_testaid_templates_resolve_template_special_chars_2(testvars):
     assert testvars['special2'] == 'ñô‰„}»"¯]¿¬'
 
 
-# def test_testaid_template_resolve_lookup(testvars):
-#     assert testvars['lookup1'] == '[1, 2, 3, 4, 5, 6]'
+def test_testaid_template_resolve_lookup(testvars):
+    assert testvars['lookup_flattened'] == '[1, 2, 3, 4, 5, 6]'
 
 
 def test_testaid_templates_resolve_template_list(testvars):
