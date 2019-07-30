@@ -43,3 +43,4 @@ Changelog
 
 * Add github issues tests
 * Migrate from os.path to pathlib
+* Make cache optional
