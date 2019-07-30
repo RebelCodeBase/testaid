@@ -91,9 +91,9 @@ The following variables are read respecting the ansible variable precedence_:
 
 - ansible setup_ module: ansible_facts
 - roles: defaults/main.yml
-- testinfra host.get_variables()
-- project: vars/main.yml
-- roles: vars/*.yml
+- testinfra: host.get_variables()
+- project: vars/*.yml
+- roles: vars/main.yml
 - extra vars from TESTAID_EXTRA_VARS_FILES
 
 The TESTAID_EXTRA_VARS_FILES environment variable can be set in molecule.yml.
@@ -114,7 +114,8 @@ Thus, it can resolve any kind of template that the debug module can resolve
 including jinja2_ code and invoking lookup_ plugins.
 
 As resolving the templates is very slow the fixture will cache the results
-using the pytest cache_ plugin. The plugin is disabled by testinfra by default
+using the pytest cache_ plugin if it is enabled.
+The plugin is disabled by testinfra by default
 and must be explicitly enabled through the ``p: cacheprovider`` option in
 *molecule.yml*, see above.
 The caching mechanism allows fast test-driven development
