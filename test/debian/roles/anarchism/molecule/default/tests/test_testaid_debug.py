@@ -7,8 +7,8 @@ testinfra_hosts = testaid.hosts()
 yaml = YAML()
 
 # print testvars as yaml
+# @pytest.mark.debug
 @pytest.mark.skip
-#@pytest.mark.debug
 def test_testaid_debug(host, testvars, testpass):
     print('\n*******************')
     yaml.dump(testvars, sys.stdout)
