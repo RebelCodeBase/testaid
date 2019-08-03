@@ -26,15 +26,14 @@ provisioner:
 verifier:
   name: testinfra
   options:
-    p: cacheprovider  # enable cache
+    # m: debug
+    # p: cacheprovider  # enable cache
     s: true  # capture output
   additional_files_or_dirs:
     # integgration
     - ../../../roles/anarchism/molecule/default/tests/test_*.py
     # system
     - ../../../roles/anarchism/molecule/default/system/test_*.py
-  env:
-    TESTAID_EXTRA_VARS_FILES: "../../extra_vars/extra_vars_first.yml:../../extra_vars/extra_vars_second.yml"
   lint:
     name: flake8
 scenario:

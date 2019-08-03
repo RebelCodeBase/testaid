@@ -4,51 +4,52 @@ import testaid
 testinfra_hosts = testaid.hosts()
 
 
-def test_testaid_templates_resolve_template(testvars):
+def test_testaid_templates_resolve_template(host, testvars):
     assert testvars['template1'] == 'my_string_1'
 
 
-def test_testaid_templates_resolve_template_transitive(testvars):
+def test_testaid_templates_resolve_template_transitive(host, testvars):
     assert testvars['template3'] == 'my_string_1'
 
 
-def test_testaid_templates_resolve_template_inline_front(testvars):
+def test_testaid_templates_resolve_template_inline_front(host, testvars):
     assert testvars['template4'] == 'inline+my_string_1'
 
 
-def test_testaid_templates_resolve_template_inline_back(testvars):
+def test_testaid_templates_resolve_template_inline_back(host, testvars):
     assert testvars['template5'] == 'my_string_1+inline'
 
 
-def test_testaid_templates_resolve_template_special_chars_1(testvars):
+def test_testaid_templates_resolve_template_special_chars_1(host, testvars):
     assert testvars['special1'] == "äöü'!)§$;~é"
 
 
-def test_testaid_templates_resolve_template_special_chars_2(testvars):
+def test_testaid_templates_resolve_template_special_chars_2(host, testvars):
     assert testvars['special2'] == 'ñô‰„}»"¯]¿¬'
 
 
-def test_testaid_template_resolve_lookup(testvars):
+def test_testaid_template_resolve_lookup(host, testvars):
     assert testvars['lookup_flattened'] == '[1, 2, 3, 4, 5, 6]'
 
 
-def test_testaid_templates_resolve_template_list(testvars):
+def test_testaid_templates_resolve_template_list(host, testvars):
     list1_json = '["first_list_item", "second_list_item"]'
     assert json.dumps(testvars['list1']) == list1_json
 
 
-def test_testaid_templates_resolve_template_dict(testvars):
+def test_testaid_templates_resolve_template_dict(host, testvars):
     dict1_json = '{"first_key": "first_value", "second_key": "second_value"}'
     assert json.dumps(testvars['dict1']) == dict1_json
 
 
-def test_testaid_templates_resolve_template_filter_zip(testvars):
-    filter_zip_json = '"[[\'first_list_item\', \'anarchism\'], '
-    filter_zip_json += '[\'second_list_item\', \'fortune-anarchism\']]"'
+def test_testaid_templates_resolve_template_filter_zip(host, testvars):
+    filter_zip_json = '"[(\'first_list_item\', \'anarchism\'), '
+    filter_zip_json += '(\'second_list_item\', \'fortune-anarchism\')]"'
+    # FIXME: shouldn't this be a list of lists?
     assert json.dumps(testvars['filter_zip']) == filter_zip_json
 
 
-def test_testaid_templates_resolve_template_filter_dict2items(testvars):
+def test_testaid_templates_resolve_template_filter_dict2items(host, testvars):
     filter_dict_json = '"[{\'key\': \'first_key\', '
     filter_dict_json += '\'value\': \'first_value\'}, '
     filter_dict_json += '{\'key\': \'second_key\', '

@@ -44,3 +44,12 @@ Changelog
 * Add github issues tests
 * Migrate from os.path to pathlib
 * Make cache optional
+
+0.7
+===
+
+* Major rewrite: migrate to ansible python api
+* Don't invoke testinfra 'class' scoped host fixture
+* Use pytest fixture scope 'session' for better caching
+* Expose ansible_facts
+* Missing feature: include extra vars files

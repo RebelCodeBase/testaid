@@ -3,3 +3,6 @@ anarchism_packages:
   - anarchism
 
 anarchism_install: true
+
+role_defaults_value: my_role_defaults_value
+role_defaults_var: "{{ role_defaults_value }}"

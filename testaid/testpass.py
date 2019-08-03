@@ -1,9 +1,12 @@
-class Testpass(object):
-
-    def __init__(self, host):
-        self.host = host
+class TestPass(object):
+    '''Expose the ansible passwordstore plugin as pytest fixture'''
+    def __init__(self, moleculebook):
+        self._moleculebook = moleculebook
+        self._moleculebook.create(gather_facts=False,
+                                  gather_roles=False,
+                                  host='localhost')
+        self._lookup = "{{ lookup('passwordstore', \'" + path + "\')}}"
+        self._moleculebook.add_task_debug(lookup)
 
     def testpass(self, path):
-        return self.host.ansible('debug',
-                                 'msg="{{ lookup(\'passwordstore\', \
-                                 \'' + path + '\') }}"')['msg']
+        return self._moleculebook.run()

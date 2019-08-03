@@ -1,16 +1,29 @@
 import os
 import pytest
-from testaid.testpass import Testpass
-from testaid.testvars import Testvars
+from testaid.moleculebook import MoleculeBook
+from testaid.moleculeplay import MoleculePlay
+from testaid.testpass import TestPass
+from testaid.testvars import TestVars
 
 
-@pytest.fixture()
-def testpass(host):
-    return Testpass(host).testpass
+@pytest.fixture(scope='session')
+def moleculeplay():
+    return MoleculePlay()
 
 
-@pytest.fixture()
-def testvars(request, host, tmp_path):
+@pytest.fixture(scope='session')
+def moleculebook(moleculeplay):
+    return MoleculeBook(moleculeplay)
+
+
+@pytest.fixture(scope='session')
+def testpass(moleculebook):
+    return TestPass(moleculebook).testpass
+
+
+@pytest.fixture(scope='session')
+def testvars(request, moleculebook):
+    '''Expose ansible variables of a molecule test scenario.'''
     # Remember: it's easier to ask for forgiveness than permission
     # https://docs.python.org/3/glossary.html#term-eafp
 
@@ -19,7 +32,7 @@ def testvars(request, host, tmp_path):
     try:
         # try to get a molecule scenario-related cache key
         cache_key = 'testvars/' + os.environ['MOLECULE_EPHEMERAL_DIRECTORY']
-    except:
+    except KeyError:
         # use a global cache key as fallback
         cache_key = 'testvars/global'
 
@@ -32,7 +45,7 @@ def testvars(request, host, tmp_path):
         testvars = None
 
     if testvars is None:
-        testvars = Testvars(host, tmp_path).testvars
+        testvars = TestVars(moleculebook).get_testvars()
 
         try:
             # try to cache the testvars

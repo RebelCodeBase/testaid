@@ -1,2 +1,3 @@
+from testaid.boilerplate import hosts  # noqa F401
+
 name = "testaid"
-from testaid.boilerplate import hosts

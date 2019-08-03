@@ -13,12 +13,17 @@ The pytest plugin testaid_ provides helper functions and fixtures to facilitate
 the use of testinfra. It helps to not only unit test your ansible roles but to
 integration and system test your whole ansible project.
 
+testinfra wraps cli_ calls to the ansible executable.
+testaid uses the ansible python api_ to run ansible playbooks.
+
 .. _pytest: https://pytest.org/
 .. _testinfra: https://testinfra.readthedocs.io/en/latest/
 .. _ansible: https://www.ansible.com/
 .. _verifier: https://molecule.readthedocs.io/en/stable/configuration.html#testinfra
 .. _molecule: https://molecule.readthedocs.io/
 .. _testaid: https://github.com/RebelCodeBase/testaid
+.. _cli: https://philpep.org/blog/infrastructure-testing-with-testinfra
+.. _api: https://docs.ansible.com/ansible/latest/dev_guide/developing_api.html
 
 License
 =======
@@ -47,7 +52,7 @@ Run ``molecule test`` by invoking tox_::
 Example
 ========
 
-Have a look at *test/debian* for a complete example of a molecule project
+Have a look at *test/debian* for an example of a molecule project
 using ansible, testinfra and testaid.
 The molecule project doubles as a test for the testaid plugin.
 
@@ -79,7 +84,7 @@ Fixture testvars
 ================
 
 Arguably the most useful feature of the testaid plugin is the testvars fixture.
-The fixture exposes and resolves the multiple vars files as a python dict:
+The fixture exposes and resolves ansible variables as a python dict:
 
 .. code-block:: python
 
@@ -87,18 +92,34 @@ The fixture exposes and resolves the multiple vars files as a python dict:
 
         my_password = testpass['my_variable']
 
-The following variables are read respecting the ansible variable precedence_:
+testvars runs a playbook against the molecule host using the ansible python api.
 
-- ansible setup_ module: ansible_facts
-- roles: defaults/main.yml
-- testinfra: host.get_variables()
-- project: vars/*.yml
-- roles: vars/main.yml
-- extra vars from TESTAID_EXTRA_VARS_FILES
+testvars creates a symbolic link to the roles directory of your ansible project
+in the ephemeral playbook environment which molecule sets up.
+It then runs a playbook with `gather_facts:true` and a debug_ task to get
+the ansible variables and the ansible facts of the play and host.
 
-The TESTAID_EXTRA_VARS_FILES environment variable can be set in molecule.yml.
-It can contain relative filepaths to the MOLECULE_SCENARIO_DIRECTORY separated
-by colons:
+testvars uses the ansible VariableManager_
+so the usual ansible variable precedence_ rules apply.
+Internally, the fixture uses the ansible debug_ module to resolve templates.
+Thus, it can resolve any kind of template that the debug module can resolve
+including jinja2_ code and calls to lookup_ plugins.
+
+.. _debug: https://docs.ansible.com/ansible/latest/modules/debug_module.html
+.. _VariableManager: https://github.com/ansible/ansible/blob/93ea9612057d47b28c9c42d439ef5679351b762b/lib/ansible/vars/manager.py#L74
+.. _precedence: https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
+.. _setup: https://docs.ansible.com/ansible/latest/modules/setup_module.html
+.. _jinja2: http://jinja.pocoo.org/
+.. _lookup: https://docs.ansible.com/ansible/latest/plugins/lookup.html
+
+Caching testvars
+================
+
+Hopefully the testvars fixture allows fast test-driven development.
+It has `session` scope so variables are collected and resolved only once
+per testrun as pytest caches the result.
+If this is still to slow for you then you can enable the pytest cache_ plugin
+in *molecule.yml*:
 
 .. code-block:: yaml
 
@@ -106,20 +127,11 @@ by colons:
       name: testinfra
       options:
         p: cacheprovider
-      env:
-        TESTAID_EXTRA_VARS_FILES: "../../extra_vars/my_extra_vars.yml:my_molecule_vars.yml"
 
-Internally, the fixture uses the ansible debug_ module to resolve templates.
-Thus, it can resolve any kind of template that the debug module can resolve
-including jinja2_ code and invoking lookup_ plugins.
+You should use the testaid boilerplate code to be able to run pytest directly.
+Otherwise testinfra will complain about missing environment variables.
 
-As resolving the templates is very slow the fixture will cache the results
-using the pytest cache_ plugin if it is enabled.
-The plugin is disabled by testinfra by default
-and must be explicitly enabled through the ``p: cacheprovider`` option in
-*molecule.yml*, see above.
-The caching mechanism allows fast test-driven development
-but remember to clear the cache when you add or change an ansible variable::
+Remember to clear the cache when you add or change an ansible variable::
 
     pytest --cache-clear; molecule verify
 
@@ -129,9 +141,38 @@ When using the boilerplate you can inspect the cache by running::
 
     pytest --cache-show
 
-.. _debug: https://docs.ansible.com/ansible/latest/modules/debug_module.html
-.. _precedence: https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
-.. _setup: https://docs.ansible.com/ansible/latest/modules/setup_module.html
-.. _jinja2: http://jinja.pocoo.org/
-.. _lookup: https://docs.ansible.com/ansible/latest/plugins/lookup.html
 .. _cache: https://docs.pytest.org/en/latest/cache.html
+
+Ansible Python API
+==================
+
+The testaid plugin exposes four pytest fixtures:
+
+- testpass - exposes the ansible passwordstore_ plugin
+- testvars - resolves and exposes ansible vars and facts
+- moleculebook - api to run playbooks against a molecule host
+- moleculeplay - api to leverage the ansible python api
+
+The testvars and testpass fixtures use the moleculebook fixture which in turn
+uses the moleculeplay fixture. moleculeplay handles the sysadmin tasks
+of setting the right symlinks and it makes low-level calls to the
+`ansible python api`_. It will probably not be very useful on its own
+but moleculebook might be handy in those situation where you know you
+shouldn't implement a hackaround. ;-)
+
+Here is an example on how to run an ansible playbook programmatically from
+within a test:
+
+.. code-block:: python
+
+    def test_testaid_moleculebook(host, moleculebook):
+        playbook = moleculebook.get()
+        args = dict(path='/tmp/moleculebook_did_this', state='touch')
+        task_touch = dict(action=dict(module='file', args=args))
+        playbook['tasks'].append(task_touch)
+        moleculebook.set(playbook)
+        moleculebook.run()
+        assert host.file('/tmp/moleculebook_did_this').exists
+
+.. _passwordstore: https://docs.ansible.com/ansible/latest/plugins/lookup/passwordstore.html
+.. _ansible python api: https://docs.ansible.com/ansible/latest/dev_guide/developing_api.html
