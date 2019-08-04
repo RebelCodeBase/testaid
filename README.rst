@@ -90,7 +90,7 @@ The fixture exposes and resolves ansible variables as a python dict:
 
     def test_mytest(host, testvars):
 
-        my_password = testpass['my_variable']
+        my_variable = testvars['my_variable']
 
 testvars runs a playbook against the molecule host using the ansible python api.
 
