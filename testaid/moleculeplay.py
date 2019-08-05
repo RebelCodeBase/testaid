@@ -8,6 +8,7 @@ from ansible.parsing.dataloader import DataLoader
 from ansible.playbook.play import Play
 from ansible.plugins.callback import CallbackBase
 from ansible.vars.manager import VariableManager
+import json
 import os
 from pathlib import Path
 import shutil
@@ -162,5 +163,7 @@ class ResultCallback(CallbackBase):
               '+++++++++++++++++++++++++++++++++++++++++')
         print('[ResultCallback::v2_runner_on_failed] '
               'Playbook failed! Is your molecule host up?')
+        print('The result of the playbook run:')
+        print(json.dumps(result._result, indent=4))
         print('+++++++++++++++++++++++++++++++++++++++++'
               '+++++++++++++++++++++++++++++++++++++++\n')
