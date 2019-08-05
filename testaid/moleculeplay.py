@@ -14,7 +14,7 @@ import shutil
 
 
 class MoleculePlay(object):
-    '''Run ansible playbooks against a molecule host using the ansible python api.
+    '''Run ansible playbooks against molecule host using the ansible python api.
 
     Methods:
         get_project_dir()
@@ -37,7 +37,8 @@ class MoleculePlay(object):
             run a playbook against a molecule host
     '''
     def __init__(self):
-        # Leverage the ansible python api to run a playbook against a molecule host.
+        # Leverage the ansible python api
+        # to run a playbook against a molecule host.
         #
         # see: ansible python api
         # https://docs.ansible.com/ansible/latest/dev_guide/developing_api.html
@@ -157,6 +158,9 @@ class ResultCallback(CallbackBase):
         self.result_playbook_run.append(result._result)
 
     def v2_runner_on_failed(self, result, *args, **kwargs):
-        print('\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-        print('[ResultCallback::v2_runner_on_failed] Playbook failed! Is your molecule host up?')
-        print('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
+        print('\n+++++++++++++++++++++++++++++++++++++++'
+              '+++++++++++++++++++++++++++++++++++++++++')
+        print('[ResultCallback::v2_runner_on_failed] '
+              'Playbook failed! Is your molecule host up?')
+        print('+++++++++++++++++++++++++++++++++++++++++'
+              '+++++++++++++++++++++++++++++++++++++++\n')

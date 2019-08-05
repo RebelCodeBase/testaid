@@ -7,6 +7,8 @@ class MoleculeBook(object):
 
     def __init__(self, moleculeplay):
         self._moleculeplay = moleculeplay
+        if self._moleculeplay is None:
+            return None
         self._playbook = self.create()
 
     def get(self):
@@ -47,17 +49,28 @@ class MoleculeBook(object):
     def get_vars(self):
         '''Return ansible facts and vars of a molecule host.'''
         vars = dict()
-        self.create(gather_roles=True)
+
+        # self.create sets gather_facts=True by default so the ansible facts
+        # of the default molecule host will be in result[0]['ansible_facts']
+        self.create()
+
+        # the ansible variables will be in result[1]['msg']
         self.add_task_debug('{{ vars }}')
+
         result = self.run()
+
+        # create vars with vars['ansible_facts']
         try:
             vars = result[1]['msg']
             vars['ansible_facts'] = result[0]['ansible_facts']
         except IndexError:
-            print('\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-            print('[MoleculeBook::get_vars] The ansible playbook run returned an unexpected result:')
+            print('\n+++++++++++++++++++++++++++++++++++++++'
+                  '+++++++++++++++++++++++++++++++++++++++++')
+            print('[MoleculeBook::get_vars] '
+                  'The ansible playbook run returned an unexpected result:')
             print(json.dumps(result, indent=4))
-            print('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
+            print('+++++++++++++++++++++++++++++++++++++++++'
+                  '+++++++++++++++++++++++++++++++++++++++\n')
         return vars
 
     def read_vars(self):

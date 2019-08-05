@@ -66,9 +66,12 @@ class TestVars(object):
             for playbook_result in playbook_results:
                 templates_resolved.append(playbook_result['msg'].strip('"'))
         except:
-            print('\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-            print('[TestVars::_resolve_templates_] Unable to resolve jinja2 templates.')
-            print('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
+            print('\n+++++++++++++++++++++++++++++++++++++++'
+                  '+++++++++++++++++++++++++++++++++++++++++')
+            print('[TestVars::_resolve_templates_] '
+                  'Unable to resolve jinja2 templates.')
+            print('+++++++++++++++++++++++++++++++++++++++++'
+                  '+++++++++++++++++++++++++++++++++++++++\n')
 
         return templates_resolved
 
