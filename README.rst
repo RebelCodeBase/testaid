@@ -157,7 +157,7 @@ The testvars and testpass fixtures use the moleculebook fixture which in turn
 uses the moleculeplay fixture. moleculeplay handles the sysadmin tasks
 of setting the right symlinks and it makes low-level calls to the
 `ansible python api`_. It will probably not be very useful on its own
-but moleculebook might be handy in those situation where you know you
+but moleculebook might be handy in those situations where you know you
 shouldn't implement a hackaround. ;-)
 
 Here is an example on how to run an ansible playbook programmatically from
