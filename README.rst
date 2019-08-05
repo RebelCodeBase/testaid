@@ -118,7 +118,7 @@ Caching testvars
 Hopefully the testvars fixture allows fast test-driven development.
 It has `session` scope so variables are collected and resolved only once
 per testrun as pytest caches the result.
-If this is still to slow for you then you can enable the pytest cache_ plugin
+If this is still too slow for you then you can enable the pytest cache_ plugin
 in *molecule.yml*:
 
 .. code-block:: yaml
