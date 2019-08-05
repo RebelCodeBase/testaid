@@ -5,8 +5,8 @@ class TestPass(object):
         self._moleculebook.create(gather_facts=False,
                                   gather_roles=False,
                                   host='localhost')
-        self._lookup = "{{ lookup('passwordstore', \'" + path + "\')}}"
-        self._moleculebook.add_task_debug(lookup)
 
     def testpass(self, path):
-        return self._moleculebook.run()
+        lookup = "{{ lookup('passwordstore', \'" + path + "\')}}"
+        self._moleculebook.add_task_debug(lookup)
+        return self._moleculebook.run()[0]['msg']
