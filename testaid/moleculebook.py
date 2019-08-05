@@ -23,15 +23,10 @@ class MoleculeBook(object):
         if host is None:
             host = self._moleculeplay.get_host()
 
-        if gather_facts:
-            gather_facts_str = 'yes'
-        else:
-            gather_facts_str = 'no'
-
         playbook = dict(
             name="ansible playbook",
             hosts=str(host),
-            gather_facts=gather_facts_str,
+            gather_facts=str(gather_facts),
             tasks=list(),
             roles=list(),
         )
