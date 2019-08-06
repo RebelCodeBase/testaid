@@ -161,7 +161,7 @@ but moleculebook might be handy in those situations where you know you
 shouldn't implement a hackaround. ;-)
 
 Here is how you could run an ansible playbook programmatically from 
-a test or even better: from a fixture_ to use dependency injection.
+a test or even better: from a fixture_ using dependency injection.
 
 .. code-block:: python
 
