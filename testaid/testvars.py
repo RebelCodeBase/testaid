@@ -41,26 +41,49 @@ class TestVars(object):
 
     def _query_templates_(self):
         '''Return all unresolved jinja2 templates.'''
+        hash_table = list()
 
         # find all templates in json variables string
         templates_unresolved = re.findall(self._regex_templates,
                                           self._testvars_unresolved_json)
 
+        # create a trivial hash table with the templates as hash values
+        for template_unresolved in templates_unresolved:
+             hash_table.append(template_unresolved[1])
+
+        print()
+        for index, hash in enumerate(hash_table):
+            print('hash ' + str(index) + ' -> ' + str(hash))
+
         for index, template_unresolved in enumerate(templates_unresolved):
             template = dict()
 
-            # fill a lookup table so that we don't resolve templates twice
-            first = templates_unresolved.index(template_unresolved)
+            # populate a lookup table so that we don't resolve templates twice
+            print("template_unresolved[1]")
+            print(template_unresolved[1])
+            first = hash_table.index(template_unresolved[1])
+
+            print(template_unresolved)
+            print('index: ' + str(index))
+            print('first: ' + str(first))
+
             if first < index:
+                print('first: ' + str(first) + ' < ' + str(index) + ' :index')
 
                 # existing entry
-                self._templates_lookup_table.append(first)
+                reference = self._templates_lookup_table[first]
+                print('reference: ' + str(reference))
+                self._templates_lookup_table.append(reference)
+                print('appending ' + str(reference) + ' to lookup_table')
             else:
+                print('first: ' + str(first) + ' >= ' + str(index) + ' :index')
 
                 # new entry
-                self._templates_lookup_table.append(index)
+                self._templates_lookup_table.append(len(self._templates))
+                print('appending ' + str(len(self._templates)) + ' to lookup_table')
 
                 template['unresolved'] = template_unresolved[1].strip()
+
                 if template_unresolved[0]:
                     template['left_quote'] = True
                 else:
@@ -71,6 +94,9 @@ class TestVars(object):
                     template['right_quote'] = False
                 self._templates.append(template)
 
+            print('#templates: ' + str(len(self._templates)))
+            print()
+
     def _resolve_templates_(self):
         '''Resolve all variables of a play managed by molecule.'''
         templates_resolved = list()
@@ -78,15 +104,24 @@ class TestVars(object):
         # reset playbook
         self._moleculebook.create()
 
-        # add one debug task for each unresolved template
-        for index, dest in enumerate(self._templates_lookup_table):
-            if index == dest:
-                unres = self._templates[index]['unresolved']
-                self._moleculebook.add_task_debug(
-                    '"{% if ' + unres + ' | string == ' + unres + ' %}' +
-                    'True{% else %}False{% endif %}"')
-                self._moleculebook.add_task_debug('"{{' + unres + ' | to_json }}"')
+        print()
+        for index, lookup in enumerate(self._templates_lookup_table):
+            print(str(index) + ' -> ' + str(lookup))
 
+        print()
+        for index, template in enumerate(self._templates):
+            print('template #' + str(index))
+            print(json.dumps(template, indent=4))
+
+        # add one debug task for each unresolved template
+        for template in self._templates:
+            unres = template['unresolved']
+            self._moleculebook.add_task_debug(
+                '"{% if ' + unres + ' | string == ' + unres + ' %}' +
+                'True{% else %}False{% endif %}"')
+            self._moleculebook.add_task_debug('"{{' + unres + ' | to_json }}"')
+
+        # run playbook to resolve vars
         playbook_results = self._moleculebook.run()
 
         try:
@@ -106,7 +141,7 @@ class TestVars(object):
                     self._templates[template_index]['resolved'] = template_resolved
         except:
 
-            # TODO: do not catch all
+            # TODO: do not catch all exceptions
             # TODO: raise exception
             print('\n+++++++++++++++++++++++++++++++++++++++'
             '+++++++++++++++++++++++++++++++++++++++++')
@@ -129,6 +164,9 @@ class TestVars(object):
 
     def _resolve_template_(self):
         '''Replace jinja2 template by resolved template.'''
+
+        print("self._resolve_var_index_")
+        print(self._resolve_var_index_)
 
         index = self._templates_lookup_table[self._resolve_var_index_]
         template = self._templates[index]
