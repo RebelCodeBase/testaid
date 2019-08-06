@@ -1,8 +1,6 @@
-import demjson
 import json
 from math import floor
 import re
-from types import SimpleNamespace as Namespace
 
 class TestVars(object):
     '''Expose ansible variabless of a molecule scenario.
@@ -87,7 +85,7 @@ class TestVars(object):
                 self._moleculebook.add_task_debug(
                     '"{% if ' + unres + ' | string == ' + unres + ' %}' +
                     'True{% else %}False{% endif %}"')
-                self._moleculebook.add_task_debug('"{{' + unres + '}}"')
+                self._moleculebook.add_task_debug('"{{' + unres + ' | to_json }}"')
 
         playbook_results = self._moleculebook.run()
 
@@ -127,10 +125,7 @@ class TestVars(object):
                    lambda x: self._resolve_template_(),
                    self._testvars_unresolved_json)
 
-        testvars_json = testvars_json.replace(': True', ': true')
-        testvars_json = testvars_json.replace(': False', ': false')
-
-        self._testvars = demjson.decode(testvars_json)
+        self._testvars = json.loads(testvars_json)
 
     def _resolve_template_(self):
         '''Replace jinja2 template by resolved template.'''

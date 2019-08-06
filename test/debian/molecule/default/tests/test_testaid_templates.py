@@ -22,11 +22,11 @@ def test_testaid_templates_resolve_template_inline_back(host, testvars):
 
 
 def test_testaid_templates_resolve_template_special_chars_1(host, testvars):
-    assert testvars['special1'] == "äöü'!)§$;~é"
+    assert testvars['special1'] == "äö(ü'!)§$;~é"
 
 
 def test_testaid_templates_resolve_template_special_chars_2(host, testvars):
-    assert testvars['special2'] == 'ñô‰„}»"¯]¿¬'
+    assert testvars['special2'] == 'ñô‰(„}»")¯]¿¬'
 
 
 def test_testaid_template_resolve_lookup(host, testvars):
@@ -49,12 +49,11 @@ def test_testaid_templates_resolve_template_dict(host, testvars):
     assert json.dumps(testvars['dict1']) == dict1_json
 
 
-#@pytest.mark.debug
-#def test_testaid_templates_resolve_template_filter_zip(host, testvars):
-#    filter_zip_json = '[["first_list_item", "anarchism"], '
-#    filter_zip_json += '["second_list_item", "fortune-anarchism"]]'
-#    # FIXME: shouldn't this be a list of lists?
-#    assert json.dumps(testvars['filter_zip']) == filter_zip_json
+def test_testaid_templates_resolve_template_filter_zip(host, testvars):
+    filter_zip_json = '[["first_list_item", "anarchism"], '
+    filter_zip_json += '["second_list_item", "fortune-anarchism"]]'
+    # FIXME: shouldn't this be a list of lists?
+    assert json.dumps(testvars['filter_zip']) == filter_zip_json
 
 
 def test_testaid_templates_resolve_template_filter_dict2items(host, testvars):

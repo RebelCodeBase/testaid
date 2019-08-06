@@ -5,8 +5,10 @@ template3: "{{ template2 }}"
 template4: "inline+{{ template1 }}"
 template5: "{{ template1 }}+inline"
 
-special1: "äöü'!)§$;~é"
-special2: 'ñô‰„}»"¯]¿¬'
+special1: "äö(ü'!)§$;~é"
+special2: 'ñô‰(„}»")¯]¿¬'
+special3: "{{ special1 }}"
+special4: "{{ special2 }}"
 
 list1:
   - first_list_item
@@ -20,6 +22,6 @@ dict1:
 
 lookup_flattened: "{{ lookup('flattened', [1,2,3,[4,5,6]]) }}"
 
-#filter_zip: "{{ list1 | zip(anarchism_packages) | list }}"
+filter_zip: "{{ list1 | zip(anarchism_packages) | list }}"
 
 filter_dict2items: "{{ dict1 | dict2items }}"
