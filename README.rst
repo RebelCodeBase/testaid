@@ -118,7 +118,7 @@ Caching testvars
 Hopefully the testvars fixture allows fast test-driven development.
 It has `session` scope so variables are collected and resolved only once
 per testrun as pytest caches the result.
-If this is still to slow for you then you can enable the pytest cache_ plugin
+If this is still too slow for you then you can enable the pytest cache_ plugin
 in *molecule.yml*:
 
 .. code-block:: yaml
@@ -157,11 +157,11 @@ The testvars and testpass fixtures use the moleculebook fixture which in turn
 uses the moleculeplay fixture. moleculeplay handles the sysadmin tasks
 of setting the right symlinks and it makes low-level calls to the
 `ansible python api`_. It will probably not be very useful on its own
-but moleculebook might be handy in those situation where you know you
+but moleculebook might be handy in those situations where you know you
 shouldn't implement a hackaround. ;-)
 
-Here is an example on how to run an ansible playbook programmatically from
-within a test:
+Here is how you could run an ansible playbook programmatically from 
+a test or even better: from a fixture_ using dependency injection.
 
 .. code-block:: python
 
@@ -176,3 +176,4 @@ within a test:
 
 .. _passwordstore: https://docs.ansible.com/ansible/latest/plugins/lookup/passwordstore.html
 .. _ansible python api: https://docs.ansible.com/ansible/latest/dev_guide/developing_api.html
+.. _fixture: https://docs.pytest.org/en/latest/fixture.html
