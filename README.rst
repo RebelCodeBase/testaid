@@ -54,7 +54,7 @@ Example
 
 Have a look at *test/debian* for an example of a molecule project
 using ansible, testinfra and testaid.
-The molecule project doubles as a test for the testaid plugin.
+The molecule project doubles as as a system test for the testaid plugin.
 
 Boilerplate
 ===========
@@ -96,7 +96,7 @@ testvars runs a playbook against the molecule host using the ansible python api.
 
 testvars creates a symbolic link to the roles directory of your ansible project
 in the ephemeral playbook environment which molecule sets up.
-It then runs a playbook with `gather_facts:true` and a debug_ task to get
+It then runs a playbook with ``gather_facts:true`` and a debug_ task to get
 the ansible variables and the ansible facts of the play and host.
 
 testvars uses the ansible VariableManager_
