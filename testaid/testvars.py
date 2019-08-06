@@ -33,7 +33,7 @@ class TestVars(object):
         self._testvars_unresolved_json = json.dumps(testvars_unresolved)
 
         # regular expression to find templates
-        self._regex_templates = r'(["])?{{(.*?)}}(["])?'
+        self._regex_templates = re.compile(r'(["])?{{(.*?)}}(["])?')
 
         # first part of query / replace
         self._query_templates_()
@@ -53,8 +53,8 @@ class TestVars(object):
         hash_table = list()
 
         # find all templates in json variables string
-        templates_unresolved = re.findall(self._regex_templates,
-                                          self._testvars_unresolved_json)
+        templates_unresolved = \
+            self._regex_templates.findall(self._testvars_unresolved_json)
 
         # create a trivial hash table with the templates as hash values
         for template_unresolved in templates_unresolved:
@@ -144,9 +144,8 @@ class TestVars(object):
         self._resolve_var_index_ = 0
 
         testvars_json = \
-            re.sub(self._regex_templates,
-                   lambda x: self._resolve_template_(),
-                   self._testvars_unresolved_json)
+            self._regex_templates.sub(lambda x: self._resolve_template_(),
+                                      self._testvars_unresolved_json)
 
         self._testvars = json.loads(testvars_json)
 
