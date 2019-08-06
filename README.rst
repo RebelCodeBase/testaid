@@ -160,8 +160,8 @@ of setting the right symlinks and it makes low-level calls to the
 but moleculebook might be handy in those situations where you know you
 shouldn't implement a hackaround. ;-)
 
-Here is how you could run an ansible playbook programmatically from
-within a test or fixture_:
+Here is how you could run an ansible playbook programmatically from 
+a test or even better: from a fixture_ to use dependency injection.
 
 .. code-block:: python
 
