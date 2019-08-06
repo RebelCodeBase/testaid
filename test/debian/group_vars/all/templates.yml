@@ -12,12 +12,14 @@ list1:
   - first_list_item
   - second_list_item
 
+list2: "{{ list1 }}"
+
 dict1:
   first_key: first_value
   second_key: second_value
 
 lookup_flattened: "{{ lookup('flattened', [1,2,3,[4,5,6]]) }}"
 
-filter_zip: "{{ list1 | zip(anarchism_packages) | list }}"
+#filter_zip: "{{ list1 | zip(anarchism_packages) | list }}"
 
 filter_dict2items: "{{ dict1 | dict2items }}"

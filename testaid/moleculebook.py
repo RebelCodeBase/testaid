@@ -40,8 +40,13 @@ class MoleculeBook(object):
         self._playbook = playbook
 
     def add_task_debug(self, msg):
-        task_debug = dict(action=dict(module='debug', args=dict(msg=msg)))
-        self._playbook['tasks'].append(task_debug)
+        task = dict(action=dict(module='debug', args=dict(msg=msg)))
+        self._playbook['tasks'].append(task)
+
+    def add_task_set_fact(self, key, value):
+        args = { key: value }
+        task = dict(action=dict(module='set_fact', args=args))
+        self._playbook['tasks'].append(task)
 
     def run(self):
         return self._moleculeplay.run_playbook(self._playbook)
@@ -64,6 +69,7 @@ class MoleculeBook(object):
             vars = result[1]['msg']
             vars['ansible_facts'] = result[0]['ansible_facts']
         except IndexError:
+            # TODO: raise exception
             print('\n+++++++++++++++++++++++++++++++++++++++'
                   '+++++++++++++++++++++++++++++++++++++++++')
             print('[MoleculeBook::get_vars] '
@@ -78,3 +84,4 @@ class MoleculeBook(object):
         self.create(gather_facts=False, host='localhost')
         vars = self._moleculeplay.read_vars(self._playbook)
         return vars
+

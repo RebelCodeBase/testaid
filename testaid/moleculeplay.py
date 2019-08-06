@@ -159,6 +159,7 @@ class ResultCallback(CallbackBase):
         self.result_playbook_run.append(result._result)
 
     def v2_runner_on_failed(self, result, *args, **kwargs):
+        # TODO: raise exception
         print('\n+++++++++++++++++++++++++++++++++++++++'
               '+++++++++++++++++++++++++++++++++++++++++')
         print('[ResultCallback::v2_runner_on_failed] '
