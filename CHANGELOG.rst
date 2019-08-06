@@ -53,3 +53,8 @@ Changelog
 * Use pytest fixture scope 'session' for better caching
 * Expose ansible_facts
 * Missing feature: include extra vars files
+
+0.8
+===
+
+* Fix variable type bugs
