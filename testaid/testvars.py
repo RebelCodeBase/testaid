@@ -13,8 +13,17 @@ class TestVars(object):
 
     def __init__(self, moleculebook):
         self._moleculebook = moleculebook
+
+        # this is what we are looking for
         self._testvars = dict()
+
+        # what are the themplate?
         self._templates = list()
+
+        # where are the templates?
+        self._spots = list()
+
+        # cache templates
         self._templates_lookup_table = list()
 
         # get ansible variables
@@ -51,51 +60,38 @@ class TestVars(object):
         for template_unresolved in templates_unresolved:
              hash_table.append(template_unresolved[1])
 
-        print()
-        for index, hash in enumerate(hash_table):
-            print('hash ' + str(index) + ' -> ' + str(hash))
-
         for index, template_unresolved in enumerate(templates_unresolved):
+            spot = dict()
             template = dict()
 
+            # save template spot environment
+            if template_unresolved[0]:
+                spot['left_quote'] = True
+            else:
+                spot['left_quote'] = False
+            if template_unresolved[2]:
+                spot['right_quote'] = True
+            else:
+                spot['right_quote'] = False
+            self._spots.append(spot)
+
             # populate a lookup table so that we don't resolve templates twice
-            print("template_unresolved[1]")
-            print(template_unresolved[1])
             first = hash_table.index(template_unresolved[1])
 
-            print(template_unresolved)
-            print('index: ' + str(index))
-            print('first: ' + str(first))
-
             if first < index:
-                print('first: ' + str(first) + ' < ' + str(index) + ' :index')
 
                 # existing entry
                 reference = self._templates_lookup_table[first]
-                print('reference: ' + str(reference))
                 self._templates_lookup_table.append(reference)
-                print('appending ' + str(reference) + ' to lookup_table')
+
             else:
-                print('first: ' + str(first) + ' >= ' + str(index) + ' :index')
 
                 # new entry
                 self._templates_lookup_table.append(len(self._templates))
-                print('appending ' + str(len(self._templates)) + ' to lookup_table')
 
+                # create
                 template['unresolved'] = template_unresolved[1].strip()
-
-                if template_unresolved[0]:
-                    template['left_quote'] = True
-                else:
-                    template['left_quote'] = False
-                if template_unresolved[2]:
-                    template['right_quote'] = True
-                else:
-                    template['right_quote'] = False
                 self._templates.append(template)
-
-            print('#templates: ' + str(len(self._templates)))
-            print()
 
     def _resolve_templates_(self):
         '''Resolve all variables of a play managed by molecule.'''
@@ -103,15 +99,6 @@ class TestVars(object):
 
         # reset playbook
         self._moleculebook.create()
-
-        print()
-        for index, lookup in enumerate(self._templates_lookup_table):
-            print(str(index) + ' -> ' + str(lookup))
-
-        print()
-        for index, template in enumerate(self._templates):
-            print('template #' + str(index))
-            print(json.dumps(template, indent=4))
 
         # add one debug task for each unresolved template
         for template in self._templates:
@@ -152,6 +139,7 @@ class TestVars(object):
 
     def _replace_templates_(self):
         '''Replace jinja2 templates by resolved templates.'''
+
         # keep track of the position in self._templates_resolved
         self._resolve_var_index_ = 0
 
@@ -164,17 +152,14 @@ class TestVars(object):
 
     def _resolve_template_(self):
         '''Replace jinja2 template by resolved template.'''
-
-        print("self._resolve_var_index_")
-        print(self._resolve_var_index_)
-
+        spot = self._spots[self._resolve_var_index_]
         index = self._templates_lookup_table[self._resolve_var_index_]
         template = self._templates[index]
 
         template_resolved = template['resolved'].strip('"')
-        if template['string'] and template['left_quote']:
+        if template['string'] and spot['left_quote']:
             template_resolved = '"' + template_resolved
-        if template['string'] and template['right_quote']:
+        if template['string'] and spot['right_quote']:
             template_resolved = template_resolved + '"'
         self._resolve_var_index_ += 1
 
