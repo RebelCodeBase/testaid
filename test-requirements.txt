@@ -1,6 +1,8 @@
 ansible
 docker
+mock
 molecule
 pytest
+pytest-mock
 testaid
 testinfra
