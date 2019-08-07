@@ -17,7 +17,7 @@ import shutil
 class MoleculePlay(object):
     '''Run ansible playbooks against molecule host using the ansible python api.
 
-    Methods:
+    Provides:
         get_project_dir()
             return the ansible project dir as pathlib.Path
 
@@ -58,7 +58,7 @@ class MoleculePlay(object):
 
         # use molecule managed inventory
         inventory_file = self.molecule_ephemeral_directory / \
-                         'inventory/ansible_inventory.yml'
+            'inventory/ansible_inventory.yml'
 
         # FIXME: add TESTAID_EXTRA_VARS_FILES
         # inject extra_vars into ansible play with high weight
@@ -74,9 +74,9 @@ class MoleculePlay(object):
                                         diff=False)
         self._loader = DataLoader()
         self._inventory = InventoryManager(loader=self._loader,
-                                          sources=str(inventory_file))
+                                           sources=str(inventory_file))
         self._variable_manager = VariableManager(loader=self._loader,
-                                                inventory=self._inventory)
+                                                 inventory=self._inventory)
 
         # use inventory host
         host = next(iter(self._inventory.hosts))
@@ -86,7 +86,7 @@ class MoleculePlay(object):
 
     def get_host(self):
         return self._host
-    
+
     def get_project_dir(self):
         '''Return ansible project dir.'''
 
@@ -111,7 +111,7 @@ class MoleculePlay(object):
         '''Return ansible variables without running a playbook.'''
         play = self._get_play_(playbook)
         ansible_vars = self._variable_manager.get_vars(play=play,
-                                                      host=self._host)
+                                                       host=self._host)
         return ansible_vars
 
     def run_playbook(self, playbook):

@@ -1,5 +1,4 @@
 import json
-import testaid
 
 
 class MoleculeBook(object):
@@ -44,7 +43,7 @@ class MoleculeBook(object):
         self._playbook['tasks'].append(task)
 
     def add_task_set_fact(self, key, value):
-        args = { key: value }
+        args = {key: value}
         task = dict(action=dict(module='set_fact', args=args))
         self._playbook['tasks'].append(task)
 
@@ -109,4 +108,3 @@ class MoleculeBook(object):
         self.create(gather_facts=False, host='localhost')
         vars = self._moleculeplay.read_vars(self._playbook)
         return vars
-

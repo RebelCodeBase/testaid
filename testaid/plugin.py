@@ -8,17 +8,18 @@ from testaid.testvars import TestVars
 
 def pytest_addoption(parser):
     parser.addoption("--testvars-no-gather-facts",
-        action="store_false",
-        default=True,
-        help="do not gather ansible_facts")
+                     action="store_false",
+                     default=True,
+                     help="do not gather ansible_facts")
     parser.addoption("--testvars-no-resolve-vars",
-        action="store_false",
-        default=True,
-        help="do not resolve jinja2 templates")
+                     action="store_false",
+                     default=True,
+                     help="do not resolve jinja2 templates")
     parser.addoption("--testvars-no-gather-molecule",
-        action="store_false",
-        default=True,
-        help="do not resolve molecule vars")
+                     action="store_false",
+                     default=True,
+                     help="do not resolve molecule vars")
+
 
 @pytest.fixture(scope='session')
 def gather_facts(request):
@@ -51,7 +52,11 @@ def testpass(moleculebook):
 
 
 @pytest.fixture(scope='session')
-def testvars(request, moleculebook, gather_facts, resolve_vars, gather_molecule):
+def testvars(request,
+             moleculebook,
+             gather_facts,
+             resolve_vars,
+             gather_molecule):
     '''Expose ansible variables of a molecule test scenario.'''
     # remember: it's easier to ask for forgiveness than permission
     # https://docs.python.org/3/glossary.html#term-eafp

@@ -2,6 +2,7 @@ import json
 from math import floor
 import re
 
+
 class TestVars(object):
     '''Expose ansible variabless of a molecule scenario.
 
@@ -11,7 +12,11 @@ class TestVars(object):
     Resolve jinja2 template variables.
     '''
 
-    def __init__(self, moleculebook, resolve_vars, gather_facts, gather_molecule):
+    def __init__(self,
+                 moleculebook,
+                 resolve_vars,
+                 gather_facts,
+                 gather_molecule):
         # use moleculebook fixture to resolve templates
         self._moleculebook = moleculebook
 
@@ -29,11 +34,11 @@ class TestVars(object):
 
         else:
 
-            # decide if we ignore templates containing MOLECULE_ or molecule_file
+            # should we ignore templates containing MOLECULE_ or molecule_file?
             if gather_molecule:
                 r = r'(["])?{{(.*?)}}(["])?'
             else:
-                r = r'(["])?{{((?:(?!.(?:MOLECULE_|molecule_file)).)*?)}}(["])?'
+                r = r'(["])?{{((?:(?!.(?:MOLECULE_|molecule_file)).)*?)}}(["])?'  # noqa E501
 
             # compile regular expression to find templates
             self._regex_templates = re.compile(r)
@@ -78,7 +83,7 @@ class TestVars(object):
 
         # create hash table so that we don't resolve templates twice
         for template_unresolved in templates_unresolved:
-             self._hash_table.append(template_unresolved[1])
+            self._hash_table.append(template_unresolved[1])
 
         for index, template_unresolved in enumerate(templates_unresolved):
             spot = dict()
@@ -116,7 +121,6 @@ class TestVars(object):
 
     def _resolve_templates_(self):
         '''Resolve all variables of a play managed by molecule.'''
-        templates_resolved = list()
 
         # reset playbook
         self._moleculebook.create()
@@ -146,17 +150,18 @@ class TestVars(object):
                         self._templates[template_index]['string'] = False
                 else:
                     template_resolved = playbook_result['msg']
-                    self._templates[template_index]['resolved'] = template_resolved
-        except:
+                    self._templates[template_index]['resolved'] = \
+                        template_resolved
+        except:  # noqa E722
 
             # TODO: do not catch all exceptions
             # TODO: raise exception
             print('\n+++++++++++++++++++++++++++++++++++++++'
-            '+++++++++++++++++++++++++++++++++++++++++')
+                  '+++++++++++++++++++++++++++++++++++++++++')
             print('[TestVars::_resolve_templates_] '
-            'Unable to resolve jinja2 templates.')
+                  'Unable to resolve jinja2 templates.')
             print('+++++++++++++++++++++++++++++++++++++++++'
-            '+++++++++++++++++++++++++++++++++++++++\n')
+                  '+++++++++++++++++++++++++++++++++++++++\n')
 
     def _replace_templates_(self):
         '''Replace jinja2 templates by resolved templates.'''
