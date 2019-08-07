@@ -182,9 +182,11 @@ class TestVars(object):
         template = self._templates[index]
 
         template_resolved = template['resolved'].strip('"')
-        if template['string'] and spot['left_quote']:
+        if (template['string'] and spot['left_quote']) \
+                or (spot['left_quote'] and not spot['right_quote']):
             template_resolved = '"' + template_resolved
-        if template['string'] and spot['right_quote']:
+        if (template['string'] and spot['right_quote']) \
+                or (spot['right_quote'] and not spot['left_quote']):
             template_resolved = template_resolved + '"'
         self._resolve_var_index_ += 1
 
