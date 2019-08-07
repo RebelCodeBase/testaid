@@ -5,7 +5,7 @@ testinfra_hosts = testaid.hosts()
 
 
 def test_testaid_templates_resolve_template(host, testvars):
-    assert testvars['template1'] == 'my_string_1'
+    assert testvars['my_var_1'] == 'my_string_1'
 
 
 def test_testaid_templates_resolve_template_transitive(host, testvars):
