@@ -11,39 +11,48 @@ class TestVars(object):
     Resolve jinja2 template variables.
     '''
 
-    def __init__(self, moleculebook):
+    def __init__(self, moleculebook, resolve_vars, gather_facts, gather_molecule):
+        # use moleculebook fixture to resolve templates
         self._moleculebook = moleculebook
+
+        # this variable will be returned by the testvars fixture
         self._testvars = dict()
 
-        gather_facts = True
-        gather_molecule = True
-
         # get ansible variables
-        testvars_unresolved = self._moleculebook.get_vars(gather_facts)
+        testvars_unresolved = self._moleculebook.get_vars(resolve_vars,
+                                                          gather_facts)
 
-        # convert unresolved test vars to json
-        self._testvars_unresolved_json = json.dumps(testvars_unresolved)
+        if not resolve_vars:
 
-        if gather_molecule:
-            regex = r'(["])?{{(.*?)}}(["])?'
+            # save offline gathered vars
+            self._testvars = testvars_unresolved
+
         else:
-            regex = r'(["])?{{((?:(?!.(?:MOLECULE_|molecule_file)).)*?)}}(["])?'
 
-        # regular expression to find templates
-        self._regex_templates = re.compile(regex)
+            # decide if we ignore templates containing MOLECULE_ or molecule_file
+            if gather_molecule:
+                r = r'(["])?{{(.*?)}}(["])?'
+            else:
+                r = r'(["])?{{((?:(?!.(?:MOLECULE_|molecule_file)).)*?)}}(["])?'
 
-        # first part of query / replace
-        self._query_templates_()
+            # compile regular expression to find templates
+            self._regex_templates = re.compile(r)
 
-        # run a large playbook against the molecule host
-        # to resolve all jinja2 templates in one run
-        self._resolve_templates_()
+            # convert unresolved test vars to json
+            self._testvars_unresolved_json = json.dumps(testvars_unresolved)
 
-        # second part of query / replace
-        self._replace_templates_()
+            # first part of query / replace
+            self._query_templates_()
 
-        # print debug data
-        #self._debug_print_()
+            # run a large playbook against the molecule host
+            # to resolve all jinja2 templates in one run
+            self._resolve_templates_()
+
+            # second part of query / replace
+            self._replace_templates_()
+
+            # print debug data
+            # self._debug_print_()
 
     def get_testvars(self):
         return self._testvars
