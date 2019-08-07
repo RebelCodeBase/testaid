@@ -26,9 +26,13 @@ provisioner:
 verifier:
   name: testinfra
   options:
+    # testvars-no-resolve-vars: true
+    # testvars-no-gather-facts: true
+    # testvars-no-gather-molecule: true
     # m: debug
     # p: cacheprovider  # enable cache
     s: true  # capture output
+    # v: true
   additional_files_or_dirs:
     # integgration
     - ../../../roles/anarchism/molecule/default/tests/test_*.py
