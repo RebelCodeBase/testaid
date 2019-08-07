@@ -1,9 +1,9 @@
 ---
-template1: my_string_1
-template2: "{{ template1 }}"
+my_var_1: my_string_1
+template2: "{{ my_var_1 }}"
 template3: "{{ template2 }}"
-template4: "inline+{{ template1 }}"
-template5: "{{ template1 }}+inline"
+template4: "inline+{{ my_var_1 }}"
+template5: "{{ my_var_1 }}+inline"
 
 special1: "äö(ü'!)§$;~é"
 special2: 'ñô‰(„}»")¯]¿¬'
