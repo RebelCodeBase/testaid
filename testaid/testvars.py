@@ -13,27 +13,24 @@ class TestVars(object):
 
     def __init__(self, moleculebook):
         self._moleculebook = moleculebook
-
-        # this is what we are looking for
         self._testvars = dict()
 
-        # what are the themplate?
-        self._templates = list()
-
-        # where are the templates?
-        self._spots = list()
-
-        # cache templates
-        self._templates_lookup_table = list()
+        gather_facts = True
+        gather_molecule = True
 
         # get ansible variables
-        testvars_unresolved = self._moleculebook.get_vars()
+        testvars_unresolved = self._moleculebook.get_vars(gather_facts)
 
         # convert unresolved test vars to json
         self._testvars_unresolved_json = json.dumps(testvars_unresolved)
 
+        if gather_molecule:
+            regex = r'(["])?{{(.*?)}}(["])?'
+        else:
+            regex = r'(["])?{{((?:(?!.(?:MOLECULE_|molecule_file)).)*?)}}(["])?'
+
         # regular expression to find templates
-        self._regex_templates = re.compile(r'(["])?{{(.*?)}}(["])?')
+        self._regex_templates = re.compile(regex)
 
         # first part of query / replace
         self._query_templates_()
@@ -45,20 +42,34 @@ class TestVars(object):
         # second part of query / replace
         self._replace_templates_()
 
+        # print debug data
+        #self._debug_print_()
+
     def get_testvars(self):
         return self._testvars
 
     def _query_templates_(self):
         '''Return all unresolved jinja2 templates.'''
-        hash_table = list()
+
+        # trivial hash table with templates as hash values
+        self._hash_table = list()
+
+        # cache table
+        self._templates_lookup_table = list()
+
+        # how do the templates look like?
+        self._templates = list()
+
+        # where have the templates been found?
+        self._spots = list()
 
         # find all templates in json variables string
         templates_unresolved = \
             self._regex_templates.findall(self._testvars_unresolved_json)
 
-        # create a trivial hash table with the templates as hash values
+        # create hash table so that we don't resolve templates twice
         for template_unresolved in templates_unresolved:
-             hash_table.append(template_unresolved[1])
+             self._hash_table.append(template_unresolved[1])
 
         for index, template_unresolved in enumerate(templates_unresolved):
             spot = dict()
@@ -75,9 +86,10 @@ class TestVars(object):
                 spot['right_quote'] = False
             self._spots.append(spot)
 
-            # populate a lookup table so that we don't resolve templates twice
-            first = hash_table.index(template_unresolved[1])
+            # get first occurence of our template
+            first = self._hash_table.index(template_unresolved[1])
 
+            # check if this is a double entry
             if first < index:
 
                 # existing entry
@@ -163,3 +175,36 @@ class TestVars(object):
         self._resolve_var_index_ += 1
 
         return template_resolved
+
+    def _debug_print_(self):
+        self._debug_print_hash_table_()
+        self._debug_print_templates_lookup_table_()
+        self._debug_print_templates_()
+        self._debug_print_spots_()
+        self._debug_print_testvars_()
+
+    def _debug_print_hash_table_(self):
+        print("\n\nhash_table\n")
+        for index, hash in enumerate(self._hash_table):
+            print('hash ' + str(index) + ' -> ' + str(hash))
+
+    def _debug_print_templates_lookup_table_(self):
+        print("\n\nlookup_table\n")
+        for index, lookup in enumerate(self._templates_lookup_table):
+            print(str(index) + ' -> ' + str(lookup))
+
+    def _debug_print_templates_(self):
+        print("\n\ntemplates\n")
+        for index, template in enumerate(self._templates):
+            print('template #' + str(index))
+            print(json.dumps(template, indent=4))
+
+    def _debug_print_spots_(self):
+        print("\n\nspots\n")
+        for index, spot in enumerate(self._spots):
+            print('spot #' + str(index))
+            print(json.dumps(spot, indent=4))
+
+    def _debug_print_testvars_(self):
+        print("\n\ntestvars\n")
+        print(json.dumps(self._testvars, indent=4))

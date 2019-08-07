@@ -51,13 +51,13 @@ class MoleculeBook(object):
     def run(self):
         return self._moleculeplay.run_playbook(self._playbook)
 
-    def get_vars(self):
+    def get_vars(self, gather_facts=False):
         '''Return ansible facts and vars of a molecule host.'''
         vars = dict()
 
         # self.create sets gather_facts=True by default so the ansible facts
         # of the default molecule host will be in result[0]['ansible_facts']
-        self.create()
+        self.create(gather_facts=gather_facts)
 
         # the ansible variables will be in result[1]['msg']
         self.add_task_debug('{{ vars }}')
@@ -66,8 +66,11 @@ class MoleculeBook(object):
 
         # create vars with vars['ansible_facts']
         try:
-            vars = result[1]['msg']
-            vars['ansible_facts'] = result[0]['ansible_facts']
+            if gather_facts:
+                vars = result[1]['msg']
+                vars['ansible_facts'] = result[0]['ansible_facts']
+            else:
+                vars = result[0]['msg']
         except IndexError:
             # TODO: raise exception
             print('\n+++++++++++++++++++++++++++++++++++++++'
