@@ -59,4 +59,5 @@ Changelog
 
 * Fix variable type bugs
 * Add command line options to control testvars gathering
-* Include extra vars
+* Include extra vars (again)
+* Provide environment variables as fixtures

@@ -1,15 +1,18 @@
 import json
-import os
 
 
 class MoleculeBook(object):
     '''Run an ansible playbook against a molecule host'''
 
-    def __init__(self, moleculeplay):
-        self._moleculeplay = moleculeplay
-        if self._moleculeplay is None:
+    def __init__(self,
+                 molecule_scenario_directory,
+                 testaid_extra_vars,
+                 moleculeplay):
+        if moleculeplay is None:
             return None
-
+        self._molecule_scenario_directory = molecule_scenario_directory
+        self._testaid_extra_vars = testaid_extra_vars
+        self._moleculeplay = moleculeplay
         self._extra_vars_files = self._init_extra_vars_()
         self._playbook = self.create()
 
@@ -128,13 +131,11 @@ class MoleculeBook(object):
         return vars
 
     def _init_extra_vars_(self):
+        '''Returns list of yaml files with extra vars'''
         files = list()
-        molecule_scenario_directory = \
-            self._moleculeplay.get_molecule_scenario_directory()
-        if 'TESTAID_EXTRA_VARS' in os.environ:
-            testaid_extra_vars = os.environ['TESTAID_EXTRA_VARS'].split(':')
-            for extra_vars in testaid_extra_vars:
-                path = molecule_scenario_directory / extra_vars
+        if self._testaid_extra_vars:
+            for extra_vars in str(self._testaid_extra_vars).split(':'):
+                path = self._molecule_scenario_directory / extra_vars
                 path = path.resolve()
                 if path.is_file():
                     files.append(path)

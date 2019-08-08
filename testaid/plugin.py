@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import pytest
 from testaid.moleculebook import MoleculeBook
 from testaid.moleculeplay import MoleculePlay
@@ -25,6 +26,11 @@ def pytest_addoption(parser):
                      help="do not include extra vars")
 
 
+###########################################################
+# fixtures: command line options
+###########################################################
+
+
 @pytest.fixture(scope='session')
 def resolve_vars(request):
     '''testvars option --testvars-no-resolve-vars'''
@@ -49,16 +55,67 @@ def extra_vars(request):
     return request.config.getoption("--testvars-no-extra-vars")
 
 
+###########################################################
+# fixtures: environment variables
+###########################################################
+
+
 @pytest.fixture(scope='session')
-def moleculeplay():
+def molecule_ephemeral_directory(tmp_path_factory):
+    '''environment variable MOLECULE_EPHEMERAL_DIRECTORY'''
+    try:
+        dir = Path(os.environ['MOLECULE_EPHEMERAL_DIRECTORY'])
+    except KeyError:
+        dir = tmp_path_factory.mktemp('molecule_ephemeral_directory')
+    return dir
+
+
+@pytest.fixture(scope='session')
+def molecule_scenario_directory(tmp_path_factory):
+    '''environment variable MOLECULE_SCENARIO_DIRECTORY'''
+    try:
+        dir = Path(os.environ['MOLECULE_SCENARIO_DIRECTORY'])
+    except KeyError:
+        dir = tmp_path_factory.mktemp('molecule_scenario_directory')
+    return dir
+
+
+@pytest.fixture(scope='session')
+def testaid_extra_vars():
+    '''environment variable TESTAID_EXTRA_VARS'''
+    try:
+        extra_vars = Path(os.environ['TESTAID_EXTRA_VARS'])
+    except KeyError:
+        extra_vars = ''
+    return extra_vars
+
+
+###########################################################
+# fixtures: ansible python api
+###########################################################
+
+
+@pytest.fixture(scope='session')
+def moleculeplay(molecule_ephemeral_directory,
+                 molecule_scenario_directory):
     '''Expose ansible python api to run playbooks against a molecule host.'''
-    return MoleculePlay()
+    return MoleculePlay(molecule_ephemeral_directory,
+                        molecule_scenario_directory)
 
 
 @pytest.fixture(scope='session')
-def moleculebook(moleculeplay):
+def moleculebook(molecule_scenario_directory,
+                 testaid_extra_vars,
+                 moleculeplay):
     '''Run an ansible playbook against a molecule host.'''
-    return MoleculeBook(moleculeplay)
+    return MoleculeBook(molecule_scenario_directory,
+                        testaid_extra_vars,
+                        moleculeplay)
+
+
+###########################################################
+# fixtures: molecule/testinfra/ansible helpers
+###########################################################
 
 
 @pytest.fixture(scope='session')
@@ -69,28 +126,21 @@ def testpass(moleculebook):
 
 @pytest.fixture(scope='session')
 def testvars(request,
+             molecule_ephemeral_directory,
              moleculebook,
              gather_facts,
              resolve_vars,
              gather_molecule,
              extra_vars):
     '''Expose ansible variables and facts of a molecule test scenario.'''
-    # remember: it's easier to ask for forgiveness than permission
-    # https://docs.python.org/3/glossary.html#term-eafp
-
-    # set the scope of the cache key
-    # MOLECULE_EPHEMERAL_DIRECTORY should be unique for each molecule scenario
-    try:
-        # try to get a molecule scenario-scoped cache key
-        cache_key = 'testvars/' + os.environ['MOLECULE_EPHEMERAL_DIRECTORY']
-    except KeyError:
-        # use a global cache key as fallback
-        cache_key = 'testvars/global'
+    # molecule_ephemeral_directory should be unique for each scenario
+    cache_key = str('testvars' / molecule_ephemeral_directory)
 
     try:
-        # check if cache support is enabled in molecule
-        # i.e. if the option "p: cacheprovider" is present in molecule.yml:
+        # read testvars from cache
+        # you can enable cache support in molecule.yml:
         # molecule -> verifier -> options
+        # option "p: cacheprovider"
         testvars = request.config.cache.get(cache_key, None)
     except AttributeError:
         testvars = None
@@ -101,9 +151,8 @@ def testvars(request,
                             gather_facts,
                             gather_molecule,
                             extra_vars).get_testvars()
-
         try:
-            # try to cache the testvars
+            # cache testvars
             request.config.cache.set(cache_key, testvars)
         except AttributeError:
             pass

@@ -9,7 +9,6 @@ from ansible.playbook.play import Play
 from ansible.plugins.callback import CallbackBase
 from ansible.vars.manager import VariableManager
 import json
-import os
 from pathlib import Path
 import shutil
 
@@ -37,20 +36,17 @@ class MoleculePlay(object):
         run_playbook(playbook)
             run a playbook against a molecule host
     '''
-    def __init__(self):
+    def __init__(self,
+                 molecule_ephemeral_directory,
+                 molecule_scenario_directory):
         # Leverage the ansible python api
         # to run a playbook against a molecule host.
         #
         # see: ansible python api
         # https://docs.ansible.com/ansible/latest/dev_guide/developing_api.html
-        try:
-            self._molecule_ephemeral_directory = \
-                Path(os.environ['MOLECULE_EPHEMERAL_DIRECTORY'])
-            self._molecule_scenario_directory = \
-                Path(os.environ['MOLECULE_SCENARIO_DIRECTORY'])
-        except KeyError:
-            # return None if we can't access the molecule environment variables
-            return None
+
+        self._molecule_ephemeral_directory = molecule_ephemeral_directory
+        self._molecule_scenario_directory = molecule_scenario_directory
 
         # create symlink in molecule ephemeral directory
         # to roles directory in project dir
@@ -73,18 +69,17 @@ class MoleculePlay(object):
                                            sources=str(inventory_file))
         self._variable_manager = VariableManager(loader=self._loader,
                                                  inventory=self._inventory)
-
-        # use inventory host
-        host = next(iter(self._inventory.hosts))
+        try:
+            # use inventory host
+            host = next(iter(self._inventory.hosts))
+        except StopIteration:
+            host = 'localhost'
 
         # create a Host object
         self._host = Host(name=host)
 
     def get_host(self):
         return self._host
-
-    def get_molecule_scenario_directory(self):
-        return self._molecule_scenario_directory
 
     def get_project_dir(self):
         '''Return ansible project dir.'''
@@ -102,7 +97,10 @@ class MoleculePlay(object):
         return None
 
     def get_roles(self):
-        roles_dir = self.get_project_dir() / 'roles'
+        project_dir = self.get_project_dir()
+        if project_dir is None:
+            return list()
+        roles_dir = project_dir / 'roles'
         roles = [d.name for d in roles_dir.iterdir() if d.is_dir()]
         return roles
 
@@ -135,8 +133,11 @@ class MoleculePlay(object):
 
     def _create_symlink_(self, path):
         '''Create symlink from molecule ephemeral dir to project dir.'''
+        project_dir = self.get_project_dir()
+        if project_dir is None:
+            return
+        source = project_dir / path
         target = self._molecule_ephemeral_directory / path
-        source = self.get_project_dir() / path
         try:
             target.symlink_to(source)
         except FileExistsError:

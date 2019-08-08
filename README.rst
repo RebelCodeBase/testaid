@@ -202,7 +202,8 @@ When using the boilerplate you can inspect the cache by running::
 Ansible Python API
 ==================
 
-The testaid plugin provides four pytest fixtures:
+The testaid plugin provides four main pytest fixtures
+(and a couple of command line and environment variables fixtures):
 
 - testpass - exposes the ansible passwordstore_ plugin
 - testvars - resolves and exposes ansible vars and facts
