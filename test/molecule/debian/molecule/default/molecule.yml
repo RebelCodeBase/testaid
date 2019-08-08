@@ -29,10 +29,13 @@ verifier:
     # testvars-no-resolve-vars: true
     # testvars-no-gather-facts: true
     # testvars-no-gather-molecule: true
+    # testvars-no-extra-vars: true
     # m: debug
     # p: cacheprovider  # enable cache
     s: true  # capture output
     # v: true
+  env:
+    TESTAID_EXTRA_VARS_FILES: "../../extra_vars:../../custom_vars/my_custom_vars.yml"
   additional_files_or_dirs:
     # integgration
     - ../../../roles/anarchism/molecule/default/tests/test_*.py
