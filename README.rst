@@ -147,7 +147,7 @@ of the verifier section:
 These options exist:
 
 - ``testvars-no-resolve-vars``
-    Do not resolve any jinja2 templates.
+    Do not resolve any jinja2 template.
     Variables are read from disk instead.
     No playbook will be run to gather information.
     This option might speed up some unit tests considerably.
