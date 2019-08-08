@@ -145,7 +145,6 @@ of the verifier section:
         testvars-no-gather-facts: true
 
 These options exist:
-
   - ``testvars-no-resolve-vars``
         Do not resolve any jinja2 templates.
         Variables are read from disk instead.
