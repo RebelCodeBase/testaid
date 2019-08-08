@@ -1,4 +1,3 @@
-import re
 import testaid
 
 testinfra_hosts = testaid.hosts()
