@@ -18,6 +18,9 @@ if __name__ == '__main__':
         entry_points={
             'pytest11': ['testaid=testaid.plugin']
         },
+        install_requires = [
+            'ansible>=2.8',
+        ],
         platforms='any',
         zip_safe=False,
         classifiers=[
