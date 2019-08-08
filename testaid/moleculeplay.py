@@ -60,10 +60,6 @@ class MoleculePlay(object):
         inventory_file = self._molecule_ephemeral_directory / \
             'inventory/ansible_inventory.yml'
 
-        # FIXME: add TESTAID_EXTRA_VARS_FILES
-        # inject extra_vars into ansible play with high weight
-        self._extra_vars = dict()
-
         context.CLIARGS = ImmutableDict(connection='local',
                                         module_path=[''],
                                         forks=10,
@@ -149,8 +145,7 @@ class MoleculePlay(object):
     def _get_play_(self, playbook):
         return Play().load(playbook,
                            variable_manager=self._variable_manager,
-                           loader=self._loader,
-                           vars=self._extra_vars)
+                           loader=self._loader)
 
 
 class ResultCallback(CallbackBase):
