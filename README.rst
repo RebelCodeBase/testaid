@@ -130,7 +130,7 @@ The vars files will be included in moleculebook playbooks by adding
 the paths to ``vars_files`` (and not by adding ``include_vars`` tasks).
 
 testvars options
-====================
+================
 
 testvars is a session scope fixture so its configuration is done in
 *molecule.yml* by using pytest command line options.
