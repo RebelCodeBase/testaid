@@ -25,6 +25,8 @@ testaid uses the ansible python api_ to run ansible playbooks.
 .. _cli: https://philpep.org/blog/infrastructure-testing-with-testinfra
 .. _api: https://docs.ansible.com/ansible/latest/dev_guide/developing_api.html
 
+.. contents::
+
 License
 =======
 
@@ -112,8 +114,8 @@ including jinja2_ code and calls to lookup_ plugins.
 .. _jinja2: http://jinja.pocoo.org/
 .. _lookup: https://docs.ansible.com/ansible/latest/plugins/lookup.html
 
-Extra vars
-==========
+extra vars
+----------
 
 The ``TESTAID_EXTRA_VARS`` environment variable can be set in *molecule.yml*.
 It can contain dirpaths or filepaths relative to the
@@ -129,9 +131,8 @@ It can contain dirpaths or filepaths relative to the
 The vars files will be included in moleculebook playbooks by adding
 the paths to ``vars_files`` (and not by adding ``include_vars`` tasks).
 
-testvars options
-================
-
+options
+-------
 testvars is a session scope fixture so its configuration is done in
 *molecule.yml* by using pytest command line options.
 You can add a couple of options in the options dictionary
@@ -164,8 +165,8 @@ These options exist:
 - ``testvars-no-extra-vars``
     Do not add extra variables specified in ``TESTAID_EXTRA_VARS``.
 
-Caching testvars
-================
+caching
+-------
 
 Hopefully the testvars fixture allows fast test-driven development.
 It has `session` scope so variables are collected and resolved only once
