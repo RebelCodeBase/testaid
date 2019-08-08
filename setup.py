@@ -1,14 +1,14 @@
-import os
 import setuptools
 
 if __name__ == '__main__':
     setuptools.setup(
         name='testaid',
-        version='0.8.5',
+        version='0.8.6',
         author='RebelCodeBase',
         author_email='rebelcodebase@riseup.net',
         description='Fixtures for ansible, testinfra and molecule',
-        long_description='See testaid at github: https://github.com/RebelCodeBase/testaid',
+        long_description='See testaid at github: '
+                         'https://github.com/RebelCodeBase/testaid',
         url='https://github.com/RebelCodeBase/testaid',
         license='Apache-2.0',
         packages=setuptools.find_packages(),
@@ -18,7 +18,7 @@ if __name__ == '__main__':
         entry_points={
             'pytest11': ['testaid=testaid.plugin']
         },
-        install_requires = [
+        install_requires=[
             'ansible>=2.8',
         ],
         platforms='any',
