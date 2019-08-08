@@ -25,7 +25,7 @@ testaid uses the ansible python api_ to run ansible playbooks.
 .. _cli: https://philpep.org/blog/infrastructure-testing-with-testinfra
 .. _api: https://docs.ansible.com/ansible/latest/dev_guide/developing_api.html
 
-.. contents::
+.. contents:: Outline
 
 License
 =======
