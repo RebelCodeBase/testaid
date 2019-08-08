@@ -145,23 +145,23 @@ of the verifier section:
         testvars-no-gather-facts: true
 
 These options exist:
-  - ``testvars-no-resolve-vars``
-        Do not resolve any jinja2 templates.
-        Variables are read from disk instead.
-        No playbook will be run to gather information.
-        This option might speed up some unit tests considerably.
-        Implies ``testvars-no-gather-facts``
-        and ``testvars-no-gather-molecule``.
-  - ``testvars-no-gather-facts``
-        Run playbook to gather variables with ``gather_facts: false``.
-        You won't be able to access ``ansible_facts``
-        but your tests will run much faster.
-  - ``testvars-no-gather-molecule``
-        Do not resolve molecule variables.
-        You probably won't need these variables
-        but it won't take much time to gather them, either.
-  - ``testvars-no-extra-vars``
-        Do not add extra variables specified in ``TESTAID_EXTRA_VARS``.
+- ``testvars-no-resolve-vars``
+    Do not resolve any jinja2 templates.
+    Variables are read from disk instead.
+    No playbook will be run to gather information.
+    This option might speed up some unit tests considerably.
+    Implies ``testvars-no-gather-facts``
+    and ``testvars-no-gather-molecule``.
+- ``testvars-no-gather-facts``
+    Run playbook to gather variables with ``gather_facts: false``.
+    You won't be able to access ``ansible_facts``
+    but your tests will run much faster.
+- ``testvars-no-gather-molecule``
+    Do not resolve molecule variables.
+    You probably won't need these variables
+    but it won't take much time to gather them, either.
+- ``testvars-no-extra-vars``
+    Do not add extra variables specified in ``TESTAID_EXTRA_VARS``.
 
 Caching testvars
 ================
