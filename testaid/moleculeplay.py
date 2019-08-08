@@ -44,9 +44,9 @@ class MoleculePlay(object):
         # see: ansible python api
         # https://docs.ansible.com/ansible/latest/dev_guide/developing_api.html
         try:
-            self.molecule_ephemeral_directory = \
+            self._molecule_ephemeral_directory = \
                 Path(os.environ['MOLECULE_EPHEMERAL_DIRECTORY'])
-            self.molecule_scenario_directory = \
+            self._molecule_scenario_directory = \
                 Path(os.environ['MOLECULE_SCENARIO_DIRECTORY'])
         except KeyError:
             # return None if we can't access the molecule environment variables
@@ -57,7 +57,7 @@ class MoleculePlay(object):
         self._create_symlink_('roles')
 
         # use molecule managed inventory
-        inventory_file = self.molecule_ephemeral_directory / \
+        inventory_file = self._molecule_ephemeral_directory / \
             'inventory/ansible_inventory.yml'
 
         # FIXME: add TESTAID_EXTRA_VARS_FILES
@@ -87,11 +87,14 @@ class MoleculePlay(object):
     def get_host(self):
         return self._host
 
+    def get_molecule_scenario_directory(self):
+        return self._molecule_scenario_directory
+
     def get_project_dir(self):
         '''Return ansible project dir.'''
 
         # start the ansible scenario directory
-        path = self.molecule_scenario_directory
+        path = self._molecule_scenario_directory
 
         # go up until you find the roles dir
         while path != Path('/'):
@@ -136,7 +139,7 @@ class MoleculePlay(object):
 
     def _create_symlink_(self, path):
         '''Create symlink from molecule ephemeral dir to project dir.'''
-        target = self.molecule_ephemeral_directory / path
+        target = self._molecule_ephemeral_directory / path
         source = self.get_project_dir() / path
         try:
             target.symlink_to(source)

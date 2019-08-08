@@ -1,4 +1,5 @@
 import json
+import os
 
 
 class MoleculeBook(object):
@@ -8,17 +9,22 @@ class MoleculeBook(object):
         self._moleculeplay = moleculeplay
         if self._moleculeplay is None:
             return None
+
+        self._extra_vars_files = self._init_extra_vars_()
         self._playbook = self.create()
 
     def get(self):
+        '''Get the ansible playbook'''
         return self._playbook
 
     def set(self, playbook):
+        '''Set an ansible playbook'''
         self._playbook = playbook
 
     def create(self,
                gather_facts=True,
                gather_roles=True,
+               extra_vars=True,
                host=None):
         '''Create an ansible playbook using the ansible python api.'''
         if host is None:
@@ -28,10 +34,17 @@ class MoleculeBook(object):
             name="ansible playbook",
             hosts=str(host),
             gather_facts=str(gather_facts),
-            tasks=list(),
+            vars_files=list(),
             roles=list(),
+            tasks=list(),
         )
 
+        # include extra vars files
+        if extra_vars:
+            for path in self._extra_vars_files:
+                playbook['vars_files'].append(str(path))
+
+        # include roles
         if gather_roles:
             for role in self._moleculeplay.get_roles():
                 playbook['roles'].append(dict(name=role, when='False'))
@@ -39,18 +52,25 @@ class MoleculeBook(object):
         self._playbook = playbook
 
     def add_task_debug(self, msg):
+        '''Add a task using the ansible debug module'''
         task = dict(action=dict(module='debug', args=dict(msg=msg)))
         self._playbook['tasks'].append(task)
 
-    def add_task_set_fact(self, key, value):
-        args = {key: value}
-        task = dict(action=dict(module='set_fact', args=args))
+    def add_task_include_vars_dir(self, vars_dir):
+        '''Add a task using the ansible include_vars module'''
+        args = dict(dir=str(vars_dir))
+        task = dict(action=dict(module='include_vars', args=args))
         self._playbook['tasks'].append(task)
 
     def run(self):
+        '''Run the ansible playbook'''
         return self._moleculeplay.run_playbook(self._playbook)
 
-    def get_vars(self, run_playbook=True, gather_facts=True):
+    def get_include_vars_number(self):
+        '''Get the number of additional include_vars_tasks'''
+        return self._include_vars_number()
+
+    def get_vars(self, run_playbook=True, gather_facts=True, extra_vars=True):
         '''Return ansible facts and vars of a molecule host.
 
         Args:
@@ -67,6 +87,10 @@ class MoleculeBook(object):
             gather_facts (bool): gather ansible_facts from a molecule host?
                 Defaults to True.
                 A playbook will be run with ``gather_facts:true``.
+            extra_vars (bool): include extra vars from vars files?
+                Defaults to True.
+                An include_vars task will be added to include extra vars files
+                specified in the environment variable TESTAID_EXTRA_VARS
 
         Returns:
             vars (dict): resolved ansible variables and facts
@@ -78,7 +102,7 @@ class MoleculeBook(object):
 
         # self.create sets gather_facts=True by default so the ansible facts
         # of the default molecule host will be in result[0]['ansible_facts']
-        self.create(gather_facts=gather_facts)
+        self.create(gather_facts=gather_facts, extra_vars=extra_vars)
 
         # the ansible variables will be in result[1]['msg']
         self.add_task_debug('{{ vars }}')
@@ -102,6 +126,23 @@ class MoleculeBook(object):
             print('+++++++++++++++++++++++++++++++++++++++++'
                   '+++++++++++++++++++++++++++++++++++++++\n')
         return vars
+
+    def _init_extra_vars_(self):
+        files = list()
+        molecule_scenario_directory = \
+            self._moleculeplay.get_molecule_scenario_directory()
+        if 'TESTAID_EXTRA_VARS' in os.environ:
+            testaid_extra_vars = os.environ['TESTAID_EXTRA_VARS'].split(':')
+            for extra_vars in testaid_extra_vars:
+                path = molecule_scenario_directory / extra_vars
+                path = path.resolve()
+                if path.is_file():
+                    files.append(path)
+                if path.is_dir():
+                    filelist = path.glob('**/*.yml')
+                    for file in filelist:
+                        files.append(file.resolve())
+        return files
 
     def _read_vars(self):
         '''Return ansible variables without running a playbook.'''

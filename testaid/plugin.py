@@ -19,6 +19,10 @@ def pytest_addoption(parser):
                      action="store_false",
                      default=True,
                      help="do not resolve molecule vars")
+    parser.addoption("--testvars-no-extra-vars",
+                     action="store_false",
+                     default=True,
+                     help="do not include extra vars")
 
 
 @pytest.fixture(scope='session')
@@ -34,6 +38,11 @@ def resolve_vars(request):
 @pytest.fixture(scope='session')
 def gather_molecule(request):
     return request.config.getoption("--testvars-no-gather-molecule")
+
+
+@pytest.fixture(scope='session')
+def extra_vars(request):
+    return request.config.getoption("--testvars-no-extra-vars")
 
 
 @pytest.fixture(scope='session')
@@ -56,7 +65,8 @@ def testvars(request,
              moleculebook,
              gather_facts,
              resolve_vars,
-             gather_molecule):
+             gather_molecule,
+             extra_vars):
     '''Expose ansible variables of a molecule test scenario.'''
     # remember: it's easier to ask for forgiveness than permission
     # https://docs.python.org/3/glossary.html#term-eafp
@@ -82,7 +92,8 @@ def testvars(request,
         testvars = TestVars(moleculebook,
                             resolve_vars,
                             gather_facts,
-                            gather_molecule).get_testvars()
+                            gather_molecule,
+                            extra_vars).get_testvars()
 
         try:
             # try to cache the testvars

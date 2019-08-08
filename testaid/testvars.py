@@ -16,7 +16,9 @@ class TestVars(object):
                  moleculebook,
                  resolve_vars,
                  gather_facts,
-                 gather_molecule):
+                 gather_molecule,
+                 extra_vars):
+
         # use moleculebook fixture to resolve templates
         self._moleculebook = moleculebook
 
@@ -25,7 +27,8 @@ class TestVars(object):
 
         # get ansible variables
         testvars_unresolved = self._moleculebook.get_vars(resolve_vars,
-                                                          gather_facts)
+                                                          gather_facts,
+                                                          extra_vars)
 
         if not resolve_vars:
 
@@ -55,9 +58,6 @@ class TestVars(object):
 
             # second part of query / replace
             self._replace_templates_()
-
-            # print debug data
-            # self._debug_print_()
 
     def get_testvars(self):
         return self._testvars
@@ -169,11 +169,14 @@ class TestVars(object):
         # keep track of the position in self._templates_resolved
         self._resolve_var_index_ = 0
 
-        testvars_json = \
+        self._testvars_unresolved_json = \
             self._regex_templates.sub(lambda x: self._resolve_template_(),
                                       self._testvars_unresolved_json)
 
-        self._testvars = json.loads(testvars_json)
+        # print debug data
+        # self._debug_print_()
+
+        self._testvars = json.loads(self._testvars_unresolved_json)
 
     def _resolve_template_(self):
         '''Replace jinja2 template by resolved template.'''
@@ -197,6 +200,8 @@ class TestVars(object):
         self._debug_print_templates_lookup_table_()
         self._debug_print_templates_()
         self._debug_print_spots_()
+        self._debug_print_playbook_()
+        self._debug_print_testvars_unresolved_json_()
         self._debug_print_testvars_()
 
     def _debug_print_hash_table_(self):
@@ -220,6 +225,14 @@ class TestVars(object):
         for index, spot in enumerate(self._spots):
             print('spot #' + str(index))
             print(json.dumps(spot, indent=4))
+
+    def _debug_print_playbook_(self):
+        print("\n\nplaybook\n")
+        print(json.dumps(self._moleculebook.get(), indent=4))
+
+    def _debug_print_testvars_unresolved_json_(self):
+        print("\n\ntestvars_unresolved_json\n")
+        print(self._testvars_unresolved_json)
 
     def _debug_print_testvars_(self):
         print("\n\ntestvars\n")

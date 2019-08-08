@@ -59,3 +59,4 @@ Changelog
 
 * Fix variable type bugs
 * Add command line options to control testvars gathering
+* Include extra vars

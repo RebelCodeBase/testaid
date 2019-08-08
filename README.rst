@@ -112,6 +112,57 @@ including jinja2_ code and calls to lookup_ plugins.
 .. _jinja2: http://jinja.pocoo.org/
 .. _lookup: https://docs.ansible.com/ansible/latest/plugins/lookup.html
 
+Extra vars
+==========
+
+The ``TESTAID_EXTRA_VARS`` environment variable can be set in *molecule.yml*.
+It can contain dirpaths or filepaths relative to the
+``MOLECULE_SCENARIO_DIRECTORY`` separated by colons:
+
+.. code-block:: yaml
+
+    verifier:
+      name: testinfra
+      env:
+        TESTAID_EXTRA_VARS: "../../vars:../../extra_vars/extra_vars.yml"
+
+The vars files will be included in moleculebook playbooks by adding
+the paths to ``vars_files`` (and not by adding ``include_vars`` tasks).
+
+testvars options
+====================
+
+testvars is a session scope fixture so its configuration is done in
+*molecule.yml* by using pytest command line options.
+You can add a couple of options in the options dictionary
+of the verifier section:
+
+.. code-block:: yaml
+
+    verifier:
+      name: testinfra
+      options:
+        testvars-no-gather-facts: true
+
+These options exist:
+  - ``testvars-no-resolve-vars``
+        Do not resolve any jinja2 templates.
+        Variables are read from disk instead.
+        No playbook will be run to gather information.
+        This option might speed up some unit tests considerably.
+        Implies ``testvars-no-gather-facts``
+        and ``testvars-no-gather-molecule``.
+  - ``testvars-no-gather-facts``
+        Run playbook to gather variables with ``gather_facts: false``.
+        You won't be able to access ``ansible_facts``
+        but your tests will run much faster.
+  - ``testvars-no-gather-molecule``
+        Do not resolve molecule variables.
+        You probably won't need these variables
+        but it won't take much time to gather them, either.
+  - ``testvars-no-extra-vars``
+        Do not add extra variables specified in ``TESTAID_EXTRA_VARS``.
+
 Caching testvars
 ================
 
