@@ -26,37 +26,44 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope='session')
-def gather_facts(request):
-    return request.config.getoption("--testvars-no-gather-facts")
-
-
-@pytest.fixture(scope='session')
 def resolve_vars(request):
+    '''testvars option --testvars-no-resolve-vars'''
     return request.config.getoption("--testvars-no-resolve-vars")
 
 
 @pytest.fixture(scope='session')
+def gather_facts(request):
+    '''testvars option --testvars-no-gather-facts'''
+    return request.config.getoption("--testvars-no-gather-facts")
+
+
+@pytest.fixture(scope='session')
 def gather_molecule(request):
+    '''testvars option --testvars-no-gather-molecule'''
     return request.config.getoption("--testvars-no-gather-molecule")
 
 
 @pytest.fixture(scope='session')
 def extra_vars(request):
+    '''testvars option --testvars-no-extra-vars'''
     return request.config.getoption("--testvars-no-extra-vars")
 
 
 @pytest.fixture(scope='session')
 def moleculeplay():
+    '''Expose ansible python api to run playbooks against a molecule host.'''
     return MoleculePlay()
 
 
 @pytest.fixture(scope='session')
 def moleculebook(moleculeplay):
+    '''Run an ansible playbook against a molecule host.'''
     return MoleculeBook(moleculeplay)
 
 
 @pytest.fixture(scope='session')
 def testpass(moleculebook):
+    '''Provide access to the ansible passwordstore lookup plugin.'''
     return TestPass(moleculebook).testpass
 
 
@@ -67,7 +74,7 @@ def testvars(request,
              resolve_vars,
              gather_molecule,
              extra_vars):
-    '''Expose ansible variables of a molecule test scenario.'''
+    '''Expose ansible variables and facts of a molecule test scenario.'''
     # remember: it's easier to ask for forgiveness than permission
     # https://docs.python.org/3/glossary.html#term-eafp
 
