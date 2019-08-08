@@ -155,8 +155,8 @@ These options exist:
     Variables are read from disk instead.
     No playbook will be run to gather information.
     This option might speed up some unit tests considerably.
-    Implies ``testvars-no-gather-facts``
-    and ``testvars-no-gather-molecule``.
+    Implies ``testvars-no-gather-facts``,
+    ``testvars-no-gather-molecule`` and ``testvars-no-extra-vars``.
 - ``testvars-no-gather-facts``
     Run playbook to gather variables with ``gather_facts: false``.
     You won't be able to access ``ansible_facts``
