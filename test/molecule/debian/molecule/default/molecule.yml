@@ -35,7 +35,7 @@ verifier:
     s: true  # capture output
     # v: true
   env:
-    TESTAID_EXTRA_VARS_FILES: "../../extra_vars:../../custom_vars/my_custom_vars.yml"
+    TESTAID_EXTRA_VARS: "../../vars:../../extra_vars/extra_vars.yml"
   additional_files_or_dirs:
     # integgration
     - ../../../roles/anarchism/molecule/default/tests/test_*.py
