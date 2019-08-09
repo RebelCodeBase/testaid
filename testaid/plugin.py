@@ -27,7 +27,7 @@ def pytest_addoption(parser):
 
 
 ###########################################################
-# fixtures: command line options
+# fixtures: testvars options
 ###########################################################
 
 
@@ -55,8 +55,18 @@ def extra_vars(request):
     return request.config.getoption("--testvars-no-extra-vars")
 
 
+@pytest.fixture(scope='session')
+def testvars_extra_vars():
+    '''environment variable TESTVARS_EXTRA_VARS'''
+    try:
+        extra_vars = Path(os.environ['TESTVARS_EXTRA_VARS'])
+    except KeyError:
+        extra_vars = ''
+    return extra_vars
+
+
 ###########################################################
-# fixtures: environment variables
+# fixtures: molecule resources
 ###########################################################
 
 
@@ -81,13 +91,21 @@ def molecule_scenario_directory(tmp_path_factory):
 
 
 @pytest.fixture(scope='session')
-def testaid_extra_vars():
-    '''environment variable TESTAID_EXTRA_VARS'''
+def inventory_file(molecule_ephemeral_directory):
+    '''Molecule managed ansible inventory file.'''
+    inventory_file = molecule_ephemeral_directory / \
+                     'inventory/ansible_inventory.yml'
+
+    inventory_dir = molecule_ephemeral_directory / 'inventory'
     try:
-        extra_vars = Path(os.environ['TESTAID_EXTRA_VARS'])
-    except KeyError:
-        extra_vars = ''
-    return extra_vars
+        inventory_dir.mkdir()
+    except FileExistsError:
+        pass
+
+    if not inventory_file.is_file():
+        inventory = "[localhost]\n127.0.0.1  ansible_connection=local)"
+        inventory_file.write_text(inventory)
+    return inventory_file
 
 
 ###########################################################
@@ -97,19 +115,21 @@ def testaid_extra_vars():
 
 @pytest.fixture(scope='session')
 def moleculeplay(molecule_ephemeral_directory,
-                 molecule_scenario_directory):
+                 molecule_scenario_directory,
+                 inventory_file):
     '''Expose ansible python api to run playbooks against a molecule host.'''
     return MoleculePlay(molecule_ephemeral_directory,
-                        molecule_scenario_directory)
+                        molecule_scenario_directory,
+                        inventory_file)
 
 
 @pytest.fixture(scope='session')
 def moleculebook(molecule_scenario_directory,
-                 testaid_extra_vars,
+                 testvars_extra_vars,
                  moleculeplay):
     '''Run an ansible playbook against a molecule host.'''
     return MoleculeBook(molecule_scenario_directory,
-                        testaid_extra_vars,
+                        testvars_extra_vars,
                         moleculeplay)
 
 

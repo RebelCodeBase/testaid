@@ -38,7 +38,8 @@ class MoleculePlay(object):
     '''
     def __init__(self,
                  molecule_ephemeral_directory,
-                 molecule_scenario_directory):
+                 molecule_scenario_directory,
+                 inventory_file):
         # Leverage the ansible python api
         # to run a playbook against a molecule host.
         #
@@ -51,10 +52,6 @@ class MoleculePlay(object):
         # create symlink in molecule ephemeral directory
         # to roles directory in project dir
         self._create_symlink_('roles')
-
-        # use molecule managed inventory
-        inventory_file = self._molecule_ephemeral_directory / \
-            'inventory/ansible_inventory.yml'
 
         context.CLIARGS = ImmutableDict(connection='local',
                                         module_path=[''],

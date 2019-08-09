@@ -120,7 +120,7 @@ including jinja2_ code and calls to lookup_ plugins.
 extra vars
 ----------
 
-The ``TESTAID_EXTRA_VARS`` environment variable can be set in *molecule.yml*.
+The ``TESTVARS_EXTRA_VARS`` environment variable can be set in *molecule.yml*.
 It can contain dirpaths or filepaths relative to the
 ``MOLECULE_SCENARIO_DIRECTORY`` separated by colons:
 
@@ -129,7 +129,7 @@ It can contain dirpaths or filepaths relative to the
     verifier:
       name: testinfra
       env:
-        TESTAID_EXTRA_VARS: "../../vars:../../extra_vars/extra_vars.yml"
+        TESTVARS_EXTRA_VARS: "../../vars:../../extra_vars/extra_vars.yml"
 
 The vars files will be included in moleculebook playbooks by adding
 the paths to ``vars_files`` (and not by adding ``include_vars`` tasks).
@@ -166,7 +166,7 @@ These options exist:
     You probably won't need these variables
     but it won't take much time to gather them, either.
 - ``testvars-no-extra-vars``
-    Do not add extra variables specified in ``TESTAID_EXTRA_VARS``.
+    Do not add extra variables specified in ``TESTVARS_EXTRA_VARS``.
 
 caching
 -------

@@ -6,12 +6,10 @@ class MoleculeBook(object):
 
     def __init__(self,
                  molecule_scenario_directory,
-                 testaid_extra_vars,
+                 testvars_extra_vars,
                  moleculeplay):
-        if moleculeplay is None:
-            return None
         self._molecule_scenario_directory = molecule_scenario_directory
-        self._testaid_extra_vars = testaid_extra_vars
+        self._testvars_extra_vars = testvars_extra_vars
         self._moleculeplay = moleculeplay
         self._extra_vars_files = self._init_extra_vars_()
         self._playbook = self.create()
@@ -93,7 +91,7 @@ class MoleculeBook(object):
             extra_vars (bool): include extra vars from vars files?
                 Defaults to True.
                 An include_vars task will be added to include extra vars files
-                specified in the environment variable TESTAID_EXTRA_VARS
+                specified in the environment variable TESTVARS_EXTRA_VARS
 
         Returns:
             vars (dict): resolved ansible variables and facts
@@ -133,8 +131,8 @@ class MoleculeBook(object):
     def _init_extra_vars_(self):
         '''Returns list of yaml files with extra vars'''
         files = list()
-        if self._testaid_extra_vars:
-            for extra_vars in str(self._testaid_extra_vars).split(':'):
+        if self._testvars_extra_vars:
+            for extra_vars in str(self._testvars_extra_vars).split(':'):
                 path = self._molecule_scenario_directory / extra_vars
                 path = path.resolve()
                 if path.is_file():
