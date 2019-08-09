@@ -115,5 +115,4 @@ def test_testaid_moleculebook_get_vars_gather_facts(moleculebook):
 
 def test_testaid_moleculebook_get_vars_no_gather_facts(moleculebook):
     vars = moleculebook.get_vars(gather_facts=False)
-    print(json.dumps(vars, indent=4))
     assert 'inventory_file' in vars
