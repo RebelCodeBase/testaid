@@ -11,7 +11,6 @@ class MoleculeBook(object):
         self._molecule_scenario_directory = molecule_scenario_directory
         self._testvars_extra_vars = testvars_extra_vars
         self._moleculeplay = moleculeplay
-        self._extra_vars_files = self._init_extra_vars_()
         self._playbook = self.create()
 
     def get(self):
@@ -42,7 +41,7 @@ class MoleculeBook(object):
 
         # include extra vars files
         if extra_vars:
-            for path in self._extra_vars_files:
+            for path in self._extra_vars_files_():
                 playbook['vars_files'].append(str(path))
 
         # include roles
@@ -66,10 +65,6 @@ class MoleculeBook(object):
     def run(self):
         '''Run the ansible playbook'''
         return self._moleculeplay.run_playbook(self._playbook)
-
-    def get_include_vars_number(self):
-        '''Get the number of additional include_vars_tasks'''
-        return self._include_vars_number()
 
     def get_vars(self, run_playbook=True, gather_facts=True, extra_vars=True):
         '''Return ansible facts and vars of a molecule host.
@@ -128,7 +123,7 @@ class MoleculeBook(object):
                   '+++++++++++++++++++++++++++++++++++++++\n')
         return vars
 
-    def _init_extra_vars_(self):
+    def _extra_vars_files_(self):
         '''Returns list of yaml files with extra vars'''
         files = list()
         if self._testvars_extra_vars:

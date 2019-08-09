@@ -103,7 +103,7 @@ def inventory_file(molecule_ephemeral_directory):
         pass
 
     if not inventory_file.is_file():
-        inventory = "[localhost]\n127.0.0.1  ansible_connection=local)"
+        inventory = "[localhost]\nlocalhost"
         inventory_file.write_text(inventory)
     return inventory_file
 
