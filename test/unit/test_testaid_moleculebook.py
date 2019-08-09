@@ -108,7 +108,7 @@ def test_testaid_moleculebook_get_vars_no_run_playbook(moleculebook):
     assert 'inventory_hostname' in vars
 
 
-def test_testaid_moleculebook_get_vars_no_gather_facts(moleculebook):
+def test_testaid_moleculebook_get_vars_gather_facts(moleculebook):
     vars = moleculebook.get_vars(gather_facts=True)
     assert 'ansible_facts' in vars
 
