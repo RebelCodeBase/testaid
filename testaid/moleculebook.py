@@ -1,4 +1,4 @@
-import json
+from testaid.exceptions import MoleculeBookRunFailed
 
 
 class MoleculeBook(object):
@@ -41,7 +41,7 @@ class MoleculeBook(object):
 
         # include extra vars files
         if extra_vars:
-            for path in self._extra_vars_files_():
+            for path in self._extra_vars_files_(self._testvars_extra_vars):
                 playbook['vars_files'].append(str(path))
 
         # include roles
@@ -106,28 +106,28 @@ class MoleculeBook(object):
         result = self.run()
 
         # create vars with vars['ansible_facts']
-        try:
-            if gather_facts:
+        if gather_facts:
+            try:
                 vars = result[1]['msg']
                 vars['ansible_facts'] = result[0]['ansible_facts']
-            else:
+            except (IndexError, KeyError):
+                raise MoleculeBookRunFailed(
+                    result,
+                    'Unable to gather ansible vars and facts.')
+        else:
+            try:
                 vars = result[0]['msg']
-        except IndexError:
-            # TODO: raise exception
-            print('\n+++++++++++++++++++++++++++++++++++++++'
-                  '+++++++++++++++++++++++++++++++++++++++++')
-            print('[MoleculeBook::get_vars] '
-                  'The ansible playbook run returned an unexpected result:')
-            print(json.dumps(result, indent=4))
-            print('+++++++++++++++++++++++++++++++++++++++++'
-                  '+++++++++++++++++++++++++++++++++++++++\n')
+            except (IndexError, KeyError):
+                raise MoleculeBookRunFailed(
+                    result,
+                    'Unable to gather ansible vars.')
         return vars
 
-    def _extra_vars_files_(self):
+    def _extra_vars_files_(self, testvars_extra_vars):
         '''Returns list of yaml files with extra vars'''
         files = list()
-        if self._testvars_extra_vars:
-            for extra_vars in str(self._testvars_extra_vars).split(':'):
+        if testvars_extra_vars:
+            for extra_vars in str(testvars_extra_vars).split(':'):
                 path = self._molecule_scenario_directory / extra_vars
                 path = path.resolve()
                 if path.is_file():

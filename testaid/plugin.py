@@ -94,7 +94,7 @@ def molecule_scenario_directory(tmp_path_factory):
 def inventory_file(molecule_ephemeral_directory):
     '''Molecule managed ansible inventory file.'''
     inventory_file = molecule_ephemeral_directory / \
-                     'inventory/ansible_inventory.yml'
+        'inventory/ansible_inventory.yml'
 
     inventory_dir = molecule_ephemeral_directory / 'inventory'
     try:
@@ -103,7 +103,7 @@ def inventory_file(molecule_ephemeral_directory):
         pass
 
     if not inventory_file.is_file():
-        inventory = "[localhost]\nlocalhost"
+        inventory = "localhost"
         inventory_file.write_text(inventory)
     return inventory_file
 
