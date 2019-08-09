@@ -20,12 +20,12 @@ def test_testaid_moleculebook_set(moleculebook):
 
 def test_testaid_moleculebook_create_default(moleculebook):
     playbook_default = \
-    {'name': 'ansible playbook',
-     'hosts': 'localhost',
-     'gather_facts': 'True',
-     'vars_files': [],
-     'roles': [],
-     'tasks': []}
+        {'name': 'ansible playbook',
+         'hosts': 'localhost',
+         'gather_facts': 'True',
+         'vars_files': [],
+         'roles': [],
+         'tasks': []}
     moleculebook.create()
     playbook = moleculebook._playbook
     assert playbook == playbook_default
