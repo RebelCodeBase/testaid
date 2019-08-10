@@ -10,6 +10,7 @@ class MoleculeBook(object):
                  moleculeplay):
         self._molecule_scenario_directory = molecule_scenario_directory
         self._testvars_extra_vars = testvars_extra_vars
+        self._testvars_extra_vars = self._extra_vars_files_()
         self._moleculeplay = moleculeplay
         self._playbook = self.create()
 
@@ -41,7 +42,7 @@ class MoleculeBook(object):
 
         # include extra vars files
         if extra_vars:
-            for path in self._extra_vars_files_(self._testvars_extra_vars):
+            for path in self._get_extra_vars_():
                 playbook['vars_files'].append(str(path))
 
         # include roles
@@ -123,9 +124,13 @@ class MoleculeBook(object):
                     'Unable to gather ansible vars.')
         return vars
 
-    def _extra_vars_files_(self, testvars_extra_vars):
+    def _get_extra_vars_(self):
+        return self._testvars_extra_vars
+
+    def _extra_vars_files_(self):
         '''Returns list of yaml files with extra vars'''
         files = list()
+        testvars_extra_vars = self._get_extra_vars_()
         if testvars_extra_vars:
             for extra_vars in str(testvars_extra_vars).split(':'):
                 path = self._molecule_scenario_directory / extra_vars
