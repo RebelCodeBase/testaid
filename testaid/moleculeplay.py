@@ -104,29 +104,33 @@ class MoleculePlay(object):
     def read_vars(self, playbook):
         '''Return ansible variables without running a playbook.'''
         play = self._get_play_(playbook)
+        host = self.get_host()
         ansible_vars = self._variable_manager.get_vars(play=play,
-                                                       host=self._host)
+                                                       host=host)
         return ansible_vars
 
     def run_playbook(self, playbook):
         '''Run an ansible playbook using the ansible python api.'''
         play = self._get_play_(playbook)
         tqm = None
-        self.results_callback = ResultCallback()
 
+        inventory = self._get_inventory()
+        variablemanager = self._get_variable_manager()
+        loader = self._get_loader()
+        results_callback = ResultCallback()
         try:
-            tqm = TaskQueueManager(inventory=self._inventory,
-                                   variable_manager=self._variable_manager,
-                                   loader=self._loader,
+            tqm = TaskQueueManager(inventory=inventory,
+                                   variable_manager=variablemanager,
+                                   loader=loader,
                                    passwords=dict(),
-                                   stdout_callback=self.results_callback)
+                                   stdout_callback=results_callback)
             tqm.run(play)
         finally:
             if tqm is not None:
                 tqm.cleanup()
             shutil.rmtree(C.DEFAULT_LOCAL_TMP, True)
 
-        return self.results_callback.result_playbook_run
+        return results_callback.result_playbook_run
 
     def _create_symlink_(self, path):
         '''Create symlink from molecule ephemeral dir to project dir.'''
@@ -140,11 +144,25 @@ class MoleculePlay(object):
         except FileExistsError:
             pass
 
-    def _get_play_(self, playbook):
-        return Play().load(playbook,
-                           variable_manager=self._variable_manager,
-                           loader=self._loader)
+    def _get_inventory(self):
+        return self._inventory
 
+    def _get_loader(self):
+        return self._loader
+
+    def _get_play_(self, playbook):
+        variable_manager=self._get_variable_manager()
+        loader = self._get_loader()
+        play = Play().load(playbook,
+                           variable_manager=variable_manager,
+                           loader=loader)
+        return play
+
+    def _get_results_callback(self):
+        return self._results_callback
+
+    def _get_variable_manager(self):
+        return self._variable_manager
 
 class ResultCallback(CallbackBase):
     def __init__(self):
