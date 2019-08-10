@@ -8,9 +8,9 @@ from ansible.parsing.dataloader import DataLoader
 from ansible.playbook.play import Play
 from ansible.plugins.callback import CallbackBase
 from ansible.vars.manager import VariableManager
-import json
 from pathlib import Path
 import shutil
+from testaid.exceptions import MoleculePlayRunFailed
 
 
 class MoleculePlay(object):
@@ -105,22 +105,22 @@ class MoleculePlay(object):
         '''Return ansible variables without running a playbook.'''
         play = self._get_play_(playbook)
         host = self.get_host()
-        ansible_vars = self._variable_manager.get_vars(play=play,
-                                                       host=host)
+        variable_manager = self._get_variable_manager_()
+        ansible_vars = variable_manager.get_vars(play=play,
+                                                 host=host)
         return ansible_vars
 
     def run_playbook(self, playbook):
         '''Run an ansible playbook using the ansible python api.'''
-        play = self._get_play_(playbook)
         tqm = None
-
-        inventory = self._get_inventory()
-        variablemanager = self._get_variable_manager()
-        loader = self._get_loader()
+        inventory = self._get_inventory_()
+        variable_manager = self._get_variable_manager_()
+        loader = self._get_loader_()
         results_callback = ResultCallback()
+        play = self._get_play_(playbook)
         try:
             tqm = TaskQueueManager(inventory=inventory,
-                                   variable_manager=variablemanager,
+                                   variable_manager=variable_manager,
                                    loader=loader,
                                    passwords=dict(),
                                    stdout_callback=results_callback)
@@ -144,15 +144,15 @@ class MoleculePlay(object):
         except FileExistsError:
             pass
 
-    def _get_inventory(self):
+    def _get_inventory_(self):
         return self._inventory
 
-    def _get_loader(self):
+    def _get_loader_(self):
         return self._loader
 
     def _get_play_(self, playbook):
-        variable_manager=self._get_variable_manager()
-        loader = self._get_loader()
+        variable_manager = self._get_variable_manager_()
+        loader = self._get_loader_()
         play = Play().load(playbook,
                            variable_manager=variable_manager,
                            loader=loader)
@@ -161,8 +161,9 @@ class MoleculePlay(object):
     def _get_results_callback(self):
         return self._results_callback
 
-    def _get_variable_manager(self):
+    def _get_variable_manager_(self):
         return self._variable_manager
+
 
 class ResultCallback(CallbackBase):
     def __init__(self):
@@ -173,12 +174,6 @@ class ResultCallback(CallbackBase):
         self.result_playbook_run.append(result._result)
 
     def v2_runner_on_failed(self, result, *args, **kwargs):
-        # TODO: raise exception
-        print('\n+++++++++++++++++++++++++++++++++++++++'
-              '+++++++++++++++++++++++++++++++++++++++++')
-        print('[ResultCallback::v2_runner_on_failed] '
-              'Playbook failed! Is your molecule host up?')
-        print('The result of the playbook run:')
-        print(json.dumps(result._result, indent=4))
-        print('+++++++++++++++++++++++++++++++++++++++++'
-              '+++++++++++++++++++++++++++++++++++++++\n')
+        raise MoleculePlayRunFailed(
+            result._result,
+            'Unable to run playbook. Is your host up?')
