@@ -169,6 +169,24 @@ def test_testaid_moleculebook_get_vars_no_gather_facts_key_error(
         moleculebook.get_vars(gather_facts=False)
 
 
+def test_testaid_moleculebook_exception_moleculebookrunfailed_no_debug():
+    result = ['my_result']
+    msg = 'my_msg'
+    with pytest.raises(
+            MoleculeBookRunFailed,
+            match=r'^my_msg$'):
+        raise MoleculeBookRunFailed(result, msg)
+
+
+def test_testaid_moleculebook_exception_moleculebookrunfailed_debug():
+    result = ['my_result']
+    msg = 'my_msg'
+    with pytest.raises(
+            MoleculeBookRunFailed,
+            match=r'.*my_result.*'):
+        raise MoleculeBookRunFailed(result, msg, debug=True)
+
+
 def test_testaid_moleculebook_extra_vars_files_no_files(
         moleculebook,
         monkeypatch):
