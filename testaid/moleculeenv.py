@@ -14,6 +14,12 @@ class MoleculeEnv(object):
         # to roles directory in project dir
         self._create_symlink_('roles')
 
+    def get_molecule_ephemeral_directory(self):
+        return self._molecule_ephemeral_directory
+
+    def get_molecule_scenario_directory(self):
+        return self._molecule_scenario_directory
+
     def get_roles(self):
         '''Return roles as list of pathlib.Path objects'''
         project_dir = self._get_project_dir_()
@@ -29,7 +35,7 @@ class MoleculeEnv(object):
         if project_dir is None:
             return
         source = project_dir / path
-        target = self._molecule_ephemeral_directory / path
+        target = self.get_molecule_ephemeral_directory() / path
         try:
             target.symlink_to(source)
         except FileExistsError:

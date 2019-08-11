@@ -54,6 +54,9 @@ class MoleculePlay(object):
     def get_host(self):
         return self._host
 
+    def get_molecule_scenario_directory(self):
+        return self._moleculeenv.get_molecule_scenario_directory()
+
     def get_roles(self):
         return self._moleculeenv.get_roles()
 
@@ -101,9 +104,6 @@ class MoleculePlay(object):
                            variable_manager=variable_manager,
                            loader=loader)
         return play
-
-    def _get_results_callback(self):
-        return self._results_callback
 
     def _get_variable_manager_(self):
         return self._variable_manager

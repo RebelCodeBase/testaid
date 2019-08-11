@@ -134,12 +134,10 @@ def moleculeplay(molecule_ephemeral_directory,
 
 
 @pytest.fixture(scope='session')
-def moleculebook(molecule_scenario_directory,
-                 testvars_extra_vars,
+def moleculebook(testvars_extra_vars,
                  moleculeplay):
     '''Run an ansible playbook against a molecule host.'''
-    return MoleculeBook(molecule_scenario_directory,
-                        testvars_extra_vars,
+    return MoleculeBook(testvars_extra_vars,
                         moleculeplay)
 
 

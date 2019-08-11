@@ -5,14 +5,13 @@ class MoleculeBook(object):
     '''Run an ansible playbook against a molecule host'''
 
     def __init__(self,
-                 molecule_scenario_directory,
                  testvars_extra_vars,
                  moleculeplay):
-        self._molecule_scenario_directory = molecule_scenario_directory
-        self._testvars_extra_vars = testvars_extra_vars
-        self._testvars_extra_vars = self._extra_vars_files_()
         self._moleculeplay = moleculeplay
-        self._playbook = self.create()
+        self._testvars_extra_vars = testvars_extra_vars
+        self._testvars_extra_vars_files = self._extra_vars_files_()
+        self._playbook = dict()
+        self.create()
 
     def get(self):
         '''Get the ansible playbook'''
@@ -42,7 +41,7 @@ class MoleculeBook(object):
 
         # include extra vars files
         if extra_vars:
-            for path in self._get_extra_vars_():
+            for path in self._get_extra_vars_files_():
                 playbook['vars_files'].append(str(path))
 
         # include roles
@@ -62,10 +61,6 @@ class MoleculeBook(object):
         args = dict(dir=str(vars_dir))
         task = dict(action=dict(module='include_vars', args=args))
         self._playbook['tasks'].append(task)
-
-    def run(self):
-        '''Run the ansible playbook'''
-        return self._moleculeplay.run_playbook(self._playbook)
 
     def get_vars(self, run_playbook=True, gather_facts=True, extra_vars=True):
         '''Return ansible facts and vars of a molecule host.
@@ -124,16 +119,27 @@ class MoleculeBook(object):
                     'Unable to gather ansible vars.')
         return vars
 
+    def run(self):
+        '''Run the ansible playbook'''
+        return self._moleculeplay.run_playbook(self._playbook)
+
     def _get_extra_vars_(self):
         return self._testvars_extra_vars
+
+    def _get_extra_vars_files_(self):
+        return self._testvars_extra_vars_files
+
+    def _get_molecule_scenario_directory_(self):
+        return self._moleculeplay.get_molecule_scenario_directory()
 
     def _extra_vars_files_(self):
         '''Returns list of yaml files with extra vars'''
         files = list()
         testvars_extra_vars = self._get_extra_vars_()
         if testvars_extra_vars:
+            base_dir = self._get_molecule_scenario_directory_()
             for extra_vars in str(testvars_extra_vars).split(':'):
-                path = self._molecule_scenario_directory / extra_vars
+                path = base_dir / extra_vars
                 path = path.resolve()
                 if path.is_file():
                     files.append(path)

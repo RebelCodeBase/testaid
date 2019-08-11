@@ -40,7 +40,7 @@ def test_testaid_moleculebook_create_extra_vars(moleculebook, monkeypatch):
          'roles': [],
          'tasks': []}
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
-                        '_get_extra_vars_',
+                        '_get_extra_vars_files_',
                         lambda x: ['my_extra_vars.yml'])
     moleculebook.create(extra_vars=True)
     playbook = moleculebook._playbook
@@ -187,6 +187,14 @@ def test_testaid_moleculebook_exception_moleculebookrunfailed_debug():
         raise MoleculeBookRunFailed(result, msg, debug=True)
 
 
+def test_testaid_get_molecule_scenario_directory(moleculebook):
+    moleculeplay_mcd = \
+        moleculebook._moleculeplay.get_molecule_scenario_directory()
+    moleculebook_mcd = \
+        moleculebook._get_molecule_scenario_directory_()
+    assert moleculebook_mcd == moleculeplay_mcd
+
+
 def test_testaid_moleculebook_extra_vars_files_no_files(moleculebook):
     files = moleculebook._extra_vars_files_()
     assert files == []
@@ -197,10 +205,15 @@ def test_testaid_moleculebook_extra_vars_files_file(
         monkeypatch):
     filename = 'my_extra_vars.yml'
     filepath = 'pytest_my_extra_vars/' + filename
+    base_dir = \
+        moleculebook._moleculeplay._moleculeenv._molecule_ephemeral_directory
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
                         '_get_extra_vars_',
                         lambda x: filepath)
-    dir = moleculebook._molecule_scenario_directory / 'pytest_my_extra_vars'
+    monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
+                        '_get_molecule_scenario_directory_',
+                        lambda x: base_dir)
+    dir = base_dir / 'pytest_my_extra_vars'
     dir.mkdir()
     file = dir / filename
     file.touch()
@@ -213,10 +226,15 @@ def test_testaid_moleculebook_extra_vars_files_dir_one_file(
         moleculebook,
         monkeypatch):
     filename = 'my_extra_vars.yml'
+    base_dir = \
+        moleculebook._moleculeplay._moleculeenv._molecule_ephemeral_directory
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
                         '_get_extra_vars_',
                         lambda x: 'pytest_my_extra_vars')
-    dir = moleculebook._molecule_scenario_directory / 'pytest_my_extra_vars'
+    monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
+                        '_get_molecule_scenario_directory_',
+                        lambda x: base_dir)
+    dir = base_dir / 'pytest_my_extra_vars'
     dir.mkdir()
     file = dir / filename
     file.touch()
@@ -230,10 +248,15 @@ def test_testaid_moleculebook_extra_vars_files_dir_two_files(
         monkeypatch):
     filename1 = 'my_extra_vars_1.yml'
     filename2 = 'my_extra_vars_2.yml'
+    base_dir = \
+        moleculebook._moleculeplay._moleculeenv._molecule_ephemeral_directory
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
                         '_get_extra_vars_',
                         lambda x: 'pytest_my_extra_vars')
-    dir = moleculebook._molecule_scenario_directory / 'pytest_my_extra_vars'
+    monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
+                        '_get_molecule_scenario_directory_',
+                        lambda x: base_dir)
+    dir = base_dir / 'pytest_my_extra_vars'
     dir.mkdir()
     file1 = dir / filename1
     file1.touch()
