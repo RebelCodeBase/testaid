@@ -1,7 +1,7 @@
 import json
 from math import floor
 import re
-from testaid.exceptions import TestVarsResolveFailed
+from testaid.exceptions import TemplatesResolveFailed
 
 
 class TestVars(object):
@@ -154,7 +154,7 @@ class TestVars(object):
                     self._templates[template_index]['resolved'] = \
                         template_resolved
         except (IndexError, KeyError):
-            raise TestVarsResolveFailed('Unable to resolve jinja2 templates.')
+            raise TemplatesResolveFailed('Unable to resolve jinja2 templates.')
 
     def _replace_templates_(self):
         '''Replace jinja2 templates by resolved templates.'''

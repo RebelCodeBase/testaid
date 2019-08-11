@@ -33,7 +33,7 @@ class MoleculeBookRunFailed(Exception):
         return error
 
 
-class TestVarsResolveFailed(Exception):
+class TemplatesResolveFailed(Exception):
     '''Exception raised by TestVars signals failed ansible playbook run.'''
 
     def __init__(self, msg):
