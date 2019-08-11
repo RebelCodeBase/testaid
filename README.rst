@@ -48,7 +48,7 @@ Install the testaid plugin_ using pip_::
 Tests
 =====
 
-Run ``molecule test`` by invoking tox_::
+Run unit tests (``pytest``) and system tests (``molecule test``) by invoking tox_::
 
     $ tox
 
@@ -57,9 +57,11 @@ Run ``molecule test`` by invoking tox_::
 Example
 ========
 
-Have a look at *test/debian* for an example of a molecule project
+Have a look at test debian_ directory for an example of a molecule project
 using ansible, testinfra and testaid.
 The molecule project doubles as as a system test for the testaid plugin.
+
+.. _debian: https://github.com/RebelCodeBase/testaid/tree/master/test/system/debian
 
 Boilerplate
 ===========
@@ -89,7 +91,7 @@ Fixture testvars
 ================
 
 Arguably the most useful feature of the testaid plugin is the testvars fixture.
-The fixture exposes and resolves ansible variables as a python dict:
+The fixture resolves and exposes ansible variables as a python dict:
 
 .. code-block:: python
 
