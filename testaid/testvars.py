@@ -1,8 +1,6 @@
 import json
-from math import floor
 import re
-from testaid.exceptions import TemplatesResolveFailed
-
+from testaid.templates import Templates
 
 class TestVars(object):
     '''Expose ansible variabless of a molecule scenario.
@@ -25,6 +23,9 @@ class TestVars(object):
 
         # this variable will be returned by the testvars fixture
         self._testvars = dict()
+
+        # jinja2 templates
+        self._templates = Templates(self._moleculebook)
 
         # get ansible variables
         testvars_unresolved = self._moleculebook.get_vars(resolve_vars,
@@ -55,7 +56,7 @@ class TestVars(object):
 
             # run a large playbook against the molecule host
             # to resolve all jinja2 templates in one run
-            self._resolve_templates_()
+            self._templates.resolve()
 
             # second part of query / replace
             self._replace_templates_()
@@ -73,7 +74,7 @@ class TestVars(object):
         self._templates_lookup_table = list()
 
         # how do the templates look like?
-        self._templates = list()
+        #self._templates = list()
 
         # where have the templates been found?
         self._spots = list()
@@ -88,7 +89,6 @@ class TestVars(object):
 
         for index, template_unresolved in enumerate(templates_unresolved):
             spot = dict()
-            template = dict()
 
             # save template spot environment
             if template_unresolved[0]:
@@ -104,57 +104,19 @@ class TestVars(object):
             # get first occurence of our template
             first = self._hash_table.index(template_unresolved[1])
 
-            # check if this is a double entry
+            # check if this is a double template
             if first < index:
 
-                # existing entry
+                # existing template
                 reference = self._templates_lookup_table[first]
                 self._templates_lookup_table.append(reference)
 
             else:
 
-                # new entry
-                self._templates_lookup_table.append(len(self._templates))
-
-                # create
-                template['unresolved'] = template_unresolved[1].strip()
-                self._templates.append(template)
-
-    def _resolve_templates_(self):
-        '''Resolve all variables of a play managed by molecule.'''
-
-        # reset playbook
-        self._moleculebook.create()
-
-        # add one debug task for each unresolved template
-        for template in self._templates:
-            unres = template['unresolved']
-            self._moleculebook.add_task_debug(
-                '"{% if ' + unres + ' | string == ' + unres + ' %}' +
-                'True{% else %}False{% endif %}"')
-            self._moleculebook.add_task_debug('"{{' + unres + ' | to_json }}"')
-
-        # run playbook to resolve vars
-        playbook_results = self._moleculebook.run()
-
-        try:
-
-            # delete ansible_facts task result
-            del playbook_results[0]
-
-            for index, playbook_result in enumerate(playbook_results):
-                template_index = floor(index/2)
-                if (index % 2) == 0:
-                    if playbook_result['msg'].strip('"') == 'True':
-                        self._templates[template_index]['string'] = True
-                    else:
-                        self._templates[template_index]['string'] = False
-                else:
-                    template_resolved = playbook_result['msg']
-                    self._templates[template_index]['resolved'] = \
-                        template_resolved
-        except (IndexError, KeyError):
-            raise TemplatesResolveFailed('Unable to resolve jinja2 templates.')
+                # new template
+                self._templates_lookup_table.append(
+                    len(self._templates.get_templates()))
+                self._templates.add(template_unresolved[1].strip())
 
     def _replace_templates_(self):
         '''Replace jinja2 templates by resolved templates.'''
@@ -175,7 +137,7 @@ class TestVars(object):
         '''Replace jinja2 template by resolved template.'''
         spot = self._spots[self._resolve_var_index_]
         index = self._templates_lookup_table[self._resolve_var_index_]
-        template = self._templates[index]
+        template = self._templates.get(index)
 
         template_resolved = template['resolved'].strip('"')
         if (template['string'] and spot['left_quote']) \
@@ -209,7 +171,7 @@ class TestVars(object):
 
     def _debug_print_templates_(self):
         print("\n\ntemplates\n")
-        for index, template in enumerate(self._templates):
+        for index, template in enumerate(self._templates.get_templates()):
             print('template #' + str(index))
             print(json.dumps(template, indent=4))
 
