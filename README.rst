@@ -57,9 +57,11 @@ Run unit tests (``pytest``) and system tests (``molecule test``) by invoking tox
 Example
 ========
 
-Have a look at [test/debian](https://github.com/RebelCodeBase/testaid/tree/master/test/system/debian) for an example of a molecule project
+Have a look at test/debian_ for an example of a molecule project
 using ansible, testinfra and testaid.
 The molecule project doubles as as a system test for the testaid plugin.
+
+.. _test/debian: https://github.com/RebelCodeBase/testaid/tree/master/test/system/debian
 
 Boilerplate
 ===========
