@@ -8,33 +8,13 @@ from ansible.parsing.dataloader import DataLoader
 from ansible.playbook.play import Play
 from ansible.plugins.callback import CallbackBase
 from ansible.vars.manager import VariableManager
-from pathlib import Path
 import shutil
 from testaid.exceptions import MoleculePlayRunFailed
+from testaid.moleculeenv import MoleculeEnv
 
 
 class MoleculePlay(object):
     '''Run ansible playbooks against molecule host using the ansible python api.
-
-    Provides:
-        get_project_dir()
-            return the ansible project dir as pathlib.Path
-
-        get_roles()
-            return a list of roles by gathering the subdirs of the roles dir
-
-        get_vars()
-            return a dict of ansible vars including ansible_facts
-            by running a playbook against a molecule host
-
-        get_vars_from_files()
-            return a dict of ansible variables fast without running a playbook
-
-        create_playbook(gather_facts=True, gather_roles=True)
-            create a playbook with ansible_facts and roles which won't run
-
-        run_playbook(playbook)
-            run a playbook against a molecule host
     '''
     def __init__(self,
                  molecule_ephemeral_directory,
@@ -46,12 +26,8 @@ class MoleculePlay(object):
         # see: ansible python api
         # https://docs.ansible.com/ansible/latest/dev_guide/developing_api.html
 
-        self._molecule_ephemeral_directory = molecule_ephemeral_directory
-        self._molecule_scenario_directory = molecule_scenario_directory
-
-        # create symlink in molecule ephemeral directory
-        # to roles directory in project dir
-        self._create_symlink_('roles')
+        self._moleculeenv = MoleculeEnv(molecule_ephemeral_directory,
+                                        molecule_scenario_directory)
 
         context.CLIARGS = ImmutableDict(connection='local',
                                         module_path=[''],
@@ -78,28 +54,8 @@ class MoleculePlay(object):
     def get_host(self):
         return self._host
 
-    def get_project_dir(self):
-        '''Return ansible project dir.'''
-
-        # start the ansible scenario directory
-        path = self._molecule_scenario_directory
-
-        # go up until you find the roles dir
-        while path != Path('/'):
-            path = path.parent
-            if path / 'roles' in [d for d in path.iterdir() if d.is_dir()]:
-                return path
-
-        # else return None
-        return None
-
     def get_roles(self):
-        project_dir = self.get_project_dir()
-        if project_dir is None:
-            return list()
-        roles_dir = project_dir / 'roles'
-        roles = [d.name for d in roles_dir.iterdir() if d.is_dir()]
-        return roles
+        return self._moleculeenv.get_roles()
 
     def read_vars(self, playbook):
         '''Return ansible variables without running a playbook.'''
@@ -132,18 +88,6 @@ class MoleculePlay(object):
 
         return results_callback.result_playbook_run
 
-    def _create_symlink_(self, path):
-        '''Create symlink from molecule ephemeral dir to project dir.'''
-        project_dir = self.get_project_dir()
-        if project_dir is None:
-            return
-        source = project_dir / path
-        target = self._molecule_ephemeral_directory / path
-        try:
-            target.symlink_to(source)
-        except FileExistsError:
-            pass
-
     def _get_inventory_(self):
         return self._inventory
 
@@ -166,7 +110,9 @@ class MoleculePlay(object):
 
 
 class ResultCallback(CallbackBase):
+
     def __init__(self):
+        super(ResultCallback, self).__init__()
         self.result_playbook_run = list()
 
     def v2_runner_on_ok(self, result, **kwargs):

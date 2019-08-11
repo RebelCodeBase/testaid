@@ -99,7 +99,7 @@ def molecule_scenario_directory(tmp_path_factory):
 def inventory_file(molecule_ephemeral_directory):
     '''Molecule managed ansible inventory file.'''
     inventory_file = molecule_ephemeral_directory / \
-            'inventory/ansible_inventory.yml'
+        'inventory/ansible_inventory.yml'
 
     inventory_dir = molecule_ephemeral_directory / 'inventory'
     try:
