@@ -1,8 +1,9 @@
 import os
 from pathlib import Path
 import pytest
-from testaid.moleculebook import MoleculeBook
+from testaid.moleculeenv import MoleculeEnv
 from testaid.moleculeplay import MoleculePlay
+from testaid.moleculebook import MoleculeBook
 from testaid.testpass import TestPass
 from testaid.testvars import TestVars
 
@@ -117,6 +118,12 @@ def inventory_file(molecule_ephemeral_directory):
         inventory_file.write_text(inventory)
     return inventory_file
 
+@pytest.fixture(scope='session')
+def moleculeenv(molecule_ephemeral_directory,
+                molecule_scenario_directory):
+    return MoleculeEnv(molecule_ephemeral_directory,
+                       molecule_scenario_directory)
+
 
 ###########################################################
 # fixtures: ansible python api
@@ -124,12 +131,9 @@ def inventory_file(molecule_ephemeral_directory):
 
 
 @pytest.fixture(scope='session')
-def moleculeplay(molecule_ephemeral_directory,
-                 molecule_scenario_directory,
-                 inventory_file):
+def moleculeplay(moleculeenv, inventory_file):
     '''Expose ansible python api to run playbooks against a molecule host.'''
-    return MoleculePlay(molecule_ephemeral_directory,
-                        molecule_scenario_directory,
+    return MoleculePlay(moleculeenv,
                         inventory_file)
 
 

@@ -10,15 +10,13 @@ from ansible.plugins.callback import CallbackBase
 from ansible.vars.manager import VariableManager
 import shutil
 from testaid.exceptions import MoleculePlayRunFailed
-from testaid.moleculeenv import MoleculeEnv
 
 
 class MoleculePlay(object):
     '''Run ansible playbooks against molecule host using the ansible python api.
     '''
     def __init__(self,
-                 molecule_ephemeral_directory,
-                 molecule_scenario_directory,
+                 moleculeenv,
                  inventory_file):
         # Leverage the ansible python api
         # to run a playbook against a molecule host.
@@ -26,8 +24,7 @@ class MoleculePlay(object):
         # see: ansible python api
         # https://docs.ansible.com/ansible/latest/dev_guide/developing_api.html
 
-        self._moleculeenv = MoleculeEnv(molecule_ephemeral_directory,
-                                        molecule_scenario_directory)
+        self._moleculeenv = moleculeenv
 
         context.CLIARGS = ImmutableDict(connection='local',
                                         module_path=[''],
