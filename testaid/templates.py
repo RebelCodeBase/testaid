@@ -13,7 +13,7 @@ class Templates(object):
         template['unresolved'] = jinja2
         self._templates.append(template)
 
-    def get(self, index):
+    def get_template(self, index):
         return self._templates[index]
 
     def get_templates(self):

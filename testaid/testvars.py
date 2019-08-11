@@ -47,9 +47,6 @@ class TestVars(object):
                                       self._testvars_unresolved_json,
                                       gather_molecule)
 
-            # resolve jinja2 templates
-            self._jsonvars.resolve()
-
             # get resolved json variables
             self._testvars_resolved_json = self._jsonvars.get_resolved()
 

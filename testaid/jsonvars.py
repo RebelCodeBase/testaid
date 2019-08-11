@@ -52,9 +52,6 @@ class JsonVars(object):
         return msg
 
     def get_resolved(self):
-        return self._jsonvars_resolved
-
-    def resolve(self):
 
         # first part of query / replace
         self._query_templates_()
@@ -65,6 +62,8 @@ class JsonVars(object):
 
         # second part of query / replace
         self._replace_templates_()
+
+        return self._jsonvars_resolved
 
     def _query_templates_(self):
         '''Return all unresolved jinja2 templates.'''
@@ -122,7 +121,7 @@ class JsonVars(object):
         '''Replace jinja2 template by resolved template.'''
         spot = self._spots[self._resolve_var_index_]
         index = self._templates_lookup_table[self._resolve_var_index_]
-        template = self._templates.get(index)
+        template = self._templates.get_template(index)
 
         template_resolved = template['resolved'].strip('"')
 
