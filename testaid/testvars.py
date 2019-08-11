@@ -2,6 +2,7 @@ import json
 import re
 from testaid.templates import Templates
 
+
 class TestVars(object):
     '''Expose ansible variabless of a molecule scenario.
 
@@ -72,9 +73,6 @@ class TestVars(object):
 
         # cache table
         self._templates_lookup_table = list()
-
-        # how do the templates look like?
-        #self._templates = list()
 
         # where have the templates been found?
         self._spots = list()

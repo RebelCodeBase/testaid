@@ -65,4 +65,3 @@ class Templates(object):
 
             # add a debug task to resolve jinja2 template
             self._moleculebook.add_task_debug('"{{' + unres + ' | to_json }}"')
-
