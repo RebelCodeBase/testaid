@@ -7,6 +7,11 @@ from testaid.testpass import TestPass
 from testaid.testvars import TestVars
 
 
+###########################################################
+# command line options: testvars group
+###########################################################
+
+
 def pytest_addoption(parser):
     testvars_optiongroup = parser.getgroup("testvars")
     testvars_optiongroup.addoption(
