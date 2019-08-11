@@ -89,7 +89,7 @@ Fixture testvars
 ================
 
 Arguably the most useful feature of the testaid plugin is the testvars fixture.
-The fixture exposes and resolves ansible variables as a python dict:
+The fixture resolves and exposes ansible variables as a python dict:
 
 .. code-block:: python
 
