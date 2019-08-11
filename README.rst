@@ -48,7 +48,7 @@ Install the testaid plugin_ using pip_::
 Tests
 =====
 
-Run ``molecule test`` by invoking tox_::
+Run unit tests (``pytest``) and system tests (``molecule test``) by invoking tox_::
 
     $ tox
 
