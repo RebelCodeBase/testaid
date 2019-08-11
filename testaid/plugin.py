@@ -4,6 +4,9 @@ import pytest
 from testaid.moleculeenv import MoleculeEnv
 from testaid.moleculeplay import MoleculePlay
 from testaid.moleculebook import MoleculeBook
+from testaid.templates import Templates
+from testaid.jsonvars import JsonVars
+from testaid.jsonvarsdebug import JsonVarsDebug
 from testaid.testpass import TestPass
 from testaid.testvars import TestVars
 
@@ -146,6 +149,26 @@ def moleculebook(testvars_extra_vars,
 
 
 ###########################################################
+# fixtures: testvars helpers
+###########################################################
+
+
+@pytest.fixture(scope='session')
+def templates(moleculebook):
+    return Templates(moleculebook)
+
+
+@pytest.fixture(scope='session')
+def jsonvarsdebug():
+    return JsonVarsDebug()
+
+
+@pytest.fixture(scope='session')
+def jsonvars(jsonvarsdebug, templates, gather_molecule):
+    return JsonVars(jsonvarsdebug, templates, gather_molecule)
+
+
+###########################################################
 # fixtures: molecule/testinfra/ansible helpers
 ###########################################################
 
@@ -160,9 +183,9 @@ def testpass(moleculebook):
 def testvars(request,
              molecule_ephemeral_directory,
              moleculebook,
-             gather_facts,
+             jsonvars,
              resolve_vars,
-             gather_molecule,
+             gather_facts,
              extra_vars):
     '''Expose ansible variables and facts of a molecule test scenario.'''
     # molecule_ephemeral_directory should be unique for each scenario
@@ -179,9 +202,9 @@ def testvars(request,
 
     if testvars is None:
         testvars = TestVars(moleculebook,
+                            jsonvars,
                             resolve_vars,
                             gather_facts,
-                            gather_molecule,
                             extra_vars).get_testvars()
         try:
             # cache testvars

@@ -33,3 +33,17 @@ class JsonVarsDebug(object):
         msg = "\n\njsonvars_unresolved\n"
         msg += jsonvars
         return msg
+
+    def get(self):
+        msg = ''
+        msg += jsonvarsdebug.debug_hash_table(
+            self._hash_table)
+        msg += jsonvarsdebug.debug_templates_lookup_table(
+            self._templates_lookup_table)
+        msg += jsonvarsdebug.debug_templates(
+            self._templates.get_templates())
+        msg += jsonvarsdebug.debug_spots(
+            self._spots)
+        msg += jsonvarsdebug.debug_jsonvars_unresolved(
+            self._jsonvars_unresolved)
+        return msg

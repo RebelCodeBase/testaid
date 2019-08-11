@@ -1,22 +1,22 @@
 import re
-from testaid.jsonvarsdebug import JsonVarsDebug
+from testaid.templates import Templates
 
 
 class JsonVars(object):
 
     def __init__(self,
+                 jsonvarsdebug,
                  templates,
-                 jsonvars_unresolved,
                  gather_molecule):
 
-        # instance of Templates class with moleculebook
+        # debug info
+        self._jsonvarsdebug = jsonvarsdebug
+
+        # jinja2 templates
         self._templates = templates
 
         # unresolved json variables
-        self._jsonvars_unresolved = jsonvars_unresolved
-
-        # resolved json variables (after calling self.resolve()
-        self._jsonvars_resolved = jsonvars_unresolved
+        self._jsonvars = dict()
 
         # should we ignore templates containing MOLECULE_ or molecule_file?
         if gather_molecule:
@@ -36,22 +36,10 @@ class JsonVars(object):
         # where have the templates been found?
         self._spots = list()
 
-    def debug(self):
-        jsonvarsdebug = JsonVarsDebug()
-        msg = ''
-        msg += jsonvarsdebug.debug_hash_table(
-            self._hash_table)
-        msg += jsonvarsdebug.debug_templates_lookup_table(
-            self._templates_lookup_table)
-        msg += jsonvarsdebug.debug_templates(
-            self._templates.get_templates())
-        msg += jsonvarsdebug.debug_spots(
-            self._spots)
-        msg += jsonvarsdebug.debug_jsonvars_unresolved(
-            self._jsonvars_unresolved)
-        return msg
+    def get(self):
+        return self._jsonvars
 
-    def get_resolved(self):
+    def resolve(self):
 
         # first part of query / replace
         self._query_templates_()
@@ -63,14 +51,15 @@ class JsonVars(object):
         # second part of query / replace
         self._replace_templates_()
 
-        return self._jsonvars_resolved
+    def set(self, jsonvars):
+        self._jsonvars = jsonvars
 
     def _query_templates_(self):
         '''Return all unresolved jinja2 templates.'''
 
         # find all templates in json variables string
         templates_unresolved = \
-            self._regex_templates.findall(self._jsonvars_unresolved)
+            self._regex_templates.findall(self._jsonvars)
 
         # create hash table so that we don't resolve templates twice
         for template_unresolved in templates_unresolved:
@@ -113,9 +102,9 @@ class JsonVars(object):
         # keep track of the position in self._templates_resolved
         self._resolve_var_index_ = 0
 
-        self._jsonvars_resolved = \
+        self._jsonvars = \
             self._regex_templates.sub(lambda x: self._resolve_template_(),
-                                      self._jsonvars_unresolved)
+                                      self._jsonvars)
 
     def _resolve_template_(self):
         '''Replace jinja2 template by resolved template.'''
@@ -134,3 +123,6 @@ class JsonVars(object):
         self._resolve_var_index_ += 1
 
         return template_resolved
+
+    def debug(self):
+        return self._jsonvarsdebug.get()
