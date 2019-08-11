@@ -8,19 +8,24 @@ from testaid.testvars import TestVars
 
 
 def pytest_addoption(parser):
-    parser.addoption("--testvars-no-gather-facts",
+    testvars_optiongroup = parser.getgroup("testvars")
+    testvars_optiongroup.addoption(
+                     "--testvars-no-gather-facts",
                      action="store_false",
                      default=True,
                      help="do not gather ansible_facts")
-    parser.addoption("--testvars-no-resolve-vars",
+    testvars_optiongroup.addoption(
+                     "--testvars-no-resolve-vars",
                      action="store_false",
                      default=True,
                      help="do not resolve jinja2 templates")
-    parser.addoption("--testvars-no-gather-molecule",
+    testvars_optiongroup.addoption(
+                     "--testvars-no-gather-molecule",
                      action="store_false",
                      default=True,
                      help="do not resolve molecule vars")
-    parser.addoption("--testvars-no-extra-vars",
+    testvars_optiongroup.addoption(
+                     "--testvars-no-extra-vars",
                      action="store_false",
                      default=True,
                      help="do not include extra vars")
@@ -94,7 +99,7 @@ def molecule_scenario_directory(tmp_path_factory):
 def inventory_file(molecule_ephemeral_directory):
     '''Molecule managed ansible inventory file.'''
     inventory_file = molecule_ephemeral_directory / \
-        'inventory/ansible_inventory.yml'
+            'inventory/ansible_inventory.yml'
 
     inventory_dir = molecule_ephemeral_directory / 'inventory'
     try:
