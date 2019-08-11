@@ -22,7 +22,7 @@ class JsonVars(object):
         if gather_molecule:
             r = r'(["])?{{(.*?)}}(["])?'
         else:
-            r = r'(["])?{{((?:(?!.(?:MOLECULE_|molecule_file)).)*?)}}(["])?'  # noqa E501
+            r = r'(["])?{{((?:(?!.(?:MOLECULE_|molecule_file)).)*?)}}(["])?'
 
         # compile regular expression to find templates
         self._regex_templates = re.compile(r)
