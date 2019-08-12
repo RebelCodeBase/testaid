@@ -57,11 +57,13 @@ Run unit tests (``pytest``) and system tests (``molecule test``) by invoking tox
 Example
 ========
 
-Have a look at test debian_ directory for an example of a molecule project
-using ansible, testinfra and testaid.
-The molecule project doubles as as a system test for the testaid plugin.
+Have a look at debian_ system test directory for an example
+of a molecule project using ansible, testinfra and testaid.
+The molecule project doubles as as a system test
+(`golden master`_) for the testaid plugin.
 
 .. _debian: https://github.com/RebelCodeBase/testaid/tree/master/test/system/debian
+.. _golden master: https://github.com/supernelis/workshop-renovating-legacy-codebase
 
 Boilerplate
 ===========
@@ -205,7 +207,7 @@ Ansible Python API
 ==================
 
 The testaid plugin provides four main pytest fixtures
-(and a couple of command line and environment variables fixtures):
+(and a couple of command line, environment variables and helper fixtures):
 
 - testpass - exposes the ansible passwordstore_ plugin
 - testvars - resolves and exposes ansible vars and facts
@@ -213,14 +215,15 @@ The testaid plugin provides four main pytest fixtures
 - moleculeplay - api to leverage the ansible python api
 
 The testvars and testpass fixtures use the moleculebook fixture which in turn
-uses the moleculeplay fixture. moleculeplay handles the sysadmin tasks
-of setting the right symlinks and it makes low-level calls to the
-`ansible python api`_. It will probably not be very useful on its own
+uses the moleculeplay fixture. moleculeplay makes low-level calls to the
+`ansible python api`_ and uses the moleculeenv fixture to
+handle the sysadmin tasks of setting the right symlinks.
+moleculeplay and moleculeenv will probably not be very useful on their own
 but moleculebook might be handy in those situations where you know you
 shouldn't implement a hackaround. ;-)
 
 Here is how you could run an ansible playbook programmatically from 
-a test or even better: from a fixture_ using dependency injection.
+a test (or even better: from a fixture_) using dependency injection.
 
 .. code-block:: python
 
