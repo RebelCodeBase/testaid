@@ -121,6 +121,7 @@ def inventory_file(molecule_ephemeral_directory):
         inventory_file.write_text(inventory)
     return inventory_file
 
+
 @pytest.fixture(scope='session')
 def moleculeenv(molecule_ephemeral_directory,
                 molecule_scenario_directory):
