@@ -109,13 +109,8 @@ def inventory_file(molecule_ephemeral_directory):
     '''Molecule managed ansible inventory file.'''
     inventory_file = molecule_ephemeral_directory / \
         'inventory/ansible_inventory.yml'
-
     inventory_dir = molecule_ephemeral_directory / 'inventory'
-    try:
-        inventory_dir.mkdir()
-    except FileExistsError:
-        pass
-
+    inventory_dir.mkdir(exist_ok=True)
     if not inventory_file.is_file():
         inventory = "localhost"
         inventory_file.write_text(inventory)

@@ -20,32 +20,11 @@ class MoleculeEnv(object):
     def get_molecule_scenario_directory(self):
         return self._molecule_scenario_directory
 
-    def get_roles(self):
-        '''Return roles as list of pathlib.Path objects'''
-        project_dir = self._get_project_dir_()
-        if project_dir is None:
-            return list()
-        roles_dir = project_dir / 'roles'
-        roles = [d.name for d in roles_dir.iterdir() if d.is_dir()]
-        return roles
-
-    def _create_symlink_(self, path):
-        '''Create symlink from molecule ephemeral dir to project dir.'''
-        project_dir = self._get_project_dir_()
-        if project_dir is None:
-            return
-        source = project_dir / path
-        target = self.get_molecule_ephemeral_directory() / path
-        try:
-            target.symlink_to(source)
-        except FileExistsError:
-            pass
-
-    def _get_project_dir_(self):
+    def get_project_dir(self):
         '''Return ansible project dir.'''
 
         # start the ansible scenario directory
-        path = self._molecule_scenario_directory
+        path = self.get_molecule_scenario_directory()
 
         # go up until you find the roles dir
         while path != Path('/'):
@@ -55,3 +34,24 @@ class MoleculeEnv(object):
 
         # else return None
         return None
+
+    def get_roles(self):
+        '''Return roles as list of pathlib.Path objects'''
+        project_dir = self.get_project_dir()
+        if project_dir is None:
+            return list()
+        roles_dir = project_dir / 'roles'
+        roles = [d.name for d in roles_dir.iterdir() if d.is_dir()]
+        return roles
+
+    def _create_symlink_(self, path):
+        '''Create symlink from molecule ephemeral dir to project dir.'''
+        project_dir = self.get_project_dir()
+        if project_dir is None:
+            return
+        source = project_dir / path
+        target = self.get_molecule_ephemeral_directory() / path
+        try:
+            target.symlink_to(source)
+        except FileExistsError:
+            pass

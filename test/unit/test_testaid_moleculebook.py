@@ -1,5 +1,4 @@
 import pytest
-import shutil
 import testaid
 from testaid.exceptions import MoleculeBookRunFailed
 
@@ -202,66 +201,60 @@ def test_testaid_moleculebook_extra_vars_files_no_files(moleculebook):
 
 def test_testaid_moleculebook_extra_vars_files_file(
         moleculebook,
-        monkeypatch):
+        monkeypatch,
+        tmp_path):
     filename = 'my_extra_vars.yml'
     filepath = 'pytest_my_extra_vars/' + filename
-    base_dir = \
-        moleculebook._moleculeplay._moleculeenv._molecule_ephemeral_directory
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
                         '_get_extra_vars_',
                         lambda x: filepath)
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
                         '_get_molecule_scenario_directory_',
-                        lambda x: base_dir)
-    dir = base_dir / 'pytest_my_extra_vars'
+                        lambda x: tmp_path)
+    dir = tmp_path / 'pytest_my_extra_vars'
     dir.mkdir()
     file = dir / filename
     file.touch()
     files = moleculebook._extra_vars_files_()
-    shutil.rmtree(dir)
     assert files == [file]
 
 
 def test_testaid_moleculebook_extra_vars_files_dir_one_file(
         moleculebook,
-        monkeypatch):
+        monkeypatch,
+        tmp_path):
     filename = 'my_extra_vars.yml'
-    base_dir = \
-        moleculebook._moleculeplay._moleculeenv._molecule_ephemeral_directory
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
                         '_get_extra_vars_',
                         lambda x: 'pytest_my_extra_vars')
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
                         '_get_molecule_scenario_directory_',
-                        lambda x: base_dir)
-    dir = base_dir / 'pytest_my_extra_vars'
+                        lambda x: tmp_path)
+    dir = tmp_path / 'pytest_my_extra_vars'
     dir.mkdir()
     file = dir / filename
     file.touch()
     files = moleculebook._extra_vars_files_()
-    shutil.rmtree(dir)
     assert files == [file]
 
 
 def test_testaid_moleculebook_extra_vars_files_dir_two_files(
         moleculebook,
-        monkeypatch):
+        monkeypatch,
+        tmp_path):
     filename1 = 'my_extra_vars_1.yml'
     filename2 = 'my_extra_vars_2.yml'
-    base_dir = \
-        moleculebook._moleculeplay._moleculeenv._molecule_ephemeral_directory
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
                         '_get_extra_vars_',
                         lambda x: 'pytest_my_extra_vars')
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
                         '_get_molecule_scenario_directory_',
-                        lambda x: base_dir)
-    dir = base_dir / 'pytest_my_extra_vars'
+                        lambda x: tmp_path)
+    dir = tmp_path / 'pytest_my_extra_vars'
     dir.mkdir()
     file1 = dir / filename1
     file1.touch()
     file2 = dir / filename2
     file2.touch()
     files = moleculebook._extra_vars_files_()
-    shutil.rmtree(dir)
     assert files == [file2, file1]
