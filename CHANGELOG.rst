@@ -63,3 +63,10 @@ Changelog
 * Provide environment variables as fixtures
 * Add unit tests
 * Refactor TestVars class
+
+0.9
+===
+
+* Refactor classes
+* Refactor plugins
+* Add unit tests
