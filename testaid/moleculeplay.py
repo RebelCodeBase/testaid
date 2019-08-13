@@ -86,6 +86,10 @@ class MoleculePlay(object):
                 tqm.cleanup()
             shutil.rmtree(C.DEFAULT_LOCAL_TMP, True)
 
+        if results_callback.failed_playbook_run:
+            raise MoleculePlayRunFailed(
+                results_callback.result_playbook_run,
+                'Unable to run playbook. Is your host up?')
         return results_callback.result_playbook_run
 
     def _get_inventory_(self):
@@ -111,12 +115,13 @@ class ResultCallback(CallbackBase):
     def __init__(self):
         super(ResultCallback, self).__init__()
         self.result_playbook_run = list()
+        self.failed_playbook_run = False
 
     def v2_runner_on_ok(self, result, **kwargs):
         self._clean_results(result._result, result._task.action)
         self.result_playbook_run.append(result._result)
 
     def v2_runner_on_failed(self, result, *args, **kwargs):
-        raise MoleculePlayRunFailed(
-            result._result,
-            'Unable to run playbook. Is your host up?')
+        self._clean_results(result._result, result._task.action)
+        self.result_playbook_run.append(result._result)
+        self.failed_playbook_run=True

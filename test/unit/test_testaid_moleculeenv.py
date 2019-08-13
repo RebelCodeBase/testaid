@@ -1,6 +1,9 @@
 from pathlib import Path
-import pytest
 import testaid
+
+
+def test_testaid_moleculeenv_is_not_none(moleculeenv):
+    assert moleculeenv is not None
 
 
 def test_testaid_moleculeenv_get_molecule_ephemeral_directory(

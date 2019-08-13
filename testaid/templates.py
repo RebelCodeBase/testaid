@@ -19,6 +19,9 @@ class Templates(object):
     def get_templates(self):
         return self._templates
 
+    def reset(self):
+        self._templates = list()
+
     def resolve(self):
         '''Resolve all variables of a play managed by molecule.'''
 
