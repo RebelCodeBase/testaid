@@ -4,7 +4,7 @@ from testaid.exceptions import TemplatesResolveFailed
 from testaid.exceptions import MoleculePlayRunFailed
 
 
-def test_testaid_testvars_is_not_none(
+def test_testaid_unit_testvars_is_not_none(
         moleculebook,
         jsonvars,
         resolve_vars,
@@ -18,7 +18,7 @@ def test_testaid_testvars_is_not_none(
                  extra_vars).get_testvars()
 
 
-def test_testaid_testvars_no_resolve_vars(
+def test_testaid_unit_testvars_no_resolve_vars(
         moleculebook,
         jsonvars,
         gather_facts,
@@ -32,7 +32,7 @@ def test_testaid_testvars_no_resolve_vars(
     assert 'inventory_hostname' in testvars
 
 
-def test_testaid_testvars_exception_testvarsresolvefailed():
+def test_testaid_unit_testvars_exception_testvarsresolvefailed():
     msg = 'my_msg'
     with pytest.raises(
             TemplatesResolveFailed,

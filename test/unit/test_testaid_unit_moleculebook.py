@@ -3,21 +3,21 @@ import testaid
 from testaid.exceptions import MoleculeBookRunFailed
 
 
-def test_testaid_moleculebook_is_not_none(moleculebook):
+def test_testaid_unit_moleculebook_is_not_none(moleculebook):
     assert moleculebook is not None
 
 
-def test_testaid_moleculebook_get(moleculebook):
+def test_testaid_unit_moleculebook_get(moleculebook):
     assert moleculebook.get() == moleculebook._playbook
 
 
-def test_testaid_moleculebook_set(moleculebook):
+def test_testaid_unit_moleculebook_set(moleculebook):
     playbook = "\n---\n- name: localplay\n  hosts: localhost"
     moleculebook.set(playbook)
     assert moleculebook._playbook == playbook
 
 
-def test_testaid_moleculebook_create_default(moleculebook):
+def test_testaid_unit_moleculebook_create_default(moleculebook):
     playbook_default = \
         {'name': 'ansible playbook',
          'hosts': 'localhost',
@@ -30,7 +30,7 @@ def test_testaid_moleculebook_create_default(moleculebook):
     assert playbook == playbook_default
 
 
-def test_testaid_moleculebook_create_extra_vars(moleculebook, monkeypatch):
+def test_testaid_unit_moleculebook_create_extra_vars(moleculebook, monkeypatch):
     playbook_extra_vars = \
         {'name': 'ansible playbook',
          'hosts': 'localhost',
@@ -46,7 +46,7 @@ def test_testaid_moleculebook_create_extra_vars(moleculebook, monkeypatch):
     assert playbook == playbook_extra_vars
 
 
-def test_testaid_moleculebook_create_gather_roles(moleculebook, monkeypatch):
+def test_testaid_unit_moleculebook_create_gather_roles(moleculebook, monkeypatch):
     playbook_roles = \
         {'name': 'ansible playbook',
          'hosts': 'localhost',
@@ -62,7 +62,7 @@ def test_testaid_moleculebook_create_gather_roles(moleculebook, monkeypatch):
     assert playbook == playbook_roles
 
 
-def test_testaid_moleculebook_add_task_debug(moleculebook):
+def test_testaid_unit_moleculebook_add_task_debug(moleculebook):
     playbook_task_debug = \
         {'name': 'ansible playbook',
          'hosts': 'localhost',
@@ -77,7 +77,7 @@ def test_testaid_moleculebook_add_task_debug(moleculebook):
     assert playbook == playbook_task_debug
 
 
-def test_testaid_moleculebook_add_task_include_vars_dir(moleculebook):
+def test_testaid_unit_moleculebook_add_task_include_vars_dir(moleculebook):
     playbook_task_debug = \
         {'name': 'ansible playbook',
          'hosts': 'localhost',
@@ -92,7 +92,7 @@ def test_testaid_moleculebook_add_task_include_vars_dir(moleculebook):
     assert playbook == playbook_task_debug
 
 
-def test_testaid_moleculebook_run(moleculebook, monkeypatch):
+def test_testaid_unit_moleculebook_run(moleculebook, monkeypatch):
     monkeypatch.setattr(testaid.moleculeplay.MoleculePlay,
                         'run_playbook',
                         lambda x, y: 'my_playbook_result')
@@ -100,27 +100,27 @@ def test_testaid_moleculebook_run(moleculebook, monkeypatch):
     assert playbook_result == 'my_playbook_result'
 
 
-def test_testaid_moleculebook_get_vars_default(moleculebook):
+def test_testaid_unit_moleculebook_get_vars_default(moleculebook):
     vars = moleculebook.get_vars()
     assert 'inventory_file' in vars
 
 
-def test_testaid_moleculebook_get_vars_no_run_playbook(moleculebook):
+def test_testaid_unit_moleculebook_get_vars_no_run_playbook(moleculebook):
     vars = moleculebook.get_vars(run_playbook=False)
     assert 'inventory_hostname' in vars
 
 
-def test_testaid_moleculebook_get_vars_gather_facts(moleculebook):
+def test_testaid_unit_moleculebook_get_vars_gather_facts(moleculebook):
     vars = moleculebook.get_vars(gather_facts=True)
     assert 'ansible_facts' in vars
 
 
-def test_testaid_moleculebook_get_vars_no_gather_facts(moleculebook):
+def test_testaid_unit_moleculebook_get_vars_no_gather_facts(moleculebook):
     vars = moleculebook.get_vars(gather_facts=False)
     assert 'inventory_file' in vars
 
 
-def test_testaid_moleculebook_get_vars_gather_facts_index_error(
+def test_testaid_unit_moleculebook_get_vars_gather_facts_index_error(
         moleculebook,
         monkeypatch):
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
@@ -132,7 +132,7 @@ def test_testaid_moleculebook_get_vars_gather_facts_index_error(
         moleculebook.get_vars()
 
 
-def test_testaid_moleculebook_get_vars_gather_facts_key_error(
+def test_testaid_unit_moleculebook_get_vars_gather_facts_key_error(
         moleculebook,
         monkeypatch):
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
@@ -144,7 +144,7 @@ def test_testaid_moleculebook_get_vars_gather_facts_key_error(
         moleculebook.get_vars()
 
 
-def test_testaid_moleculebook_get_vars_no_gather_facts_index_error(
+def test_testaid_unit_moleculebook_get_vars_no_gather_facts_index_error(
         moleculebook,
         monkeypatch):
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
@@ -156,7 +156,7 @@ def test_testaid_moleculebook_get_vars_no_gather_facts_index_error(
         moleculebook.get_vars(gather_facts=False)
 
 
-def test_testaid_moleculebook_get_vars_no_gather_facts_key_error(
+def test_testaid_unit_moleculebook_get_vars_no_gather_facts_key_error(
         moleculebook,
         monkeypatch):
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
@@ -168,7 +168,7 @@ def test_testaid_moleculebook_get_vars_no_gather_facts_key_error(
         moleculebook.get_vars(gather_facts=False)
 
 
-def test_testaid_moleculebook_exception_moleculebookrunfailed_no_debug():
+def test_testaid_unit_moleculebook_exception_moleculebookrunfailed_no_debug():
     result = ['my_result']
     msg = 'my_msg'
     with pytest.raises(
@@ -177,7 +177,7 @@ def test_testaid_moleculebook_exception_moleculebookrunfailed_no_debug():
         raise MoleculeBookRunFailed(result, msg)
 
 
-def test_testaid_moleculebook_exception_moleculebookrunfailed_debug():
+def test_testaid_unit_moleculebook_exception_moleculebookrunfailed_debug():
     result = ['my_result']
     msg = 'my_msg'
     with pytest.raises(
@@ -186,7 +186,7 @@ def test_testaid_moleculebook_exception_moleculebookrunfailed_debug():
         raise MoleculeBookRunFailed(result, msg, debug=True)
 
 
-def test_testaid_get_molecule_scenario_directory(moleculebook):
+def test_testaid_unit_get_molecule_scenario_directory(moleculebook):
     moleculeplay_mcd = \
         moleculebook._moleculeplay.get_molecule_scenario_directory()
     moleculebook_mcd = \
@@ -194,12 +194,12 @@ def test_testaid_get_molecule_scenario_directory(moleculebook):
     assert moleculebook_mcd == moleculeplay_mcd
 
 
-def test_testaid_moleculebook_extra_vars_files_no_files(moleculebook):
+def test_testaid_unit_moleculebook_extra_vars_files_no_files(moleculebook):
     files = moleculebook._extra_vars_files_()
     assert files == []
 
 
-def test_testaid_moleculebook_extra_vars_files_file(
+def test_testaid_unit_moleculebook_extra_vars_files_file(
         moleculebook,
         monkeypatch,
         tmp_path):
@@ -219,7 +219,7 @@ def test_testaid_moleculebook_extra_vars_files_file(
     assert files == [file]
 
 
-def test_testaid_moleculebook_extra_vars_files_dir_one_file(
+def test_testaid_unit_moleculebook_extra_vars_files_dir_one_file(
         moleculebook,
         monkeypatch,
         tmp_path):
@@ -238,7 +238,7 @@ def test_testaid_moleculebook_extra_vars_files_dir_one_file(
     assert files == [file]
 
 
-def test_testaid_moleculebook_extra_vars_files_dir_two_files(
+def test_testaid_unit_moleculebook_extra_vars_files_dir_two_files(
         moleculebook,
         monkeypatch,
         tmp_path):

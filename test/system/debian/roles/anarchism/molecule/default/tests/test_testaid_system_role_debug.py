@@ -9,7 +9,7 @@ yaml = YAML()
 # print testvars as yaml
 # @pytest.mark.debug
 @pytest.mark.skip
-def test_testaid_debug(host, testvars, testpass):
+def test_testaid_system_role_debug(host, testvars, testpass):
     print('\n*******************')
     yaml.dump(testvars, sys.stdout)
     print('*******************\n')

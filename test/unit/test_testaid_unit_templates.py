@@ -1,32 +1,32 @@
-def test_testaid_templates_is_not_none(templates):
+def test_testaid_unit_templates_is_not_none(templates):
     assert templates is not None
 
 
-def test_testaid_templates_add(templates):
+def test_testaid_unit_templates_add(templates):
     templates.reset()
     templates.add('{{ my_var}}')
     assert templates._templates == [{'unresolved': '{{ my_var}}'}]
 
 
-def test_testaid_templates_get_template(templates):
+def test_testaid_unit_templates_get_template(templates):
     templates.reset()
     templates.add('{{ my_var}}')
     assert templates.get_template(0) == {'unresolved': '{{ my_var}}'}
 
 
-def test_testaid_templates_get_templates(templates):
+def test_testaid_unit_templates_get_templates(templates):
     templates.reset()
     templates.add('{{ my_var}}')
     assert templates.get_templates() == [{'unresolved': '{{ my_var}}'}]
 
 
-def test_testaid_templates_reset_templates(templates):
+def test_testaid_unit_templates_reset_templates(templates):
     templates._templates = [{'unresolved': '{{ my_var}}'}]
     templates.reset()
     assert templates._templates == []
 
 
-def test_testaid_templates_add_debug_tasks(templates):
+def test_testaid_unit_templates_add_debug_tasks(templates):
     task_0 = \
         {'action': {'module': 'debug',
                     'args': {'msg': '"{% if {{ my_var }} | string == '

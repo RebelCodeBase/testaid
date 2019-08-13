@@ -4,7 +4,7 @@ import testaid
 testinfra_hosts = testaid.hosts()
 
 
-def test_anarchism_fortune_configures(host, testvars):
+def test_testaid_system_role_fortune_configures(host, testvars):
     if 'fortune-anarchism' in testvars['anarchism_packages']:
         with host.sudo():
             file = host.file('/root/.bashrc')

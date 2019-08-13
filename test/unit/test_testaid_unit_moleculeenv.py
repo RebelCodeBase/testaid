@@ -2,25 +2,25 @@ from pathlib import Path
 import testaid
 
 
-def test_testaid_moleculeenv_is_not_none(moleculeenv):
+def test_testaid_unit_moleculeenv_is_not_none(moleculeenv):
     assert moleculeenv is not None
 
 
-def test_testaid_moleculeenv_get_molecule_ephemeral_directory(
+def test_testaid_unit_moleculeenv_get_molecule_ephemeral_directory(
         moleculeenv,
         monkeypatch):
     med = moleculeenv.get_molecule_ephemeral_directory()
     assert med == moleculeenv._molecule_ephemeral_directory
 
 
-def test_testaid_moleculeenv_get_molecule_scenario_directory(
+def test_testaid_unit_moleculeenv_get_molecule_scenario_directory(
         moleculeenv,
         monkeypatch):
     msd = moleculeenv.get_molecule_scenario_directory()
     assert msd == moleculeenv._molecule_scenario_directory
 
 
-def test_testaid_moleculeenv_get_roles(
+def test_testaid_unit_moleculeenv_get_roles(
         moleculeenv,
         monkeypatch,
         tmp_path):
@@ -37,7 +37,7 @@ def test_testaid_moleculeenv_get_roles(
     assert roles == ['my_role_1', 'my_role_2']
 
 
-def test_testaid_moleculeenv_create_symlinks(
+def test_testaid_unit_moleculeenv_create_symlinks(
         moleculeenv,
         monkeypatch,
         tmp_path):
@@ -55,7 +55,7 @@ def test_testaid_moleculeenv_create_symlinks(
     assert (med / 'roles').is_symlink()
 
 
-def test_testaid_moleculeenv_create_symlinks_fileexistserror(
+def test_testaid_unit_moleculeenv_create_symlinks_fileexistserror(
         moleculeenv,
         monkeypatch,
         tmp_path):
@@ -76,7 +76,7 @@ def test_testaid_moleculeenv_create_symlinks_fileexistserror(
     assert (med / 'roles').is_symlink()
 
 
-def test_testaid_moleculeenv_get_project_dir(
+def test_testaid_unit_moleculeenv_get_project_dir(
         moleculeenv,
         monkeypatch,
         tmp_path):
@@ -89,7 +89,7 @@ def test_testaid_moleculeenv_get_project_dir(
     assert project_dir == tmp_path
 
 
-def test_testaid_moleculeenv_get_project_dir_no_roles_dir(
+def test_testaid_unit_moleculeenv_get_project_dir_no_roles_dir(
         moleculeenv,
         monkeypatch):
     monkeypatch.setattr(testaid.moleculeenv.MoleculeEnv,
