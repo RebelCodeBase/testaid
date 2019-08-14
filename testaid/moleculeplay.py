@@ -12,6 +12,10 @@ class MoleculePlay(object):
     '''Run ansible playbooks against molecule host using the ansible python api.
     '''
     def __init__(self,
+                 ansibleloader,
+                 ansibleinventory,
+                 ansiblevarsmanager,
+                 ansiblehost,
                  moleculeenv,
                  inventory_file):
         # Leverage the ansible python api
@@ -30,19 +34,10 @@ class MoleculePlay(object):
                                         become_user=None,
                                         check=False,
                                         diff=False)
-        self._loader = DataLoader()
-        self._inventory = InventoryManager(loader=self._loader,
-                                           sources=str(inventory_file))
-        self._variable_manager = VariableManager(loader=self._loader,
-                                                 inventory=self._inventory)
-        try:
-            # use inventory host
-            host = next(iter(self._inventory.hosts))
-        except StopIteration:
-            host = 'localhost'
-
-        # create a Host object
-        self._host = Host(name=host)
+        self._loader = ansibleloader
+        self._inventory = ansibleinventory
+        self._variable_manager = ansiblevarsmanager
+        self._host = ansiblehost
 
     def get_host(self):
         return self._host

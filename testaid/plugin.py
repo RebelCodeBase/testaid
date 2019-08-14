@@ -1,6 +1,10 @@
 import os
 from pathlib import Path
 import pytest
+from testaid.ansibleres import AnsibleLoader
+from testaid.ansibleres import AnsibleInventory
+from testaid.ansibleres import AnsibleVarsManager
+from testaid.ansibleres import AnsibleHost
 from testaid.moleculeenv import MoleculeEnv
 from testaid.moleculeplay import MoleculePlay
 from testaid.moleculebook import MoleculeBook
@@ -80,6 +84,34 @@ def testvars_extra_vars():
 
 
 ###########################################################
+# fixtures: ansible resources
+###########################################################
+
+
+@pytest.fixture(scope='session')
+def ansibleloader():
+    return AnsibleLoader().get()
+
+
+@pytest.fixture(scope='session')
+def ansibleinventory(ansibleloader,
+                     inventory_file):
+    return AnsibleInventory(ansibleloader,
+                            inventory_file).get()
+
+
+@pytest.fixture(scope='session')
+def ansiblevarsmanager(ansibleloader,
+                       ansibleinventory):
+    return AnsibleVarsManager(ansibleloader,
+                              ansibleinventory).get()
+
+
+@pytest.fixture(scope='session')
+def ansiblehost(ansibleinventory):
+    return AnsibleHost(ansibleinventory).get()
+
+###########################################################
 # fixtures: molecule resources
 ###########################################################
 
@@ -108,7 +140,7 @@ def molecule_scenario_directory(tmp_path_factory):
 def inventory_file(molecule_ephemeral_directory):
     '''Molecule managed ansible inventory file.'''
     inventory_file = molecule_ephemeral_directory / \
-        'inventory/ansible_inventory.yml'
+                     'inventory/ansible_inventory.yml'
     inventory_dir = molecule_ephemeral_directory / 'inventory'
     inventory_dir.mkdir(exist_ok=True)
     if not inventory_file.is_file():
@@ -130,18 +162,27 @@ def moleculeenv(molecule_ephemeral_directory,
 
 
 @pytest.fixture(scope='session')
-def moleculeplay(moleculeenv, inventory_file):
-    '''Expose ansible python api to run playbooks against a molecule host.'''
-    return MoleculePlay(moleculeenv,
-                        inventory_file)
-
-
-@pytest.fixture(scope='session')
 def moleculebook(testvars_extra_vars,
                  moleculeplay):
     '''Run an ansible playbook against a molecule host.'''
     return MoleculeBook(testvars_extra_vars,
                         moleculeplay)
+
+
+@pytest.fixture(scope='session')
+def moleculeplay(ansibleloader,
+                 ansibleinventory,
+                 ansiblevarsmanager,
+                 ansiblehost,
+                 moleculeenv,
+                 inventory_file):
+    '''Expose ansible python api to run playbooks against a molecule host.'''
+    return MoleculePlay(ansibleloader,
+                        ansibleinventory,
+                        ansiblevarsmanager,
+                        ansiblehost,
+                        moleculeenv,
+                        inventory_file)
 
 
 ###########################################################
