@@ -174,15 +174,13 @@ def moleculeplay(ansibleloader,
                  ansibleinventory,
                  ansiblevarsmanager,
                  ansiblehost,
-                 moleculeenv,
-                 inventory_file):
+                 moleculeenv):
     '''Expose ansible python api to run playbooks against a molecule host.'''
     return MoleculePlay(ansibleloader,
                         ansibleinventory,
                         ansiblevarsmanager,
                         ansiblehost,
-                        moleculeenv,
-                        inventory_file)
+                        moleculeenv)
 
 
 ###########################################################
