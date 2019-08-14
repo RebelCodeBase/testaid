@@ -40,11 +40,7 @@ class AnsibleVarsManager(object):
 class AnsibleHost(object):
 
     def __init__(self, inventory):
-        try:
-            # use inventory host
-            host = next(iter(inventory.hosts))
-        except StopIteration:
-            host = 'localhost'
+        host = next(iter(inventory.hosts))
         self._host = Host(name=host)
 
     def get(self):
