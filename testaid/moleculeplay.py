@@ -1,15 +1,11 @@
-import ansible.constants as C
 from ansible import context
-from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.inventory.host import Host
 from ansible.inventory.manager import InventoryManager
 from ansible.module_utils.common.collections import ImmutableDict
 from ansible.parsing.dataloader import DataLoader
 from ansible.playbook.play import Play
-from ansible.plugins.callback import CallbackBase
 from ansible.vars.manager import VariableManager
-import shutil
-from testaid.exceptions import MoleculePlayRunFailed
+from testaid.ansiblerun import AnsibleRun
 
 
 class MoleculePlay(object):
@@ -68,29 +64,12 @@ class MoleculePlay(object):
 
     def run_playbook(self, playbook):
         '''Run an ansible playbook using the ansible python api.'''
-        tqm = None
-        inventory = self._get_inventory_()
-        variable_manager = self._get_variable_manager_()
-        loader = self._get_loader_()
-        results_callback = ResultCallback()
         play = self._get_play_(playbook)
-        try:
-            tqm = TaskQueueManager(inventory=inventory,
-                                   variable_manager=variable_manager,
-                                   loader=loader,
-                                   passwords=dict(),
-                                   stdout_callback=results_callback)
-            tqm.run(play)
-        finally:
-            if tqm is not None:
-                tqm.cleanup()
-            shutil.rmtree(C.DEFAULT_LOCAL_TMP, True)
-
-        if results_callback.failed_playbook_run:
-            raise MoleculePlayRunFailed(
-                results_callback.result_playbook_run,
-                'Unable to run playbook. Is your host up?')
-        return results_callback.result_playbook_run
+        self._ansiblerun = AnsibleRun(self._inventory,
+                                      self._variable_manager,
+                                      self._loader)
+        result = self._ansiblerun.run(play)
+        return result
 
     def _get_inventory_(self):
         return self._inventory
@@ -110,18 +89,3 @@ class MoleculePlay(object):
         return self._variable_manager
 
 
-class ResultCallback(CallbackBase):
-
-    def __init__(self):
-        super(ResultCallback, self).__init__()
-        self.result_playbook_run = list()
-        self.failed_playbook_run = False
-
-    def v2_runner_on_ok(self, result, **kwargs):
-        self._clean_results(result._result, result._task.action)
-        self.result_playbook_run.append(result._result)
-
-    def v2_runner_on_failed(self, result, *args, **kwargs):
-        self._clean_results(result._result, result._task.action)
-        self.result_playbook_run.append(result._result)
-        self.failed_playbook_run=True
