@@ -1,7 +1,7 @@
 import pytest
 from testaid.testvars import TestVars
 from testaid.exceptions import TemplatesResolveFailed
-from testaid.exceptions import MoleculePlayRunFailed
+from testaid.exceptions import AnsibleRunFailed
 
 
 def test_testaid_unit_testvars_is_not_none(
@@ -10,7 +10,7 @@ def test_testaid_unit_testvars_is_not_none(
         resolve_vars,
         gather_facts,
         extra_vars):
-    with pytest.raises(MoleculePlayRunFailed):
+    with pytest.raises(AnsibleRunFailed):
         TestVars(moleculebook,
                  jsonvars,
                  resolve_vars,

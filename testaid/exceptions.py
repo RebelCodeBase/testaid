@@ -1,7 +1,7 @@
 import json
 
 
-class MoleculePlayRunFailed(Exception):
+class AnsibleRunFailed(Exception):
     '''Exception raised by MoleculePlay signals failed ansible playbook run.'''
 
     def __init__(self, result, msg, debug=False):

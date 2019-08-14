@@ -1,5 +1,5 @@
 import pytest
-from testaid.exceptions import MoleculePlayRunFailed
+from testaid.exceptions import AnsibleRunFailed
 
 
 def test_testaid_unit_moleculeplay_is_not_none(moleculeplay):
@@ -14,18 +14,18 @@ def test_testaid_unit_moleculeplay_exception_moleculeplayrunfailed_no_debug():
     result = ['my_result']
     msg = 'my_msg'
     with pytest.raises(
-            MoleculePlayRunFailed,
+            AnsibleRunFailed,
             match=r'^my_msg$'):
-        raise MoleculePlayRunFailed(result, msg)
+        raise AnsibleRunFailed(result, msg)
 
 
 def test_testaid_unit_moleculeplay_exception_moleculeplayrunfailed_debug():
     result = ['my_result']
     msg = 'my_msg'
     with pytest.raises(
-            MoleculePlayRunFailed,
+            AnsibleRunFailed,
             match=r'.*my_result.*'):
-        raise MoleculePlayRunFailed(result, msg, debug=True)
+        raise AnsibleRunFailed(result, msg, debug=True)
 
 
 def test_testaid_unit_moleculeplay_run_playbook_minimal(moleculeplay):
