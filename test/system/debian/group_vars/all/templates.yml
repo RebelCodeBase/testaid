@@ -2,16 +2,17 @@
 my_var_1: my_string_1
 template1: "{{ my_var_1 }}"
 template2: "{{ template1 }}"
-template3: "inline+{{ my_var_1 }}"
-template4: "{{ my_var_1 }}+inline"
-template5: "inline+{{ my_var_1 }}+inline"
+template3: "{{ template1 }}"
+template4: "inline+{{ my_var_1 }}"
+template5: "{{ my_var_1 }}+inline"
+template6: "inline+{{ my_var_1 }}+inline"
 
 my_var_2: 99
-template6: "{{ my_var_2 }}"
-template7: "{{ template6 }}"
-template8: "inline+{{ my_var_2 }}"
-template9: "{{ my_var_2 }}+inline"
-template10: "inline+{{ my_var_2 }}+inline"
+template7: "{{ my_var_2 }}"
+template8: "{{ template7 }}"
+template9: "inline+{{ my_var_2 }}"
+template10: "{{ my_var_2 }}+inline"
+template11: "inline+{{ my_var_2 }}+inline"
 
 special1: "äö(ü'!)§$;~é"
 special2: 'ñô‰(„}»")¯]¿¬'

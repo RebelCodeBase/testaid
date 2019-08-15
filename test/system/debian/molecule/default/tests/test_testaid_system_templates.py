@@ -19,19 +19,24 @@ def test_testaid_system_templates_resolve_template_string_transitive(host,
     assert testvars['template2'] == 'my_string_1'
 
 
+def test_testaid_system_templates_resolve_template_string_transitive(host,
+                                                                     testvars):
+    assert testvars['template3'] == 'my_string_1'
+
+
 def test_testaid_system_templates_resolve_template_string_inline_front(host,
                                                                        testvars):
-    assert testvars['template3'] == 'inline+my_string_1'
+    assert testvars['template4'] == 'inline+my_string_1'
 
 
 def test_testaid_system_templates_resolve_template_string_inline_back(host,
                                                                       testvars):
-    assert testvars['template4'] == 'my_string_1+inline'
+    assert testvars['template5'] == 'my_string_1+inline'
 
 
 def test_testaid_system_templates_resolve_template_string_inline_both(host,
                                                                       testvars):
-    assert testvars['template5'] == 'inline+my_string_1+inline'
+    assert testvars['template6'] == 'inline+my_string_1+inline'
 
 
 def test_testaid_system_templates_resolve_template_no_string(host,
@@ -41,27 +46,27 @@ def test_testaid_system_templates_resolve_template_no_string(host,
 
 def test_testaid_system_templates_resolve_template_no_string_transitive(host,
                                                                         testvars):
-    assert testvars['template6'] == 99
+    assert testvars['template7'] == 99
 
 
 def test_testaid_system_templates_resolve_template_no_string_transitive(host,
                                                                         testvars):
-    assert testvars['template7'] == 99
+    assert testvars['template8'] == 99
 
 
 def test_testaid_system_templates_resolve_template_no_string_inline_front(host,
                                                                        testvars):
-    assert testvars['template8'] == 'inline+99'
+    assert testvars['template9'] == 'inline+99'
 
 
 def test_testaid_system_templates_resolve_template_no_string_inline_back(host,
                                                                       testvars):
-    assert testvars['template9'] == '99+inline'
+    assert testvars['template10'] == '99+inline'
 
 
 def test_testaid_system_templates_resolve_template_no_string_inline_both(host,
                                                                       testvars):
-    assert testvars['template10'] == 'inline+99+inline'
+    assert testvars['template11'] == 'inline+99+inline'
 
 
 def test_testaid_system_templates_resolve_template_special_chars_1(host,
