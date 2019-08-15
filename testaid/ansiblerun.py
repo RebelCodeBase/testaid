@@ -2,7 +2,7 @@ import ansible.constants as C
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.plugins.callback import CallbackBase
 import shutil
-from testaid.exceptions import AnsibleRunFailed
+from testaid.exceptions import AnsibleRunError
 
 
 class AnsibleRun(object):
@@ -31,7 +31,7 @@ class AnsibleRun(object):
             shutil.rmtree(C.DEFAULT_LOCAL_TMP, True)
 
         if rc.failed_playbook_run:
-            raise AnsibleRunFailed(
+            raise AnsibleRunError(
                 rc.result_playbook_run,
                 'Unable to run playbook. Is your host up?')
         return rc.result_playbook_run

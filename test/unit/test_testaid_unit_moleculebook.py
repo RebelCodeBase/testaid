@@ -1,6 +1,6 @@
 import pytest
 import testaid
-from testaid.exceptions import MoleculeBookRunFailed
+from testaid.exceptions import MoleculeBookRunError
 
 
 def test_testaid_unit_moleculebook_is_not_none(moleculebook):
@@ -126,7 +126,7 @@ def test_testaid_unit_moleculebook_get_vars_gather_facts_index_error(
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
                         'run',
                         lambda x: [])
-    with pytest.raises(MoleculeBookRunFailed) as excinfo:
+    with pytest.raises(MoleculeBookRunError) as excinfo:
         moleculebook.get_vars()
     exception_msg = excinfo.value.args[0]
     assert exception_msg == 'Unable to gather ansible vars and facts.'
@@ -138,7 +138,7 @@ def test_testaid_unit_moleculebook_get_vars_gather_facts_key_error(
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
                         'run',
                         lambda x: [{}, {}])
-    with pytest.raises(MoleculeBookRunFailed) as excinfo:
+    with pytest.raises(MoleculeBookRunError) as excinfo:
         moleculebook.get_vars()
     exception_msg = excinfo.value.args[0]
     assert exception_msg == 'Unable to gather ansible vars and facts.'
@@ -151,7 +151,7 @@ def test_testaid_unit_moleculebook_get_vars_no_gather_facts_index_error(
                         'run',
                         lambda x: [])
     with pytest.raises(
-            MoleculeBookRunFailed,
+            MoleculeBookRunError,
             match=r'Unable to gather ansible vars\..*'):
         moleculebook.get_vars(gather_facts=False)
 
@@ -163,7 +163,7 @@ def test_testaid_unit_moleculebook_get_vars_no_gather_facts_key_error(
                         'run',
                         lambda x: [{}, {}])
     with pytest.raises(
-            MoleculeBookRunFailed,
+            MoleculeBookRunError,
             match=r'Unable to gather ansible vars\..*'):
         moleculebook.get_vars(gather_facts=False)
 
@@ -172,18 +172,18 @@ def test_testaid_unit_moleculebook_exception_moleculebookrunfailed_no_debug():
     result = ['my_result']
     msg = 'my_msg'
     with pytest.raises(
-            MoleculeBookRunFailed,
+            MoleculeBookRunError,
             match=r'^my_msg$'):
-        raise MoleculeBookRunFailed(result, msg)
+        raise MoleculeBookRunError(result, msg)
 
 
 def test_testaid_unit_moleculebook_exception_moleculebookrunfailed_debug():
     result = ['my_result']
     msg = 'my_msg'
     with pytest.raises(
-            MoleculeBookRunFailed,
+            MoleculeBookRunError,
             match=r'.*my_result.*'):
-        raise MoleculeBookRunFailed(result, msg, debug=True)
+        raise MoleculeBookRunError(result, msg, debug=True)
 
 
 def test_testaid_unit_get_molecule_scenario_directory(moleculebook):

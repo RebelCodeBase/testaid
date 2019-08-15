@@ -1,4 +1,4 @@
-from testaid.exceptions import MoleculeBookRunFailed
+from testaid.exceptions import MoleculeBookRunError
 
 
 class MoleculeBook(object):
@@ -107,14 +107,14 @@ class MoleculeBook(object):
                 vars = result[1]['msg']
                 vars['ansible_facts'] = result[0]['ansible_facts']
             except (IndexError, KeyError):
-                raise MoleculeBookRunFailed(
+                raise MoleculeBookRunError(
                     result,
                     'Unable to gather ansible vars and facts.')
         else:
             try:
                 vars = result[0]['msg']
             except (IndexError, KeyError):
-                raise MoleculeBookRunFailed(
+                raise MoleculeBookRunError(
                     result,
                     'Unable to gather ansible vars.')
         return vars

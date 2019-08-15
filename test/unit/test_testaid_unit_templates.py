@@ -1,6 +1,6 @@
 import pytest
 import testaid
-from testaid.exceptions import TemplatesResolveFailed
+from testaid.exceptions import TemplatesResolveError
 
 
 def test_testaid_unit_templates_is_not_none(templates):
@@ -73,7 +73,7 @@ def test_testaid_unit_templates_exception_templatesresolvefailed(
                         'run',
                         lambda x: playbook_results)
     templates.reset()
-    with pytest.raises(TemplatesResolveFailed) as excinfo:
+    with pytest.raises(TemplatesResolveError) as excinfo:
         templates.resolve()
     exception_msg = excinfo.value.args[0]
     assert exception_msg == 'Unable to resolve jinja2 templates.'

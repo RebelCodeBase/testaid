@@ -1,5 +1,5 @@
 from math import floor
-from testaid.exceptions import TemplatesResolveFailed
+from testaid.exceptions import TemplatesResolveError
 
 
 class Templates(object):
@@ -55,7 +55,7 @@ class Templates(object):
                     self._templates[template_index]['resolved'] = \
                         template_resolved
         except (IndexError, KeyError):
-            raise TemplatesResolveFailed('Unable to resolve jinja2 templates.')
+            raise TemplatesResolveError('Unable to resolve jinja2 templates.')
 
     def _add_debug_tasks(self):
         for template in self._templates:
