@@ -20,21 +20,13 @@ def test_testaid_unit_testvars_is_not_none(
 
 def test_testaid_unit_testvars_no_resolve_vars(
         moleculebook,
-        jsonvars,
-        gather_facts,
-        extra_vars):
+        jsonvars):
     resolve_vars = False
+    gather_facts = False
+    extra_vars = ''
     testvars = TestVars(moleculebook,
                         jsonvars,
                         resolve_vars,
                         gather_facts,
                         extra_vars).get_testvars()
     assert 'inventory_hostname' in testvars
-
-
-def test_testaid_unit_testvars_exception_testvarsresolvefailed():
-    msg = 'my_msg'
-    with pytest.raises(
-            TemplatesResolveError,
-            match=r'^my_msg$'):
-        raise TemplatesResolveError(msg)

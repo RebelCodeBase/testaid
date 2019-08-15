@@ -95,3 +95,11 @@ def test_testaid_unit_templates_add_debug_tasks(templates):
     tasks = templates._moleculebook.get()['tasks']
     assert tasks[0] == task_0
     assert tasks[1] == task_1
+
+
+def test_testaid_unit_templates_exception_templatesresolveerror():
+    msg = 'my_msg'
+    with pytest.raises(TemplatesResolveError) as excinfo:
+        raise TemplatesResolveError(msg)
+    exception_msg = excinfo.value.args[0]
+    assert exception_msg == 'my_msg'

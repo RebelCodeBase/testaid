@@ -168,22 +168,22 @@ def test_testaid_unit_moleculebook_get_vars_no_gather_facts_key_error(
         moleculebook.get_vars(gather_facts=False)
 
 
-def test_testaid_unit_moleculebook_exception_moleculebookrunfailed_no_debug():
+def test_testaid_unit_moleculebook_exception_moleculebookrunerror_no_debug():
     result = ['my_result']
     msg = 'my_msg'
-    with pytest.raises(
-            MoleculeBookRunError,
-            match=r'^my_msg$'):
+    with pytest.raises(MoleculeBookRunError) as excinfo:
         raise MoleculeBookRunError(result, msg)
+    exception_msg = excinfo.value.args[0]
+    assert exception_msg == 'my_msg'
 
 
-def test_testaid_unit_moleculebook_exception_moleculebookrunfailed_debug():
+def test_testaid_unit_moleculebook_exception_moleculebookrunerror_debug():
     result = ['my_result']
     msg = 'my_msg'
-    with pytest.raises(
-            MoleculeBookRunError,
-            match=r'.*my_result.*'):
+    with pytest.raises(MoleculeBookRunError) as excinfo:
         raise MoleculeBookRunError(result, msg, debug=True)
+    exception_msg = excinfo.value.args[0]
+    assert exception_msg == 'my_msg\n\n[\n    "my_result"\n]'
 
 
 def test_testaid_unit_get_molecule_scenario_directory(moleculebook):

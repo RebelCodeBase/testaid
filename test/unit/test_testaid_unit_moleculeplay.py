@@ -10,7 +10,7 @@ def test_testaid_unit_moleculeplay_get_host(moleculeplay):
     assert moleculeplay.get_host() == moleculeplay._host
 
 
-def test_testaid_unit_moleculeplay_exception_moleculeplayrunfailed_no_debug():
+def test_testaid_unit_moleculeplay_exception_moleculeplayrunerror_no_debug():
     result = ['my_result']
     msg = 'my_msg'
     with pytest.raises(AnsibleRunError) as excinfo:
@@ -19,7 +19,7 @@ def test_testaid_unit_moleculeplay_exception_moleculeplayrunfailed_no_debug():
     assert exception_msg == 'my_msg'
 
 
-def test_testaid_unit_moleculeplay_exception_moleculeplayrunfailed_debug():
+def test_testaid_unit_moleculeplay_exception_moleculeplayrunerror_debug():
     result = ['my_result']
     msg = 'my_msg'
     with pytest.raises(AnsibleRunError) as excinfo:
