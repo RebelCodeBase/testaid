@@ -1,5 +1,4 @@
 import re
-from testaid.templates import Templates
 
 
 class JsonVars(object):
