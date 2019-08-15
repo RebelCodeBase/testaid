@@ -1,3 +1,8 @@
+import pytest
+import testaid
+from testaid.exceptions import TemplatesResolveFailed
+
+
 def test_testaid_unit_templates_is_not_none(templates):
     assert templates is not None
 
@@ -24,6 +29,54 @@ def test_testaid_unit_templates_reset_templates(templates):
     templates._templates = [{'unresolved': '{{ my_var}}'}]
     templates.reset()
     assert templates._templates == []
+
+
+def test_testaid_unit_templates_resolve_templates(templates,
+                                                  monkeypatch):
+    playbook_results = [{'ansible_facts': {}},
+                        {'msg': '"True"'},
+                        {'msg': '""my_value""'}]
+    templates_resolved = [{'resolved': '""my_value""',
+                           'string': True,
+                           'unresolved': '{{ my_var}}'}]
+    monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
+                        'run',
+                        lambda x: playbook_results)
+    templates.reset()
+    templates.add('{{ my_var}}')
+    templates.resolve()
+    assert templates._templates == templates_resolved
+
+
+def test_testaid_unit_templates_resolve_no_string(templates,
+                                                  monkeypatch):
+    playbook_results = [{'ansible_facts': {}},
+                        {'msg': '"False"'},
+                        {'msg': '"99"'}]
+    templates_resolved = [{'resolved': '"99"',
+                           'string': False,
+                           'unresolved': '{{ my_var}}'}]
+    monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
+                        'run',
+                        lambda x: playbook_results)
+    templates.reset()
+    templates.add('{{ my_var}}')
+    templates.resolve()
+    assert templates._templates == templates_resolved
+
+
+def test_testaid_unit_templates_exception_templatesresolvefailed(
+        templates,
+        monkeypatch):
+    playbook_results = []
+    monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
+                        'run',
+                        lambda x: playbook_results)
+    templates.reset()
+    with pytest.raises(TemplatesResolveFailed) as excinfo:
+        templates.resolve()
+    exception_msg = excinfo.value.args[0]
+    assert exception_msg == 'Unable to resolve jinja2 templates.'
 
 
 def test_testaid_unit_templates_add_debug_tasks(templates):

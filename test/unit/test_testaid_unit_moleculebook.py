@@ -126,10 +126,10 @@ def test_testaid_unit_moleculebook_get_vars_gather_facts_index_error(
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
                         'run',
                         lambda x: [])
-    with pytest.raises(
-            MoleculeBookRunFailed,
-            match=r'Unable to gather ansible vars and facts\..*'):
+    with pytest.raises(MoleculeBookRunFailed) as excinfo:
         moleculebook.get_vars()
+    exception_msg = excinfo.value.args[0]
+    assert exception_msg == 'Unable to gather ansible vars and facts.'
 
 
 def test_testaid_unit_moleculebook_get_vars_gather_facts_key_error(
@@ -138,10 +138,10 @@ def test_testaid_unit_moleculebook_get_vars_gather_facts_key_error(
     monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
                         'run',
                         lambda x: [{}, {}])
-    with pytest.raises(
-            MoleculeBookRunFailed,
-            match=r'Unable to gather ansible vars and facts\..*'):
+    with pytest.raises(MoleculeBookRunFailed) as excinfo:
         moleculebook.get_vars()
+    exception_msg = excinfo.value.args[0]
+    assert exception_msg == 'Unable to gather ansible vars and facts.'
 
 
 def test_testaid_unit_moleculebook_get_vars_no_gather_facts_index_error(

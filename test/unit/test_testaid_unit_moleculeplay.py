@@ -13,19 +13,19 @@ def test_testaid_unit_moleculeplay_get_host(moleculeplay):
 def test_testaid_unit_moleculeplay_exception_moleculeplayrunfailed_no_debug():
     result = ['my_result']
     msg = 'my_msg'
-    with pytest.raises(
-            AnsibleRunFailed,
-            match=r'^my_msg$'):
+    with pytest.raises(AnsibleRunFailed) as excinfo:
         raise AnsibleRunFailed(result, msg)
+    exception_msg = excinfo.value.args[0]
+    assert exception_msg == 'my_msg'
 
 
 def test_testaid_unit_moleculeplay_exception_moleculeplayrunfailed_debug():
     result = ['my_result']
     msg = 'my_msg'
-    with pytest.raises(
-            AnsibleRunFailed,
-            match=r'.*my_result.*'):
+    with pytest.raises(AnsibleRunFailed) as excinfo:
         raise AnsibleRunFailed(result, msg, debug=True)
+    exception_msg = excinfo.value.args[0]
+    assert exception_msg == 'my_msg\n\n[\n    "my_result"\n]'
 
 
 def test_testaid_unit_moleculeplay_run_playbook_minimal(moleculeplay):
