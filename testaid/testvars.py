@@ -48,3 +48,20 @@ class TestVars(object):
 
     def get_testvars(self):
         return self._testvars
+
+    def get_cache(request, cache_key):
+        try:
+            # read testvars from cache
+            # you can enable cache support in molecule.yml:
+            # molecule -> verifier -> options
+            # option "p: cacheprovider"
+            testvars = request.config.cache.get(cache_key, None)
+        except AttributeError:
+            testvars = None
+        return testvars
+
+    def set_cache(self, request, cache_key):
+        try:
+            request.config.cache.set(cache_key, self._testvars)
+        except AttributeError:
+            pass

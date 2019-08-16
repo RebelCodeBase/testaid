@@ -203,6 +203,12 @@ def jsonvars(jsonvarsdebug, templates, gather_molecule):
     return JsonVars(jsonvarsdebug, templates, gather_molecule)
 
 
+@pytest.fixture(scope='session')
+def cache_key(molecule_ephemeral_directory):
+    # molecule_ephemeral_directory should be unique for each scenario
+    return str('testvars' / molecule_ephemeral_directory)
+
+
 ###########################################################
 # fixtures: molecule/testinfra/ansible helpers
 ###########################################################
@@ -216,35 +222,21 @@ def testpass(moleculebook):
 
 @pytest.fixture(scope='session')
 def testvars(request,
-             molecule_ephemeral_directory,
              moleculebook,
              jsonvars,
              resolve_vars,
              gather_facts,
-             extra_vars):
+             extra_vars,
+             cache_key):
     '''Expose ansible variables and facts of a molecule test scenario.'''
-    # molecule_ephemeral_directory should be unique for each scenario
-    cache_key = str('testvars' / molecule_ephemeral_directory)
-
-    try:
-        # read testvars from cache
-        # you can enable cache support in molecule.yml:
-        # molecule -> verifier -> options
-        # option "p: cacheprovider"
-        testvars = request.config.cache.get(cache_key, None)
-    except AttributeError:
-        testvars = None
-
+    testvars = TestVars.get_cache(request, cache_key)
     if testvars is None:
-        testvars = TestVars(moleculebook,
-                            jsonvars,
-                            resolve_vars,
-                            gather_facts,
-                            extra_vars).get_testvars()
-        try:
-            # cache testvars
-            request.config.cache.set(cache_key, testvars)
-        except AttributeError:
-            pass
-
+        testvars_object = TestVars(
+                 moleculebook,
+                 jsonvars,
+                 resolve_vars,
+                 gather_facts,
+                 extra_vars)
+        testvars = testvars_object.get_testvars()
+        testvars_object.set_cache(request, cache_key)
     return testvars
