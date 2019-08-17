@@ -4,46 +4,49 @@ import json
 class JsonVarsDebug(object):
 
     def debug_hash_table(self, hashtable):
-        msg = "\n\nhash_table\n"
+        msg = '+++ hash_table +++\n'
         for index, hash in enumerate(hashtable):
-            msg += 'hash ' + str(index) + ' -> ' + str(hash)
+            msg += 'hash ' + str(index) + ' -> ' + str(hash) + '\n'
         return msg
 
     def debug_templates_lookup_table(self, lookup_table):
-        msg = "\n\nlookup_table\n"
+        msg = '+++ lookup_table +++\n'
         for index, lookup in enumerate(lookup_table):
-            msg += str(index) + ' -> ' + str(lookup)
+            msg += str(index) + ' -> ' + str(lookup) + '\n'
         return msg
 
     def debug_templates(self, templates):
-        msg = "\n\ntemplates\n"
+        msg = '+++ templates +++\n'
         for index, template in enumerate(templates):
             msg += 'template #' + str(index)
             msg += json.dumps(template, indent=4)
+        msg += '\n'
         return msg
 
     def debug_spots(self, spots):
-        msg = "\n\nspots\n"
+        msg = '+++ spots +++\n'
         for index, spot in enumerate(spots):
             msg += 'spot #' + str(index)
             msg += json.dumps(spot, indent=4)
+        msg += '\n'
         return msg
 
-    def debug_jsonvars_unresolved(self, jsonvars):
-        msg = "\n\njsonvars_unresolved\n"
+    def debug_jsonvars(self, jsonvars):
+        msg = '+++ jsonvars +++\n'
         msg += jsonvars
+        msg += '\n'
         return msg
 
-    def get(self):
+    def get(self, jsonvars):
         msg = ''
-        msg += jsonvarsdebug.debug_hash_table(
-            self._hash_table)
-        msg += jsonvarsdebug.debug_templates_lookup_table(
-            self._templates_lookup_table)
-        msg += jsonvarsdebug.debug_templates(
-            self._templates.get_templates())
-        msg += jsonvarsdebug.debug_spots(
-            self._spots)
-        msg += jsonvarsdebug.debug_jsonvars_unresolved(
-            self._jsonvars_unresolved)
+        msg += self.debug_hash_table(jsonvars._hash_table)
+        msg += '\n'
+        msg += self.debug_templates_lookup_table(
+            jsonvars._templates_lookup_table)
+        msg += '\n'
+        msg += self.debug_templates(jsonvars._templates.get_templates())
+        msg += '\n'
+        msg += self.debug_spots(jsonvars._spots)
+        msg += '\n'
+        msg += self.debug_jsonvars(jsonvars._jsonvars)
         return msg

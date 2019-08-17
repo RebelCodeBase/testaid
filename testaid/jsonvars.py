@@ -32,11 +32,17 @@ class JsonVars(object):
         # cache table
         self._templates_lookup_table = list()
 
-        # where have the templates been found?
         self._spots = list()
 
     def get(self):
         return self._jsonvars
+
+    def reset(self):
+        self._templates.reset()
+        self._jsonvars = dict()
+        self._hash_table = list()
+        self._templates_lookup_table = list()
+        self._spots = list()
 
     def resolve(self):
 
@@ -112,7 +118,6 @@ class JsonVars(object):
         template = self._templates.get_template(index)
 
         template_resolved = template['resolved'].strip('"')
-
         if (template['string'] and spot['left_quote']) \
                 or (spot['left_quote'] and not spot['right_quote']):
             template_resolved = '"' + template_resolved
@@ -124,4 +129,4 @@ class JsonVars(object):
         return template_resolved
 
     def debug(self):
-        return self._jsonvarsdebug.get()
+        return self._jsonvarsdebug.get(self)
