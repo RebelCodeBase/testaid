@@ -1,4 +1,5 @@
 import pytest
+import re
 import testaid
 from testaid.testvars import TestVars
 from testaid.exceptions import AnsibleRunError
@@ -61,3 +62,7 @@ def test_testaid_unit_testvars_resolve_vars(
                         gather_facts,
                         extra_vars).get_testvars()
     assert testvars == testvars_resolved
+
+
+def test_testaid_unit_testvars_cache_key(cache_key):
+    assert re.match('testvars/+', cache_key)

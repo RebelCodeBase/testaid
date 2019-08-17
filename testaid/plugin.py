@@ -206,7 +206,7 @@ def jsonvars(jsonvarsdebug, templates, gather_molecule):
 @pytest.fixture(scope='session')
 def cache_key(molecule_ephemeral_directory):
     # molecule_ephemeral_directory should be unique for each scenario
-    return str('testvars' / molecule_ephemeral_directory)
+    return 'testvars' + str(molecule_ephemeral_directory)
 
 
 ###########################################################
