@@ -70,3 +70,7 @@ Changelog
 * Refactor classes
 * Refactor plugins
 * Add unit tests
+
+0.10
+====
+* Almost full unit test coverage
