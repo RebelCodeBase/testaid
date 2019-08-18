@@ -154,7 +154,7 @@ of the verifier section:
 
 By default, testvars runs a playbook against the molecule host
 to gathers ansible variables and facts.
-It uses a playbook against localhost to resolve the variables.
+It then runs a playbook against localhost to resolve the variables.
 
 You can change the default behaviour with these options:
 
