@@ -162,7 +162,7 @@ You can change the default behaviour with these options:
     Run playbook to gather variables with ``gather_facts: false``.
     You won't be able to access ``ansible_facts``
     but your tests will run much faster.
-- ``testvars-no-gatherfrom_moleculehost``
+- ``testvars-no-gatherfrom-moleculehost``
     Do not gather variables from molecule host.
     Read variables directly from disk without running a playbook.
 - ``testvars-no-resolvevia-localhost``
