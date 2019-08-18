@@ -34,10 +34,10 @@ def pytest_addoption(parser):
                      default=True,
                      help="do not resolve jinja2 templates")
     testvars_optiongroup.addoption(
-                     "--testvars-no-gather-localhost",
+                     "--testvars-no-gatherfrom-moleculehost",
                      action="store_false",
                      default=True,
-                     help="do not gather vars from localhost")
+                     help="do not gather vars from molecule host")
     testvars_optiongroup.addoption(
                      "--testvars-no-gather-molecule",
                      action="store_false",
@@ -49,10 +49,10 @@ def pytest_addoption(parser):
                      default=True,
                      help="do not include extra vars")
     testvars_optiongroup.addoption(
-                     "--testvars-no-resolve-localhost",
+                     "--testvars-no-resolvevia-localhost",
                      action="store_false",
                      default=True,
-                     help="do not resolve vars against localhost")
+                     help="do not resolve vars by using localhost")
 
 
 ###########################################################
@@ -67,9 +67,9 @@ def resolve_vars(request):
 
 
 @pytest.fixture(scope='session')
-def gather_localhost(request):
-    '''testvars option --testvars-no-gather-localhost'''
-    return request.config.getoption("--testvars-no-gather-localhost")
+def gatherfrom_moleculehost(request):
+    '''testvars option --testvars-no-gatherfrom-moleculehost'''
+    return request.config.getoption("--testvars-no-gatherfrom-moleculehost")
 
 
 @pytest.fixture(scope='session')
@@ -91,9 +91,9 @@ def extra_vars(request):
 
 
 @pytest.fixture(scope='session')
-def resolve_localhost(request):
-    '''testvars option --testvars-no-resolve-localhost'''
-    return request.config.getoption("--testvars-no-resolve-localhost")
+def resolvevia_localhost(request):
+    '''testvars option --testvars-no-resolvevia-localhost'''
+    return request.config.getoption("--testvars-no-resolvevia-localhost")
 
 
 @pytest.fixture(scope='session')
@@ -258,12 +258,12 @@ def jsonvarsdebug():
 def jsonvars(jsonvarsdebug,
              localtemplates,
              templates,
-             resolve_localhost,
+             resolvevia_localhost,
              gather_molecule):
     return JsonVars(jsonvarsdebug,
                     localtemplates,
                     templates,
-                    resolve_localhost,
+                    resolvevia_localhost,
                     gather_molecule)
 
 
@@ -289,7 +289,7 @@ def testvars(request,
              moleculebook,
              jsonvars,
              resolve_vars,
-             gather_localhost,
+             gatherfrom_moleculehost,
              gather_facts,
              extra_vars,
              cache_key):
@@ -300,7 +300,7 @@ def testvars(request,
                  moleculebook,
                  jsonvars,
                  resolve_vars,
-                 gather_localhost,
+                 gatherfrom_moleculehost,
                  gather_facts,
                  extra_vars)
         testvars = testvars_object.get_testvars()

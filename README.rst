@@ -152,21 +152,22 @@ of the verifier section:
       options:
         testvars-no-gather-facts: true
 
-These options exist:
+By default, testvars runs a playbook against the molecule host
+to gathers ansible variables and facts.
+It uses a playbook against localhost to resolve the variables.
 
-- ``testvars-no-gather-localhost``
-    Run a playbook against molecule host to gather variables.
-    If you use ``ansible_facts`` in your jinja2 templates
-    you probably want to set this option to true.
-- ``testvars-no-resolve-localhost``
-    Do not resolve variables against localhost.
-    Resolve against molecule host instead.
-    If you use ansible facts in your jinja2 templates
-    you probably want to set this option to true.
+You can change the default behaviour with these options:
+
 - ``testvars-no-gather-facts``
     Run playbook to gather variables with ``gather_facts: false``.
     You won't be able to access ``ansible_facts``
     but your tests will run much faster.
+- ``testvars-no-gatherfrom_moleculehost``
+    Do not gather variables from molecule host.
+    Read variables directly from disk without running a playbook.
+- ``testvars-no-resolvevia-localhost``
+    Do not resolve variables against localhost.
+    Resolve against molecule host instead.
 - ``testvars-no-resolve-vars``
     Do not resolve any jinja2 template.
     This option might speed up some unit tests considerably.
@@ -178,15 +179,6 @@ These options exist:
     but it won't take much time to resolve them, either.
 - ``testvars-no-extra-vars``
     Do not add extra variables specified in ``TESTVARS_EXTRA_VARS``.
-
-By default, testvars does not run playbooks
-- neither to collect variables nor to resolve jinja2 templates -
-against the molecule host but uses localhost instead.
-If you set ``testvars-no-gather-localhost`` to true then
-you should be able to access the ``ansible_facts`` of the molecule host.
-If you set ``testvars-no-resolve-localhost`` testvars will resolve
-the variables against your molecule host.
-When both options are activated, testvars takes about three times longer.
 
 caching
 -------

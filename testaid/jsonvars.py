@@ -7,14 +7,14 @@ class JsonVars(object):
                  jsonvarsdebug,
                  localtemplates,
                  templates,
-                 resolve_localhost,
+                 resolvevia_localhost,
                  gather_molecule):
 
         # debug info
         self._jsonvarsdebug = jsonvarsdebug
 
         # jinja2 templates
-        if resolve_localhost:
+        if resolvevia_localhost:
             self._templates = localtemplates
         else:
             self._templates = templates

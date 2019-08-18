@@ -26,12 +26,12 @@ provisioner:
 verifier:
   name: testinfra
   options:
-    # testvars-no-resolve-vars: true
-    testvars-no-gather-localhost: true
     # testvars-no-gather-facts: true
+    # testvars-no-gatherfrom_moleculehost: true
+    # testvars-no-resolvevia_localhost: true
+    # testvars-no-resolve-vars: true
     # testvars-no-gather-molecule: true
     # testvars-no-extra-vars: true
-    testvars-no-resolve-localhost: true
     # m: debug
     # p: cacheprovider  # enable cache
     s: true  # capture output
