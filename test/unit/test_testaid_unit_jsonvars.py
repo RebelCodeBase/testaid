@@ -9,11 +9,16 @@ def test_testaid_unit_jsonvars_is_not_none(jsonvars):
 
 
 def test_testaid_unit_jsonvars_no_gather_molecule(jsonvarsdebug,
+                                                  localtemplates,
                                                   templates):
+    resolve_localhost = True
     gather_molecule = False
     jsonvars = JsonVars(jsonvarsdebug,
+                        localtemplates,
                         templates,
+                        resolve_localhost,
                         gather_molecule)
+
     r = r'(["])?{{((?:(?!.(?:MOLECULE_|molecule_file)).)*?)}}(["])?'
     regex_templates = re.compile(r)
     assert jsonvars._regex_templates == regex_templates
