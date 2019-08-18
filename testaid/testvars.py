@@ -13,14 +13,20 @@ class TestVars(object):
                  moleculebook,
                  jsonvars,
                  resolve_vars,
+                 gather_localhost,
                  gather_facts,
                  extra_vars):
 
         # this variable will be returned by the testvars fixture
         self._testvars = dict()
 
+        if gather_localhost:
+            run_playbook = False
+        else:
+            run_playbook = True
+
         # get ansible variables
-        testvars_unresolved = moleculebook.get_vars(resolve_vars,
+        testvars_unresolved = moleculebook.get_vars(run_playbook,
                                                     gather_facts,
                                                     extra_vars)
 

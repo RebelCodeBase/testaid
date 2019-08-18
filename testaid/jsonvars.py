@@ -5,14 +5,19 @@ class JsonVars(object):
 
     def __init__(self,
                  jsonvarsdebug,
+                 localtemplates,
                  templates,
+                 resolve_localhost,
                  gather_molecule):
 
         # debug info
         self._jsonvarsdebug = jsonvarsdebug
 
         # jinja2 templates
-        self._templates = templates
+        if resolve_localhost:
+            self._templates = localtemplates
+        else:
+            self._templates = templates
 
         # unresolved json variables
         self._jsonvars = dict()

@@ -154,23 +154,38 @@ of the verifier section:
 
 These options exist:
 
-- ``testvars-no-resolve-vars``
-    Do not resolve any jinja2 template.
-    Variables are read from disk instead.
-    No playbook will be run to gather information.
-    This option might speed up some unit tests considerably.
-    Implies ``testvars-no-gather-facts``,
-    ``testvars-no-gather-molecule`` and ``testvars-no-extra-vars``.
+- ``testvars-no-gather-localhost``
+    Run a playbook against molecule host to gather variables.
+    If you use ``ansible_facts`` in your jinja2 templates
+    you probably want to set this option to true.
+- ``testvars-no-resolve-localhost``
+    Do not resolve variables against localhost.
+    Resolve against molecule host instead.
+    If you use ansible facts in your jinja2 templates
+    you probably want to set this option to true.
 - ``testvars-no-gather-facts``
     Run playbook to gather variables with ``gather_facts: false``.
     You won't be able to access ``ansible_facts``
     but your tests will run much faster.
+- ``testvars-no-resolve-vars``
+    Do not resolve any jinja2 template.
+    This option might speed up some unit tests considerably.
+    Implies ``testvars-no-gather-facts``,
+    ``testvars-no-gather-molecule`` and ``testvars-no-extra-vars``.
 - ``testvars-no-gather-molecule``
     Do not resolve molecule variables.
     You probably won't need these variables
-    but it won't take much time to gather them, either.
+    but it won't take much time to resolve them, either.
 - ``testvars-no-extra-vars``
     Do not add extra variables specified in ``TESTVARS_EXTRA_VARS``.
+
+By default, testvars does not run playbooks against the molecule host
+but uses your localhost instead -
+neither to collect variables nor to resolve jinja2 templates.
+If you set ``testvars-no-gather-localhost``
+and ``testvars-no-resolve-localhost`` to true then testvars will
+take about three times as long but it will run the playbooks against
+your molecule host and therefore you can access its ``ansible_facts``.
 
 caching
 -------
