@@ -111,6 +111,7 @@ def ansiblevarsmanager(ansibleloader,
 def ansiblehost(ansibleinventory):
     return AnsibleHost(ansibleinventory).get()
 
+
 ###########################################################
 # fixtures: molecule resources
 ###########################################################
@@ -162,14 +163,6 @@ def moleculeenv(molecule_ephemeral_directory,
 
 
 @pytest.fixture(scope='session')
-def moleculebook(testvars_extra_vars,
-                 moleculeplay):
-    '''Run an ansible playbook against a molecule host.'''
-    return MoleculeBook(testvars_extra_vars,
-                        moleculeplay)
-
-
-@pytest.fixture(scope='session')
 def moleculeplay(ansibleloader,
                  ansibleinventory,
                  ansiblevarsmanager,
@@ -181,6 +174,14 @@ def moleculeplay(ansibleloader,
                         ansiblevarsmanager,
                         ansiblehost,
                         moleculeenv)
+
+
+@pytest.fixture(scope='session')
+def moleculebook(testvars_extra_vars,
+                 moleculeplay):
+    '''Run an ansible playbook against a molecule host.'''
+    return MoleculeBook(testvars_extra_vars,
+                        moleculeplay)
 
 
 ###########################################################
