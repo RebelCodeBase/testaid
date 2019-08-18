@@ -74,3 +74,7 @@ Changelog
 0.10
 ====
 * Almost full unit test coverage
+
+0.11
+====
+* Gather and resolve against localhost
