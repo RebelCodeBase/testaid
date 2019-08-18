@@ -30,7 +30,9 @@ def test_testaid_unit_moleculebook_create_default(moleculebook):
     assert playbook == playbook_default
 
 
-def test_testaid_unit_moleculebook_create_extra_vars(moleculebook, monkeypatch):
+def test_testaid_unit_moleculebook_create_extra_vars(
+        moleculebook,
+        monkeypatch):
     playbook_extra_vars = \
         {'name': 'ansible playbook',
          'hosts': 'localhost',
@@ -46,7 +48,9 @@ def test_testaid_unit_moleculebook_create_extra_vars(moleculebook, monkeypatch):
     assert playbook == playbook_extra_vars
 
 
-def test_testaid_unit_moleculebook_create_gather_roles(moleculebook, monkeypatch):
+def test_testaid_unit_moleculebook_create_gather_roles(
+        moleculebook,
+        monkeypatch):
     playbook_roles = \
         {'name': 'ansible playbook',
          'hosts': 'localhost',

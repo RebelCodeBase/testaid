@@ -60,6 +60,6 @@ class MoleculePlay(object):
         return result
 
     def _get_play_(self, playbook):
-         return Play().load(playbook,
-                            variable_manager=self._variable_manager,
-                            loader=self._loader)
+        return Play().load(playbook,
+                           variable_manager=self._variable_manager,
+                           loader=self._loader)

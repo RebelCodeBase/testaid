@@ -1,4 +1,3 @@
-import pytest
 import re
 import testaid
 from testaid.jsonvars import JsonVars
@@ -8,9 +7,10 @@ def test_testaid_unit_jsonvars_is_not_none(jsonvars):
     assert jsonvars is not None
 
 
-def test_testaid_unit_jsonvars_no_gather_molecule(jsonvarsdebug,
-                                                  localtemplates,
-                                                  templates):
+def test_testaid_unit_jsonvars_no_gather_molecule(
+        jsonvarsdebug,
+        localtemplates,
+        templates):
     resolve_localhost = True
     gather_molecule = False
     jsonvars = JsonVars(jsonvarsdebug,
@@ -30,8 +30,9 @@ def test_testaid_unit_jsonvars_get(jsonvars):
     assert jsonvars.get() == my_jsonvars
 
 
-def test_testaid_unit_jsonvars_resolve(jsonvars,
-                                       monkeypatch):
+def test_testaid_unit_jsonvars_resolve(
+        jsonvars,
+        monkeypatch):
     jsonvars.reset()
     my_template = {'unresolved': 'my_var',
                    'resolved': 'my_value',
@@ -43,16 +44,17 @@ def test_testaid_unit_jsonvars_resolve(jsonvars,
                         'get_template',
                         lambda x, y: my_template)
     my_jsonvars_unresolved = '{"my_var": "my_value", ' \
-                              '"my_template": "{{ my_var }}"}'
+                             '"my_template": "{{ my_var }}"}'
     my_jsonvars_resolved = '{"my_var": "my_value", ' \
-                            '"my_template": "my_value"}'
+                           '"my_template": "my_value"}'
     jsonvars._jsonvars = my_jsonvars_unresolved
     jsonvars.resolve()
     assert jsonvars._jsonvars == my_jsonvars_resolved
 
 
-def test_testaid_unit_jsonvars_resolve_left_quote(jsonvars,
-                                                   monkeypatch):
+def test_testaid_unit_jsonvars_resolve_left_quote(
+        jsonvars,
+        monkeypatch):
     jsonvars.reset()
     my_template = {'unresolved': 'my_var',
                    'resolved': 'my_value',
@@ -64,16 +66,17 @@ def test_testaid_unit_jsonvars_resolve_left_quote(jsonvars,
                         'get_template',
                         lambda x, y: my_template)
     my_jsonvars_unresolved = '{"my_var": "my_value", ' \
-                              '"my_template": "{{ my_var }}+inline"}'
+                             '"my_template": "{{ my_var }}+inline"}'
     my_jsonvars_resolved = '{"my_var": "my_value", ' \
-                            '"my_template": "my_value+inline"}'
+                           '"my_template": "my_value+inline"}'
     jsonvars._jsonvars = my_jsonvars_unresolved
     jsonvars.resolve()
     assert jsonvars._jsonvars == my_jsonvars_resolved
 
 
-def test_testaid_unit_jsonvars_resolve_right_quote(jsonvars,
-                                                   monkeypatch):
+def test_testaid_unit_jsonvars_resolve_right_quote(
+        jsonvars,
+        monkeypatch):
     jsonvars.reset()
     my_template = {'unresolved': 'my_var',
                    'resolved': 'my_value',
@@ -85,16 +88,17 @@ def test_testaid_unit_jsonvars_resolve_right_quote(jsonvars,
                         'get_template',
                         lambda x, y: my_template)
     my_jsonvars_unresolved = '{"my_var": "my_value", ' \
-                              '"my_template": "inline+{{ my_var }}"}'
+                             '"my_template": "inline+{{ my_var }}"}'
     my_jsonvars_resolved = '{"my_var": "my_value", ' \
-                            '"my_template": "inline+my_value"}'
+                           '"my_template": "inline+my_value"}'
     jsonvars._jsonvars = my_jsonvars_unresolved
     jsonvars.resolve()
     assert jsonvars._jsonvars == my_jsonvars_resolved
 
 
-def test_testaid_unit_jsonvars_resolve_cache(jsonvars,
-                                             monkeypatch):
+def test_testaid_unit_jsonvars_resolve_cache(
+        jsonvars,
+        monkeypatch):
     jsonvars.reset()
     my_template = {'unresolved': 'my_var',
                    'resolved': 'my_value',
@@ -106,11 +110,11 @@ def test_testaid_unit_jsonvars_resolve_cache(jsonvars,
                         'get_template',
                         lambda x, y: my_template)
     my_jsonvars_unresolved = '{"my_var": "my_value", ' \
-                              '"my_template1": "{{ my_var }}",' \
-                              '"my_template2": "{{ my_var }}"}'
+                             '"my_template1": "{{ my_var }}",' \
+                             '"my_template2": "{{ my_var }}"}'
     my_jsonvars_resolved = '{"my_var": "my_value", ' \
-                            '"my_template1": "my_value",' \
-                            '"my_template2": "my_value"}'
+                           '"my_template1": "my_value",' \
+                           '"my_template2": "my_value"}'
     jsonvars._jsonvars = my_jsonvars_unresolved
     jsonvars.resolve()
     assert jsonvars._jsonvars == my_jsonvars_resolved
@@ -135,8 +139,8 @@ def test_testaid_unit_jsonvars_debug(jsonvars,
                         'get_template',
                         lambda x, y: my_template)
     my_jsonvars_unresolved = '{"my_var": "my_value", ' \
-                              '"my_template1": "{{ my_var }}",' \
-                              '"my_template2": "{{ my_var }}"}'
+                             '"my_template1": "{{ my_var }}",' \
+                             '"my_template2": "{{ my_var }}"}'
     my_jsonvars_debug = '''\
 +++ hash_table +++
 hash 0 ->  my_var 
@@ -162,8 +166,7 @@ spot #0{
 
 +++ jsonvars +++
 {"my_var": "my_value", "my_template1": "my_value","my_template2": "my_value"}
-'''
-    
+'''  # noqa W291
     jsonvars._jsonvars = my_jsonvars_unresolved
     jsonvars.resolve()
     jsonvars_debug = jsonvars.debug()

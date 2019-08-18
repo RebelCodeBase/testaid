@@ -169,7 +169,7 @@ def molecule_scenario_directory(tmp_path_factory):
 def inventory_file(molecule_ephemeral_directory):
     '''Molecule managed ansible inventory file.'''
     inventory_file = molecule_ephemeral_directory / \
-                     'inventory/ansible_inventory.yml'
+        'inventory/ansible_inventory.yml'
     inventory_dir = molecule_ephemeral_directory / 'inventory'
     inventory_dir.mkdir(exist_ok=True)
     if not inventory_file.is_file():
@@ -192,10 +192,10 @@ def moleculeenv(molecule_ephemeral_directory,
 
 @pytest.fixture(scope='session')
 def moleculelocalplay(ansibleloader,
-                 ansibleinventory,
-                 ansiblevarsmanager,
-                 ansiblelocalhost,
-                 moleculeenv):
+                      ansibleinventory,
+                      ansiblevarsmanager,
+                      ansiblelocalhost,
+                      moleculeenv):
     '''Expose ansible python api to run playbooks against a molecule host.'''
     return MoleculePlay(ansibleloader,
                         ansibleinventory,
@@ -206,7 +206,7 @@ def moleculelocalplay(ansibleloader,
 
 @pytest.fixture(scope='session')
 def moleculelocalbook(testvars_extra_vars,
-                 moleculelocalplay):
+                      moleculelocalplay):
     '''Run an ansible playbook against a molecule host.'''
     return MoleculeBook(testvars_extra_vars,
                         moleculelocalplay)

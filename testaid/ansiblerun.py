@@ -20,10 +20,10 @@ class AnsibleRun(object):
         rc = ResultCallback()
         try:
             tqm = TaskQueueManager(inventory=self._inventory,
-                                     variable_manager=self._variable_manager,
-                                     loader=self._loader,
-                                     passwords=dict(),
-                                     stdout_callback=rc)
+                                   variable_manager=self._variable_manager,
+                                   loader=self._loader,
+                                   passwords=dict(),
+                                   stdout_callback=rc)
             tqm.run(play)
         finally:
             if tqm is not None:
@@ -51,4 +51,4 @@ class ResultCallback(CallbackBase):
     def v2_runner_on_failed(self, result, *args, **kwargs):
         self._clean_results(result._result, result._task.action)
         self.result_playbook_run.append(result._result)
-        self.failed_playbook_run=True
+        self.failed_playbook_run = True
