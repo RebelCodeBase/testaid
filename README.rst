@@ -179,13 +179,14 @@ These options exist:
 - ``testvars-no-extra-vars``
     Do not add extra variables specified in ``TESTVARS_EXTRA_VARS``.
 
-By default, testvars does not run playbooks against the molecule host
-but uses your localhost instead -
-neither to collect variables nor to resolve jinja2 templates.
-If you set ``testvars-no-gather-localhost``
-and ``testvars-no-resolve-localhost`` to true then testvars will
-take about three times as long but it will run the playbooks against
-your molecule host and therefore you can access its ``ansible_facts``.
+By default, testvars does not run playbooks
+- neither to collect variables nor to resolve jinja2 templates -
+against the molecule host but uses localhost instead.
+If you set ``testvars-no-gather-localhost`` to true then
+you should be able to access the ``ansible_facts`` of the molecule host.
+If you set ``testvars-no-resolve-localhost`` testvars will resolve
+the variables against your molecule host.
+When activated, both option take about three times as long.
 
 caching
 -------
