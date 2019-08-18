@@ -186,7 +186,7 @@ If you set ``testvars-no-gather-localhost`` to true then
 you should be able to access the ``ansible_facts`` of the molecule host.
 If you set ``testvars-no-resolve-localhost`` testvars will resolve
 the variables against your molecule host.
-When activated, both option take about three times as long.
+When both options are activated, testvars takes about three times longer.
 
 caching
 -------
