@@ -1,6 +1,6 @@
 ---
 anarchism_packages:
-  - anarchism
+  - fortune-anarchism
 
 anarchism_install: true
 

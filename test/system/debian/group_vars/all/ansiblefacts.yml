@@ -1,0 +1,2 @@
+---
+#factref: "{{ ansible_facts['ansible_distribution_version'] }}"
