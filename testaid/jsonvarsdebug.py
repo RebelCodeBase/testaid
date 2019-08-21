@@ -16,7 +16,7 @@ class JsonVarsDebug(object):
         return msg
 
     def debug_templates(self, templates):
-        msg = '+++ templates +++\n'
+        msg = '+++ templates +++'
         for index, template in enumerate(templates):
             msg += '\ntemplate #' + str(index) + '\n'
             msg += json.dumps(template, indent=4)
@@ -24,9 +24,9 @@ class JsonVarsDebug(object):
         return msg
 
     def debug_spots(self, spots):
-        msg = '+++ spots +++\n'
+        msg = '+++ spots +++'
         for index, spot in enumerate(spots):
-            msg += 'spot #' + str(index)
+            msg += '\nspot #' + str(index) + '\n'
             msg += json.dumps(spot, indent=4)
         msg += '\n'
         return msg

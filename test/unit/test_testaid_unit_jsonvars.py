@@ -151,15 +151,19 @@ hash 1 ->  my_var
 1 -> 0
 
 +++ templates +++
-template #0{
+template #0
+{
     "unresolved": "my_var"
 }
 
 +++ spots +++
-spot #0{
+spot #0
+{
     "left_quote": true,
     "right_quote": true
-}spot #1{
+}
+spot #1
+{
     "left_quote": true,
     "right_quote": true
 }
