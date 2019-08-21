@@ -18,7 +18,7 @@ class JsonVarsDebug(object):
     def debug_templates(self, templates):
         msg = '+++ templates +++\n'
         for index, template in enumerate(templates):
-            msg += 'template #' + str(index)
+            msg += '\ntemplate #' + str(index) + '\n'
             msg += json.dumps(template, indent=4)
         msg += '\n'
         return msg
