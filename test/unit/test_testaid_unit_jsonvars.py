@@ -7,6 +7,20 @@ def test_testaid_unit_jsonvars_is_not_none(jsonvars):
     assert jsonvars is not None
 
 
+def test_testaid_unit_jsonvars_no_localtemplates(
+        jsonvarsdebug,
+        localtemplates,
+        templates,
+        gather_molecule):
+    resolvevia_localhost = False
+    jsonvars = JsonVars(jsonvarsdebug,
+                        localtemplates,
+                        templates,
+                        resolvevia_localhost,
+                        gather_molecule)
+    assert jsonvars is not None
+
+
 def test_testaid_unit_jsonvars_no_gather_molecule(
         jsonvarsdebug,
         localtemplates,

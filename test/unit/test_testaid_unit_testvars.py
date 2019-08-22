@@ -72,3 +72,8 @@ def test_testaid_unit_testvars_resolve_vars(
 
 def test_testaid_unit_testvars_cache_key(cache_key):
     assert re.match('testvars/+', cache_key)
+
+
+def test_testaid_unit_testvars_gatherfrom_moleculehost(
+        gatherfrom_moleculehost):
+    assert gatherfrom_moleculehost
