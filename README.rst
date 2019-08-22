@@ -161,16 +161,15 @@ You can change the default behaviour with these options:
 - ``testvars-no-gather-facts``
     Run playbook to gather variables with ``gather_facts: false``.
     You won't be able to access ``ansible_facts``
-    but your tests will run much faster.
+    but your tests will run faster.
 - ``testvars-no-gatherfrom-moleculehost``
     Do not gather variables from molecule host.
     Read variables directly from disk without running a playbook.
-- ``testvars-no-resolvevia-localhost``
-    Do not resolve variables against localhost.
-    Resolve against molecule host instead.
+    It's faster but there is no inventory involved
+    so e.g. groups won't work.
 - ``testvars-no-resolve-vars``
     Do not resolve any jinja2 template.
-    This option might speed up some unit tests considerably.
+    This option might speed up some (unit) tests.
     Implies ``testvars-no-gather-facts``,
     ``testvars-no-gather-molecule`` and ``testvars-no-extra-vars``.
 - ``testvars-no-gather-molecule``
@@ -179,6 +178,11 @@ You can change the default behaviour with these options:
     but it won't take much time to resolve them, either.
 - ``testvars-no-extra-vars``
     Do not add extra variables specified in ``TESTVARS_EXTRA_VARS``.
+    Ignores the environment variable.
+- ``testvars-no-resolvevia-localhost``
+    Do not resolve variables against localhost.
+    Resolve against molecule host instead.
+    This option is only a fallback in case of unknown bugs.
 
 caching
 -------
