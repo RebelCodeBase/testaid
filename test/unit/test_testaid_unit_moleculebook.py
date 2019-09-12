@@ -261,4 +261,4 @@ def test_testaid_unit_moleculebook_extra_vars_files_dir_two_files(
     file2 = dir / filename2
     file2.touch()
     files = moleculebook._extra_vars_files_()
-    assert files == [file2, file1]
+    assert files == [file1, file2]

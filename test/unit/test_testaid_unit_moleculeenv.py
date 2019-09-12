@@ -24,6 +24,7 @@ def test_testaid_unit_moleculeenv_get_roles(
         moleculeenv,
         monkeypatch,
         tmp_path):
+    my_roles = ['my_role_1', 'my_role_2']
     roles_dir = tmp_path / 'roles'
     roles_dir.mkdir()
     my_role_1 = roles_dir / 'my_role_1'
@@ -34,7 +35,7 @@ def test_testaid_unit_moleculeenv_get_roles(
                         'get_project_dir',
                         lambda x: tmp_path)
     roles = moleculeenv.get_roles()
-    assert roles == ['my_role_1', 'my_role_2']
+    assert roles == my_roles
 
 
 def test_testaid_unit_moleculeenv_create_symlinks(
