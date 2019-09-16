@@ -147,7 +147,7 @@ class MoleculeBook(object):
                     filelist = path.glob('**/*.yml')
                     for file in filelist:
                         files.append(file.resolve())
-        return files
+        return sorted(files)
 
     def _read_vars(self):
         '''Return ansible variables without running a playbook.'''

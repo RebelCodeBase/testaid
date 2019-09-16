@@ -6,13 +6,9 @@ class MoleculeEnv(object):
     def __init__(self,
                  molecule_ephemeral_directory,
                  molecule_scenario_directory):
-
         self._molecule_ephemeral_directory = molecule_ephemeral_directory
         self._molecule_scenario_directory = molecule_scenario_directory
-
-        # create symlink in molecule ephemeral directory
-        # to roles directory in project dir
-        self._create_symlink_('roles')
+        self._configure_roles()
 
     def get_molecule_ephemeral_directory(self):
         return self._molecule_ephemeral_directory
@@ -41,8 +37,15 @@ class MoleculeEnv(object):
         if project_dir is None:
             return list()
         roles_dir = project_dir / 'roles'
-        roles = [d.name for d in roles_dir.iterdir() if d.is_dir()]
+        roles = sorted([d.name for d in roles_dir.iterdir() if d.is_dir()])
         return roles
+
+    def _configure_roles(self):
+        '''Create symlinks to roles'''
+
+        # fallback: create symlink in molecule ephemeral directory
+        # to roles directory in project dir which will include all roles
+        self._create_symlink_('roles')
 
     def _create_symlink_(self, path):
         '''Create symlink from molecule ephemeral dir to project dir.'''
