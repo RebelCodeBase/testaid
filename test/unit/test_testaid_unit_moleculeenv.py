@@ -1,5 +1,6 @@
 from pathlib import Path
 import testaid
+from testaid.moleculeenv import MoleculeEnv
 
 
 def test_testaid_unit_moleculeenv_is_not_none(moleculeenv):
@@ -32,7 +33,7 @@ def test_testaid_unit_moleculeenv_get_roles(
     my_role_2 = roles_dir / 'my_role_2'
     my_role_2.mkdir()
     monkeypatch.setattr(testaid.moleculeenv.MoleculeEnv,
-                        'get_project_dir',
+                        'get_molecule_ephemeral_directory',
                         lambda x: tmp_path)
     roles = moleculeenv.get_roles()
     assert roles == my_roles
@@ -98,3 +99,117 @@ def test_testaid_unit_moleculeenv_get_project_dir_no_roles_dir(
                         lambda x: Path('/'))
     project_dir = moleculeenv.get_project_dir()
     assert project_dir is None
+
+
+def test_testaid_unit_moleculeenv_no_gather_roles(
+        tmp_path):
+    my_playbook = \
+        """
+        ---
+        - name: converge
+          hosts: all
+          gather_facts: false
+          roles:
+            - my_role
+        """
+    med = tmp_path / 'molecule_ephemeral_directory'
+    msd = tmp_path / 'molecule_scenario_directory'
+
+    med.mkdir()
+    msd.mkdir()
+
+    (tmp_path / 'roles' / 'my_role').mkdir(parents=True)
+
+    playbook_path = msd / 'converge.yml'
+    playbook_path.write_text(my_playbook)
+
+    gather_roles = False
+    testvars_roles_blacklist = ''
+    testvars_roles_whitelist = ''
+
+    moleculeenv = MoleculeEnv(med,
+                              msd,
+                              gather_roles,
+                              testvars_roles_blacklist,
+                              testvars_roles_whitelist)
+
+    assert moleculeenv.get_roles() == []
+
+
+def test_testaid_unit_moleculeenv_roles_from_custom_converge_playboook(
+        tmp_path):
+    my_molecule_yml = \
+"""
+---
+provisioner:
+    name: ansible
+    playbooks:
+        converge: my_converge.yml
+"""
+    my_playbook = \
+"""
+---
+- name: converge
+  hosts: all
+  gather_facts: false
+  roles:
+    - my_role
+"""
+    med = tmp_path / 'molecule_ephemeral_directory'
+    msd = tmp_path / 'molecule_scenario_directory'
+    med.mkdir()
+    msd.mkdir()
+
+    (tmp_path / 'roles' / 'my_role').mkdir(parents=True)
+
+    molecule_yml_path = msd / 'molecule.yml'
+    molecule_yml_path.write_text(my_molecule_yml)
+
+    playbook_path = msd / 'my_converge.yml'
+    playbook_path.write_text(my_playbook)
+
+    gather_roles = True
+    testvars_roles_blacklist = ''
+    testvars_roles_whitelist = ''
+
+    moleculeenv = MoleculeEnv(med,
+                              msd,
+                              gather_roles,
+                              testvars_roles_blacklist,
+                              testvars_roles_whitelist)
+
+    assert moleculeenv.get_roles() == ['my_role']
+
+def test_testaid_unit_moleculeenv_roles_from_default_converge_playboook(
+        tmp_path):
+    my_playbook = \
+"""
+---
+- name: converge
+  hosts: all
+  gather_facts: false
+  roles:
+    - my_role
+"""
+    med = tmp_path / 'molecule_ephemeral_directory'
+    msd = tmp_path / 'molecule_scenario_directory'
+
+    med.mkdir()
+    msd.mkdir()
+
+    (tmp_path / 'roles' / 'my_role').mkdir(parents=True)
+
+    playbook_path = msd / 'converge.yml'
+    playbook_path.write_text(my_playbook)
+
+    gather_roles = True
+    testvars_roles_blacklist = ''
+    testvars_roles_whitelist = ''
+
+    moleculeenv = MoleculeEnv(med,
+                              msd,
+                              gather_roles,
+                              testvars_roles_blacklist,
+                              testvars_roles_whitelist)
+
+    assert moleculeenv.get_roles() == ['my_role']

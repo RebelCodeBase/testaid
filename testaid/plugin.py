@@ -44,6 +44,11 @@ def pytest_addoption(parser):
                      default=True,
                      help="do not resolve molecule vars")
     testvars_optiongroup.addoption(
+                     "--testvars-no-gather-roles",
+                     action="store_false",
+                     default=True,
+                     help="do not gather vars from roles")
+    testvars_optiongroup.addoption(
                      "--testvars-no-extra-vars",
                      action="store_false",
                      default=True,
@@ -85,6 +90,12 @@ def gather_molecule(request):
 
 
 @pytest.fixture(scope='session')
+def gather_roles(request):
+    '''testvars option --testvars-no-gather-roles'''
+    return request.config.getoption("--testvars-no-gather-roles")
+
+
+@pytest.fixture(scope='session')
 def extra_vars(request):
     '''testvars option --testvars-no-extra-vars'''
     return request.config.getoption("--testvars-no-extra-vars")
@@ -94,6 +105,26 @@ def extra_vars(request):
 def resolvevia_localhost(request):
     '''testvars option --testvars-no-resolvevia-localhost'''
     return request.config.getoption("--testvars-no-resolvevia-localhost")
+
+
+@pytest.fixture(scope='session')
+def testvars_roles_blacklist():
+    '''environment variable TESTVARS_ROLES_BLACKLIST'''
+    try:
+        roles_blacklist = Path(os.environ['TESTVARS_ROLES_BLACKLIST'])
+    except KeyError:
+        roles_blacklist = ''
+    return roles_blacklist
+
+
+@pytest.fixture(scope='session')
+def testvars_roles_whitelist():
+    '''environment variable TESTVARS_ROLES_WHITELIST'''
+    try:
+        roles_whitelist = Path(os.environ['TESTVARS_ROLES_WHITELIST'])
+    except KeyError:
+        roles_whitelist = ''
+    return roles_whitelist
 
 
 @pytest.fixture(scope='session')
@@ -180,9 +211,15 @@ def inventory_file(molecule_ephemeral_directory):
 
 @pytest.fixture(scope='session')
 def moleculeenv(molecule_ephemeral_directory,
-                molecule_scenario_directory):
+                molecule_scenario_directory,
+                gather_roles,
+                testvars_roles_blacklist,
+                testvars_roles_whitelist):
     return MoleculeEnv(molecule_ephemeral_directory,
-                       molecule_scenario_directory)
+                       molecule_scenario_directory,
+                       gather_roles,
+                       testvars_roles_blacklist,
+                       testvars_roles_whitelist)
 
 
 ###########################################################
