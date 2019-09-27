@@ -2,6 +2,7 @@ from pathlib import Path
 from ruamel.yaml import YAML
 from ruamel.yaml.scanner import ScannerError
 
+
 class MoleculeEnv(object):
 
     def __init__(self,
