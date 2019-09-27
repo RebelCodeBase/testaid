@@ -142,6 +142,7 @@ roles
 -----
 
 Which roles are included is determined in this order:
+
 - List of roles separated by colon specified in the
   ``TESTVARS_ROLES_WHITELIST`` environment variable
 - List of roles specified in playbook speciied in ``molecule.yml``
