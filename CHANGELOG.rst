@@ -78,3 +78,4 @@ Changelog
 0.11
 ====
 * Gather and resolve against localhost
+* Make role inclusion configurable

@@ -138,6 +138,18 @@ It can contain dirpaths or filepaths relative to the
 The vars files will be included in moleculebook playbooks by adding
 the paths to ``vars_files`` (and not by adding ``include_vars`` tasks).
 
+roles
+-----
+
+Which roles are included is determined in this order:
+- List of roles separated by colon specified in the
+  ``TESTVARS_ROLES_WHITELIST`` environment variable
+- List of roles specified in playbook speciied in ``molecule.yml``
+- List of roles specified in default playbook ``converge.yml``
+- All roles in ``roles`` directory in project directory
+
+Roles blacklisted in ``TESTVARS_ROLES_BLACKLIST`` won't be included.
+
 options
 -------
 testvars is a session scope fixture so its configuration is done in

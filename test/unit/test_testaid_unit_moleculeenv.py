@@ -141,11 +141,11 @@ def test_testaid_unit_moleculeenv_roles_from_custom_converge_playboook(
     my_molecule_yml = \
 """
 ---
-provisioner:
+`provisioner:
     name: ansible
     playbooks:
         converge: my_converge.yml
-"""
+`"""
     my_playbook = \
 """
 ---
