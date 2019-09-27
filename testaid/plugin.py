@@ -12,6 +12,7 @@ from testaid.moleculebook import MoleculeBook
 from testaid.templates import Templates
 from testaid.jsonvars import JsonVars
 from testaid.jsonvarsdebug import JsonVarsDebug
+from testaid.pathlist import PathList
 from testaid.testpass import TestPass
 from testaid.testvars import TestVars
 
@@ -61,7 +62,7 @@ def pytest_addoption(parser):
 
 
 ###########################################################
-# fixtures: testvars options
+# fixtures: testvars option booleans
 ###########################################################
 
 
@@ -107,34 +108,40 @@ def resolvevia_localhost(request):
     return request.config.getoption("--testvars-no-resolvevia-localhost")
 
 
+###########################################################
+# fixtures: testvars option lists
+###########################################################
+
+
 @pytest.fixture(scope='session')
-def testvars_roles_blacklist():
+def testvars_roles_blacklist(molecule_scenario_directory):
     '''environment variable TESTVARS_ROLES_BLACKLIST'''
     try:
-        roles_blacklist = Path(os.environ['TESTVARS_ROLES_BLACKLIST'])
+        blacklist = Path(os.environ['TESTVARS_ROLES_BLACKLIST'])
     except KeyError:
-        roles_blacklist = ''
-    return roles_blacklist
+        return list()
+    return blacklist.split(':')
 
 
 @pytest.fixture(scope='session')
-def testvars_roles_whitelist():
+def testvars_roles_whitelist(molecule_scenario_directory):
     '''environment variable TESTVARS_ROLES_WHITELIST'''
     try:
-        roles_whitelist = Path(os.environ['TESTVARS_ROLES_WHITELIST'])
+        whitelist = Path(os.environ['TESTVARS_ROLES_WHITELIST'])
     except KeyError:
-        roles_whitelist = ''
-    return roles_whitelist
+        return list()
+    return whitelist.split(':')
 
 
 @pytest.fixture(scope='session')
-def testvars_extra_vars():
+def testvars_extra_vars(molecule_scenario_directory):
     '''environment variable TESTVARS_EXTRA_VARS'''
     try:
         extra_vars = Path(os.environ['TESTVARS_EXTRA_VARS'])
     except KeyError:
-        extra_vars = ''
-    return extra_vars
+        return list()
+    return PathList(extra_vars,
+                    molecule_scenario_directory)
 
 
 ###########################################################

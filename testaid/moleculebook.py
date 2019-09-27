@@ -9,7 +9,6 @@ class MoleculeBook(object):
                  moleculeplay):
         self._moleculeplay = moleculeplay
         self._testvars_extra_vars = testvars_extra_vars
-        self._testvars_extra_vars_files = self._extra_vars_files_()
         self._playbook = dict()
         self.create()
 
@@ -41,7 +40,7 @@ class MoleculeBook(object):
 
         # include extra vars files
         if extra_vars:
-            for path in self._get_extra_vars_files_():
+            for path in self._get_extra_vars_():
                 playbook['vars_files'].append(str(path))
 
         # include roles
@@ -90,7 +89,7 @@ class MoleculeBook(object):
         vars = dict()
 
         if not run_playbook:
-            return self._read_vars()
+            return self._read_vars_()
 
         # self.create sets gather_facts=True by default so the ansible facts
         # of the default molecule host will be in result[0]['ansible_facts']
@@ -126,30 +125,10 @@ class MoleculeBook(object):
     def _get_extra_vars_(self):
         return self._testvars_extra_vars
 
-    def _get_extra_vars_files_(self):
-        return self._testvars_extra_vars_files
-
     def _get_molecule_scenario_directory_(self):
         return self._moleculeplay.get_molecule_scenario_directory()
 
-    def _extra_vars_files_(self):
-        '''Returns list of yaml files with extra vars'''
-        files = list()
-        testvars_extra_vars = self._get_extra_vars_()
-        if testvars_extra_vars:
-            base_dir = self._get_molecule_scenario_directory_()
-            for extra_vars in str(testvars_extra_vars).split(':'):
-                path = base_dir / extra_vars
-                path = path.resolve()
-                if path.is_file():
-                    files.append(path)
-                if path.is_dir():
-                    filelist = path.glob('**/*.yml')
-                    for file in filelist:
-                        files.append(file.resolve())
-        return sorted(files)
-
-    def _read_vars(self):
+    def _read_vars_(self):
         '''Return ansible variables without running a playbook.'''
         self.create(gather_facts=False, host='localhost')
         vars = self._moleculeplay.read_vars(self._playbook)
