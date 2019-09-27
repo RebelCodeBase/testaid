@@ -103,7 +103,7 @@ def test_testaid_unit_moleculeenv_get_project_dir_no_roles_dir(
 
 def test_testaid_unit_moleculeenv_no_gather_roles(
         tmp_path):
-    my_playbook = """ \
+    my_playbook = """\
 ---
 - name: converge
   hosts: all
@@ -137,14 +137,14 @@ def test_testaid_unit_moleculeenv_no_gather_roles(
 
 def test_testaid_unit_moleculeenv_roles_from_custom_converge_playboook(
         tmp_path):
-    my_molecule_yml = """ \
+    my_molecule_yml = """\
 ---
 `provisioner:
     name: ansible
     playbooks:
         converge: my_converge.yml
 `"""
-    my_playbook = """ \
+    my_playbook = """\
 ---
 - name: converge
   hosts: all
@@ -181,7 +181,7 @@ def test_testaid_unit_moleculeenv_roles_from_custom_converge_playboook(
 
 def test_testaid_unit_moleculeenv_roles_from_default_converge_playboook(
         tmp_path):
-    my_playbook = """ \
+    my_playbook = """\
 ---
 - name: converge
   hosts: all
@@ -215,7 +215,7 @@ def test_testaid_unit_moleculeenv_roles_from_default_converge_playboook(
 
 def test_testaid_unit_moleculeenv_get_roles_not_blacklisted(
         tmp_path):
-    my_playbook = """ \
+    my_playbook = """\
 ---
 - name: converge
   hosts: all
@@ -256,7 +256,7 @@ def test_testaid_unit_moleculeenv_get_roles_not_blacklisted(
 
 def test_testaid_unit_moleculeenv_get_roles_whitelisted(
         tmp_path):
-    my_playbook = """ \
+    my_playbook = """\
 ---
 - name: converge
   hosts: all

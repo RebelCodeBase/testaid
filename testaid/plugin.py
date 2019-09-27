@@ -141,7 +141,7 @@ def testvars_extra_vars(molecule_scenario_directory):
     except KeyError:
         return list()
     return PathList(extra_vars,
-                    molecule_scenario_directory)
+                    molecule_scenario_directory).get()
 
 
 ###########################################################
