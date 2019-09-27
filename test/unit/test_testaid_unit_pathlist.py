@@ -2,8 +2,8 @@ from pathlib import Path
 from testaid.pathlist import PathList
 
 
-def test_testaid_unit_pathlist_roles_whitelist(testvars_roles_whitelist):
-    assert testvars_roles_whitelist is not None
+def test_testaid_unit_pathlist_roles_blacklist(testvars_roles_blacklist):
+    assert testvars_roles_blacklist is not None
 
 
 def test_testaid_unit_pathlist_roles_whitelist(testvars_roles_whitelist):
