@@ -5,6 +5,7 @@ from testaid.moleculeenv import MoleculeEnv
 
 def test_testaid_unit_moleculeenv_is_not_none(moleculeenv):
     assert moleculeenv is not None
+    assert moleculeenv.get_roles() == list()
 
 
 def test_testaid_unit_moleculeenv_get_molecule_ephemeral_directory(
