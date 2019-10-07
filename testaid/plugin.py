@@ -117,7 +117,7 @@ def resolvevia_localhost(request):
 def testvars_roles_blacklist(molecule_scenario_directory):
     '''environment variable TESTVARS_ROLES_BLACKLIST'''
     try:
-        blacklist = Path(os.environ['TESTVARS_ROLES_BLACKLIST'])
+        blacklist = os.environ['TESTVARS_ROLES_BLACKLIST']
     except KeyError:
         return list()
     return blacklist.split(':')
@@ -127,7 +127,7 @@ def testvars_roles_blacklist(molecule_scenario_directory):
 def testvars_roles_whitelist(molecule_scenario_directory):
     '''environment variable TESTVARS_ROLES_WHITELIST'''
     try:
-        whitelist = Path(os.environ['TESTVARS_ROLES_WHITELIST'])
+        whitelist = os.environ['TESTVARS_ROLES_WHITELIST']
     except KeyError:
         return list()
     return whitelist.split(':')
