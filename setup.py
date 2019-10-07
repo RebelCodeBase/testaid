@@ -3,7 +3,7 @@ import setuptools
 if __name__ == '__main__':
     setuptools.setup(
         name='testaid',
-        version='0.11.4',
+        version='0.11.5',
         author='RebelCodeBase',
         author_email='rebelcodebase@riseup.net',
         description='Fixtures for ansible, testinfra and molecule',
