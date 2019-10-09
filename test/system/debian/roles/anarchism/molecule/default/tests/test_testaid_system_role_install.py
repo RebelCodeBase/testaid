@@ -1,4 +1,3 @@
-import pytest
 import testaid
 
 testinfra_hosts = testaid.hosts()
