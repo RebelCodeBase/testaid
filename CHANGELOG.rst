@@ -79,3 +79,7 @@ Changelog
 ====
 * Gather and resolve against localhost
 * Make role inclusion configurable
+
+0.12
+====
+* Add molecule --debug logging
