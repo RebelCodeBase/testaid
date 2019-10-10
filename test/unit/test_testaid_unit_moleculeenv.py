@@ -103,6 +103,7 @@ def test_testaid_unit_moleculeenv_get_project_dir_no_roles_dir(
 
 
 def test_testaid_unit_moleculeenv_no_gather_roles(
+        moleculelog,
         tmp_path):
     my_playbook = """\
 ---
@@ -127,7 +128,8 @@ def test_testaid_unit_moleculeenv_no_gather_roles(
     testvars_roles_blacklist = []
     testvars_roles_whitelist = []
 
-    moleculeenv = MoleculeEnv(med,
+    moleculeenv = MoleculeEnv(moleculelog,
+                              med,
                               msd,
                               gather_roles,
                               testvars_roles_blacklist,
@@ -137,14 +139,15 @@ def test_testaid_unit_moleculeenv_no_gather_roles(
 
 
 def test_testaid_unit_moleculeenv_roles_from_custom_converge_playboook(
+        moleculelog,
         tmp_path):
     my_molecule_yml = """\
 ---
-`provisioner:
+provisioner:
     name: ansible
     playbooks:
         converge: my_converge.yml
-`"""
+"""
     my_playbook = """\
 ---
 - name: converge
@@ -171,7 +174,8 @@ def test_testaid_unit_moleculeenv_roles_from_custom_converge_playboook(
     testvars_roles_blacklist = []
     testvars_roles_whitelist = []
 
-    moleculeenv = MoleculeEnv(med,
+    moleculeenv = MoleculeEnv(moleculelog,
+                              med,
                               msd,
                               gather_roles,
                               testvars_roles_blacklist,
@@ -181,6 +185,7 @@ def test_testaid_unit_moleculeenv_roles_from_custom_converge_playboook(
 
 
 def test_testaid_unit_moleculeenv_roles_from_default_converge_playboook(
+        moleculelog,
         tmp_path):
     my_playbook = """\
 ---
@@ -205,7 +210,8 @@ def test_testaid_unit_moleculeenv_roles_from_default_converge_playboook(
     testvars_roles_blacklist = []
     testvars_roles_whitelist = []
 
-    moleculeenv = MoleculeEnv(med,
+    moleculeenv = MoleculeEnv(moleculelog,
+                              med,
                               msd,
                               gather_roles,
                               testvars_roles_blacklist,
@@ -215,6 +221,7 @@ def test_testaid_unit_moleculeenv_roles_from_default_converge_playboook(
 
 
 def test_testaid_unit_moleculeenv_get_roles_not_blacklisted(
+        moleculelog,
         tmp_path):
     my_playbook = """\
 ---
@@ -246,7 +253,8 @@ def test_testaid_unit_moleculeenv_get_roles_not_blacklisted(
     testvars_roles_blacklist = ['my_role_1']
     testvars_roles_whitelist = []
 
-    moleculeenv = MoleculeEnv(med,
+    moleculeenv = MoleculeEnv(moleculelog,
+                              med,
                               msd,
                               gather_roles,
                               testvars_roles_blacklist,
@@ -256,6 +264,7 @@ def test_testaid_unit_moleculeenv_get_roles_not_blacklisted(
 
 
 def test_testaid_unit_moleculeenv_get_roles_whitelisted(
+        moleculelog,
         tmp_path):
     my_playbook = """\
 ---
@@ -287,7 +296,8 @@ def test_testaid_unit_moleculeenv_get_roles_whitelisted(
     testvars_roles_blacklist = []
     testvars_roles_whitelist = ['my_role_2']
 
-    moleculeenv = MoleculeEnv(med,
+    moleculeenv = MoleculeEnv(moleculelog,
+                              med,
                               msd,
                               gather_roles,
                               testvars_roles_blacklist,

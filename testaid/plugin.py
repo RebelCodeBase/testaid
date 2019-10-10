@@ -1,3 +1,4 @@
+from molecule import util
 import os
 from pathlib import Path
 import pytest
@@ -7,6 +8,7 @@ from testaid.ansibleres import AnsibleVarsManager
 from testaid.ansibleres import AnsibleLocalHost
 from testaid.ansibleres import AnsibleHost
 from testaid.moleculeenv import MoleculeEnv
+from testaid.moleculelog import MoleculeLog
 from testaid.moleculeplay import MoleculePlay
 from testaid.moleculebook import MoleculeBook
 from testaid.templates import Templates
@@ -18,11 +20,35 @@ from testaid.testvars import TestVars
 
 
 ###########################################################
+# global cleanup function
+###########################################################
+
+
+@pytest.fixture(scope="session", autouse=True)
+def cleanup(request, moleculelog):
+    def print_debug():
+        testaid_env = \
+            {k: v for (k, v) in os.environ.items() if 'TESTVARS_' in k}
+        if testaid_env:
+            print('\n')
+            util.print_debug('TESTVARS ENVIRONMENT',
+                             util.safe_dump(testaid_env))
+        log = moleculelog.get_log()
+        if log:
+            if not testaid_env:
+                print('\n')
+            util.print_debug('TESTVARS LOG', log)
+    if request.config.getoption("--debug"):
+        request.addfinalizer(print_debug)
+
+
+###########################################################
 # command line options: testvars group
 ###########################################################
 
 
 def pytest_addoption(parser):
+    parser.addini('log', 'test')
     testvars_optiongroup = parser.getgroup("testvars")
     testvars_optiongroup.addoption(
                      "--testvars-no-gather-facts",
@@ -184,6 +210,11 @@ def ansiblehost(ansibleinventory):
 
 
 @pytest.fixture(scope='session')
+def moleculelog():
+    return MoleculeLog()
+
+
+@pytest.fixture(scope='session')
 def molecule_ephemeral_directory(tmp_path_factory):
     '''environment variable MOLECULE_EPHEMERAL_DIRECTORY'''
     try:
@@ -217,12 +248,14 @@ def inventory_file(molecule_ephemeral_directory):
 
 
 @pytest.fixture(scope='session')
-def moleculeenv(molecule_ephemeral_directory,
+def moleculeenv(moleculelog,
+                molecule_ephemeral_directory,
                 molecule_scenario_directory,
                 gather_roles,
                 testvars_roles_blacklist,
                 testvars_roles_whitelist):
-    return MoleculeEnv(molecule_ephemeral_directory,
+    return MoleculeEnv(moleculelog,
+                       molecule_ephemeral_directory,
                        molecule_scenario_directory,
                        gather_roles,
                        testvars_roles_blacklist,
