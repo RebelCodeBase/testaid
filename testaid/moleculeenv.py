@@ -19,7 +19,8 @@ class MoleculeEnv(object):
         self._testvars_roles_blacklist = testvars_roles_blacklist
         self._testvars_roles_whitelist = testvars_roles_whitelist
         self._configure_roles_()
-        self._moleculelog.debug('roles: ' + str(self.get_roles()))
+        self._moleculelog.debug(self._get_molecule_vars_config_())
+        self._moleculelog.debug('Using roles: ' + ','.join(self.get_roles()))
 
     def get_molecule_ephemeral_directory(self):
         return self._molecule_ephemeral_directory
@@ -102,6 +103,32 @@ class MoleculeEnv(object):
             target.symlink_to(source)
         except FileExistsError:
             pass
+
+    def _get_molecule_vars_config_(self):
+        molecule_vars_config = ''
+        vars_config = list()
+
+        group_vars = self._molecule_ephemeral_directory / 'inventory/group_vars'
+        host_vars = self._molecule_ephemeral_directory / 'inventory/host_vars'
+
+        if group_vars.is_symlink():
+            target = self._molecule_scenario_directory / 'group_vars'
+            vars_config.append('Using group_vars symlink to ' + str(target))
+
+        if host_vars.is_symlink():
+            target = self._molecule_scenario_directory / 'host_vars'
+            vars_config.append('Using host_vars symlink to ' + str(target))
+
+        if vars_config:
+            molecule_vars_config = '\n'.join(vars_config)
+
+            return molecule_vars_config
+
+        # else no vars_config so we use the variables defined in molecule.yml
+        molecule_yml = self._molecule_scenario_directory / 'molecule.yml'
+        molecule_vars_config += 'Using variables defined in ' + str(molecule_yml)
+
+        return molecule_vars_config
 
     def _get_testvars_roles_blacklist_(self):
         return self._testvars_roles_blacklist
