@@ -1,4 +1,3 @@
-from molecule import util
 import os
 from pathlib import Path
 import pytest
@@ -26,20 +25,8 @@ from testaid.testvars import TestVars
 
 @pytest.fixture(scope="session", autouse=True)
 def cleanup(request, moleculelog):
-    def print_debug():
-        testaid_env = \
-            {k: v for (k, v) in os.environ.items() if 'TESTVARS_' in k}
-        if testaid_env:
-            print('\n')
-            util.print_debug('TESTVARS ENVIRONMENT',
-                             util.safe_dump(testaid_env))
-        log = moleculelog.get_log()
-        if log:
-            if not testaid_env:
-                print('\n')
-            util.print_debug('TESTVARS LOG', log)
     if request.config.getoption("--debug"):
-        request.addfinalizer(print_debug)
+        request.addfinalizer(moleculelog.print_debug)
 
 
 ###########################################################
