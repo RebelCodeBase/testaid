@@ -304,3 +304,138 @@ def test_testaid_unit_moleculeenv_get_roles_whitelisted(
                               testvars_roles_whitelist)
 
     assert moleculeenv.get_roles() == my_roles
+
+
+def test_testaid_unit_moleculeenv_vars_config_molecule_yml(
+        moleculelog,
+        tmp_path):
+    med = tmp_path / 'molecule_ephemeral_directory'
+    med.mkdir()
+
+    msd = tmp_path / 'molecule_scenario_directory'
+    msd.mkdir()
+
+    gather_roles = True
+    testvars_roles_blacklist = []
+    testvars_roles_whitelist = []
+
+    moleculeenv = MoleculeEnv(moleculelog,
+                              med,
+                              msd,
+                              gather_roles,
+                              testvars_roles_blacklist,
+                              testvars_roles_whitelist)
+
+    expected_config = 'Using variables defined in ' + str(msd / 'molecule.yml')
+    molecule_vars_config = moleculeenv._get_molecule_vars_config_()
+    assert molecule_vars_config == expected_config
+
+
+def test_testaid_unit_moleculeenv_vars_config_group_vars(
+        moleculelog,
+        tmp_path):
+    med = tmp_path / 'molecule_ephemeral_directory'
+    med.mkdir()
+
+    msd = tmp_path / 'molecule_scenario_directory'
+    msd.mkdir()
+
+    group_vars_target = msd / 'group_vars'
+    group_vars_target.mkdir()
+
+    inventory_dir = med / 'inventory'
+    inventory_dir.mkdir()
+
+    group_vars = inventory_dir / 'group_vars'
+    group_vars.symlink_to(group_vars_target, target_is_directory=True)
+
+    gather_roles = True
+    testvars_roles_blacklist = []
+    testvars_roles_whitelist = []
+
+    moleculeenv = MoleculeEnv(moleculelog,
+                              med,
+                              msd,
+                              gather_roles,
+                              testvars_roles_blacklist,
+                              testvars_roles_whitelist)
+
+    expected_config = 'Using group_vars symlink to ' + str(group_vars_target)
+    molecule_vars_config = moleculeenv._get_molecule_vars_config_()
+    assert molecule_vars_config == expected_config
+
+
+def test_testaid_unit_moleculeenv_vars_config_host_vars(
+        moleculelog,
+        tmp_path):
+    med = tmp_path / 'molecule_ephemeral_directory'
+    med.mkdir()
+
+    msd = tmp_path / 'molecule_scenario_directory'
+    msd.mkdir()
+
+    host_vars_target = msd / 'host_vars'
+    host_vars_target.mkdir()
+
+    inventory_dir = med / 'inventory'
+    inventory_dir.mkdir()
+
+    host_vars = inventory_dir / 'host_vars'
+    host_vars.symlink_to(host_vars_target, target_is_directory=True)
+
+    gather_roles = True
+    testvars_roles_blacklist = []
+    testvars_roles_whitelist = []
+
+    moleculeenv = MoleculeEnv(moleculelog,
+                              med,
+                              msd,
+                              gather_roles,
+                              testvars_roles_blacklist,
+                              testvars_roles_whitelist)
+
+    expected_config = 'Using host_vars symlink to ' + str(host_vars_target)
+    molecule_vars_config = moleculeenv._get_molecule_vars_config_()
+    assert molecule_vars_config == expected_config
+
+
+def test_testaid_unit_moleculeenv_vars_config_host_vars_and_group_vars(
+        moleculelog,
+        tmp_path):
+    med = tmp_path / 'molecule_ephemeral_directory'
+    med.mkdir()
+
+    msd = tmp_path / 'molecule_scenario_directory'
+    msd.mkdir()
+
+    group_vars_target = msd / 'group_vars'
+    group_vars_target.mkdir()
+
+    host_vars_target = msd / 'host_vars'
+    host_vars_target.mkdir()
+
+    inventory_dir = med / 'inventory'
+    inventory_dir.mkdir()
+
+    group_vars = inventory_dir / 'group_vars'
+    group_vars.symlink_to(group_vars_target, target_is_directory=True)
+
+    host_vars = inventory_dir / 'host_vars'
+    host_vars.symlink_to(host_vars_target, target_is_directory=True)
+
+    gather_roles = True
+    testvars_roles_blacklist = []
+    testvars_roles_whitelist = []
+
+    moleculeenv = MoleculeEnv(moleculelog,
+                              med,
+                              msd,
+                              gather_roles,
+                              testvars_roles_blacklist,
+                              testvars_roles_whitelist)
+
+    expected_config = 'Using group_vars symlink to ' + str(group_vars_target)
+    expected_config += '\n'
+    expected_config += 'Using host_vars symlink to ' + str(host_vars_target)
+    molecule_vars_config = moleculeenv._get_molecule_vars_config_()
+    assert molecule_vars_config == expected_config
