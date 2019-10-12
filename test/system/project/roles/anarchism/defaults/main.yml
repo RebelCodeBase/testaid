@@ -4,4 +4,4 @@ anarchism_packages:
 
 anarchism_install: true
 
-my_role_defaults_var: my_role_defaults_value
+anarchism_my_role_defaults_var: my_role_defaults_value

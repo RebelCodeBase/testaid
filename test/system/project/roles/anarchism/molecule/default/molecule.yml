@@ -16,7 +16,7 @@ provisioner:
   inventory:
     group_vars:
       all:
-        group_vars_all: my_group_vars_value
+        anarchism_group_vars_all: my_group_vars_value
   config_options:
     defaults:
       interpreter_python: auto_silent

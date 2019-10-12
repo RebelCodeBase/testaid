@@ -1,2 +1,2 @@
 ---
-factref: "{{ ansible_facts['distribution_version'] }}"
+project_factref: "{{ ansible_facts['distribution_version'] }}"

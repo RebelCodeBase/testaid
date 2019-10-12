@@ -8,4 +8,4 @@ def test_testaid_system_ansiblefacts_present(host, testvars):
 
 
 def test_testaid_system_ansiblefacts_reference(host, testvars):
-    assert type(testvars['factref']) == str
+    assert type(testvars['project_factref']) == str
