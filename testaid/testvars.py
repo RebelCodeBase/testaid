@@ -10,6 +10,8 @@ class TestVars(object):
     '''
 
     def __init__(self,
+                 moleculelog,
+                 debug_jsonvars,
                  moleculebook,
                  jsonvars,
                  resolve_vars,
@@ -45,6 +47,10 @@ class TestVars(object):
 
             # resolve unresolved json testvars
             jsonvars.resolve()
+
+            # print jsonvars debug info if command line flag is specified
+            if debug_jsonvars:
+                moleculelog.debug(jsonvars.get_debug())
 
             # get resolved testvars from jsonvars
             testvars_resolved_json = jsonvars.get()

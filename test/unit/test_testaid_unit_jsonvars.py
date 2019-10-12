@@ -8,13 +8,11 @@ def test_testaid_unit_jsonvars_is_not_none(jsonvars):
 
 
 def test_testaid_unit_jsonvars_no_localtemplates(
-        jsonvarsdebug,
         localtemplates,
         templates,
         gather_molecule):
     resolvevia_localhost = False
-    jsonvars = JsonVars(jsonvarsdebug,
-                        localtemplates,
+    jsonvars = JsonVars(localtemplates,
                         templates,
                         resolvevia_localhost,
                         gather_molecule)
@@ -22,13 +20,11 @@ def test_testaid_unit_jsonvars_no_localtemplates(
 
 
 def test_testaid_unit_jsonvars_no_gather_molecule(
-        jsonvarsdebug,
         localtemplates,
         templates):
     resolve_localhost = True
     gather_molecule = False
-    jsonvars = JsonVars(jsonvarsdebug,
-                        localtemplates,
+    jsonvars = JsonVars(localtemplates,
                         templates,
                         resolve_localhost,
                         gather_molecule)
@@ -156,6 +152,7 @@ def test_testaid_unit_jsonvars_debug(jsonvars,
                              '"my_template1": "{{ my_var }}",' \
                              '"my_template2": "{{ my_var }}"}'
     my_jsonvars_debug = '''\
+
 +++ hash_table +++
 hash 0 ->  my_var 
 hash 1 ->  my_var 
@@ -184,8 +181,9 @@ spot #1
 
 +++ jsonvars +++
 {"my_var": "my_value", "my_template1": "my_value","my_template2": "my_value"}
+
 '''  # noqa W291
     jsonvars._jsonvars = my_jsonvars_unresolved
     jsonvars.resolve()
-    jsonvars_debug = jsonvars.debug()
+    jsonvars_debug = jsonvars.get_debug()
     assert jsonvars_debug == my_jsonvars_debug

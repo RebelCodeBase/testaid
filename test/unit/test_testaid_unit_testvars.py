@@ -6,6 +6,8 @@ from testaid.exceptions import AnsibleRunError
 
 
 def test_testaid_unit_testvars_is_not_none(
+        moleculelog,
+        debug_jsonvars,
         moleculebook,
         jsonvars,
         resolve_vars,
@@ -13,7 +15,9 @@ def test_testaid_unit_testvars_is_not_none(
         extra_vars):
     gatherfrom_moleculehost = True
     with pytest.raises(AnsibleRunError):
-        TestVars(moleculebook,
+        TestVars(moleculelog,
+                 debug_jsonvars,
+                 moleculebook,
                  jsonvars,
                  resolve_vars,
                  gatherfrom_moleculehost,
@@ -22,13 +26,17 @@ def test_testaid_unit_testvars_is_not_none(
 
 
 def test_testaid_unit_testvars_no_resolve_vars(
+        moleculelog,
+        debug_jsonvars,
         moleculebook,
         jsonvars):
     resolve_vars = False
     gatherfrom_moleculehost = False
     gather_facts = False
     extra_vars = ''
-    testvars = TestVars(moleculebook,
+    testvars = TestVars(moleculelog,
+                        debug_jsonvars,
+                        moleculebook,
                         jsonvars,
                         resolve_vars,
                         gatherfrom_moleculehost,
@@ -38,6 +46,8 @@ def test_testaid_unit_testvars_no_resolve_vars(
 
 
 def test_testaid_unit_testvars_resolve_vars(
+        moleculelog,
+        debug_jsonvars,
         moleculebook,
         jsonvars,
         monkeypatch):
@@ -61,7 +71,9 @@ def test_testaid_unit_testvars_resolve_vars(
     gatherfrom_moleculehost = False
     gather_facts = False
     extra_vars = ''
-    testvars = TestVars(moleculebook,
+    testvars = TestVars(moleculelog,
+                        debug_jsonvars,
+                        moleculebook,
                         jsonvars,
                         resolve_vars,
                         gatherfrom_moleculehost,

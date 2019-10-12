@@ -12,7 +12,6 @@ from testaid.moleculeplay import MoleculePlay
 from testaid.moleculebook import MoleculeBook
 from testaid.templates import Templates
 from testaid.jsonvars import JsonVars
-from testaid.jsonvarsdebug import JsonVarsDebug
 from testaid.pathlist import PathList
 from testaid.testpass import TestPass
 from testaid.testvars import TestVars
@@ -37,6 +36,11 @@ def cleanup(request, moleculelog):
 def pytest_addoption(parser):
     parser.addini('log', 'test')
     testvars_optiongroup = parser.getgroup("testvars")
+    testvars_optiongroup.addoption(
+                     "--testvars-debug-jsonvars",
+                     action="store_true",
+                     default=False,
+                     help="print jsonvars debug information")
     testvars_optiongroup.addoption(
                      "--testvars-no-gather-facts",
                      action="store_false",
@@ -77,6 +81,12 @@ def pytest_addoption(parser):
 ###########################################################
 # fixtures: testvars option booleans
 ###########################################################
+
+
+@pytest.fixture(scope='session')
+def debug_jsonvars(request):
+    '''testvars option --testvars-debug-jsonvars'''
+    return request.config.getoption("--testvars-debug-jsonvars")
 
 
 @pytest.fixture(scope='session')
@@ -314,18 +324,11 @@ def templates(moleculebook):
 
 
 @pytest.fixture(scope='session')
-def jsonvarsdebug():
-    return JsonVarsDebug()
-
-
-@pytest.fixture(scope='session')
-def jsonvars(jsonvarsdebug,
-             localtemplates,
+def jsonvars(localtemplates,
              templates,
              resolvevia_localhost,
              gather_molecule):
-    return JsonVars(jsonvarsdebug,
-                    localtemplates,
+    return JsonVars(localtemplates,
                     templates,
                     resolvevia_localhost,
                     gather_molecule)
@@ -350,6 +353,8 @@ def testpass(moleculebook):
 
 @pytest.fixture(scope='session')
 def testvars(request,
+             moleculelog,
+             debug_jsonvars,
              moleculebook,
              jsonvars,
              resolve_vars,
@@ -361,6 +366,8 @@ def testvars(request,
     testvars = TestVars.get_cache(request, cache_key)
     if testvars is None:
         testvars_object = TestVars(
+                 moleculelog,
+                 debug_jsonvars,
                  moleculebook,
                  jsonvars,
                  resolve_vars,

@@ -1,17 +1,14 @@
+import json
 import re
 
 
 class JsonVars(object):
 
     def __init__(self,
-                 jsonvarsdebug,
                  localtemplates,
                  templates,
                  resolvevia_localhost,
                  gather_molecule):
-
-        # debug info
-        self._jsonvarsdebug = jsonvarsdebug
 
         # jinja2 templates
         if resolvevia_localhost:
@@ -41,6 +38,20 @@ class JsonVars(object):
 
     def get(self):
         return self._jsonvars
+
+    def get_debug(self):
+        msg = '\n'
+        msg += self._debug_hash_table_()
+        msg += '\n'
+        msg += self._debug_templates_lookup_table_()
+        msg += '\n'
+        msg += self._debug_templates_()
+        msg += '\n'
+        msg += self._debug_spots_()
+        msg += '\n'
+        msg += self._debug_jsonvars_()
+        msg += '\n'
+        return msg
 
     def reset(self):
         self._templates.reset()
@@ -133,5 +144,36 @@ class JsonVars(object):
 
         return template_resolved
 
-    def debug(self):
-        return self._jsonvarsdebug.get(self)
+    def _debug_hash_table_(self):
+        msg = '+++ hash_table +++\n'
+        for index, hash in enumerate(self._hash_table):
+            msg += 'hash ' + str(index) + ' -> ' + str(hash) + '\n'
+        return msg
+
+    def _debug_templates_lookup_table_(self):
+        msg = '+++ lookup_table +++\n'
+        for index, lookup in enumerate(self._templates_lookup_table):
+            msg += str(index) + ' -> ' + str(lookup) + '\n'
+        return msg
+
+    def _debug_templates_(self):
+        msg = '+++ templates +++'
+        for index, template in enumerate(self._templates.get_templates()):
+            msg += '\ntemplate #' + str(index) + '\n'
+            msg += json.dumps(template, indent=4)
+        msg += '\n'
+        return msg
+
+    def _debug_spots_(self):
+        msg = '+++ spots +++'
+        for index, spot in enumerate(self._spots):
+            msg += '\nspot #' + str(index) + '\n'
+            msg += json.dumps(spot, indent=4)
+        msg += '\n'
+        return msg
+
+    def _debug_jsonvars_(self):
+        msg = '+++ jsonvars +++\n'
+        msg += str(self._jsonvars)
+        msg += '\n'
+        return msg
