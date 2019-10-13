@@ -1,4 +1,3 @@
-import json
 from testaid.exceptions import MoleculeBookRunError
 
 

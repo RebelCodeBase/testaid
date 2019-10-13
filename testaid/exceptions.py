@@ -1,6 +1,3 @@
-import json
-
-
 class AnsibleRunError(Exception):
     '''Exception raised by MoleculePlay signals failed ansible playbook run.'''
 
