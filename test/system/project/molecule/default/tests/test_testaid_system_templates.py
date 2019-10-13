@@ -3,8 +3,7 @@ import testaid
 
 testinfra_hosts = testaid.hosts()
 
-import pytest
-@pytest.mark.debug
+
 def test_testaid_system_templates_resolve_template_string(
         host,
         testvars):
