@@ -4,7 +4,8 @@ testinfra_hosts = testaid.hosts()
 
 
 def test_testaid_system_varsfiles_role_defaults(host, testvars):
-    assert testvars['anarchism_my_role_defaults_var'] == 'my_role_defaults_value'
+    assert testvars['anarchism_my_role_defaults_var'] == \
+           'my_role_defaults_value'
 
 
 def test_testaid_system_varsfiles_role_vars(host, testvars):

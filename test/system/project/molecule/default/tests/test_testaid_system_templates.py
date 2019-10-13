@@ -138,4 +138,4 @@ def test_testaid_system_templates_resolve_template_filter_dict2items(
     filter_dict_json += '{"key": "second_key", '
     filter_dict_json += '"value": "second_value"}]'
     assert json.dumps(testvars['project_filter_dict2items']) == \
-           filter_dict_json
+        filter_dict_json
