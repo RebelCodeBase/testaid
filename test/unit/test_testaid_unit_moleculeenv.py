@@ -121,7 +121,7 @@ def test_testaid_unit_moleculeenv_no_gather_roles(
 
     (tmp_path / 'roles' / 'my_role').mkdir(parents=True)
 
-    playbook_path = msd / 'converge.yml'
+    playbook_path = msd / 'playbook.yml'
     playbook_path.write_text(my_playbook)
 
     gather_roles = False
@@ -146,7 +146,7 @@ def test_testaid_unit_moleculeenv_roles_from_custom_converge_playboook(
 provisioner:
     name: ansible
     playbooks:
-        converge: my_converge.yml
+        converge: my_playbook.yml
 """
     my_playbook = """\
 ---
@@ -167,7 +167,7 @@ provisioner:
     molecule_yml_path = msd / 'molecule.yml'
     molecule_yml_path.write_text(my_molecule_yml)
 
-    playbook_path = msd / 'my_converge.yml'
+    playbook_path = msd / 'my_playbook.yml'
     playbook_path.write_text(my_playbook)
 
     gather_roles = True
@@ -203,7 +203,7 @@ def test_testaid_unit_moleculeenv_roles_from_default_converge_playboook(
 
     (tmp_path / 'roles' / 'my_role').mkdir(parents=True)
 
-    playbook_path = msd / 'converge.yml'
+    playbook_path = msd / 'playbook.yml'
     playbook_path.write_text(my_playbook)
 
     gather_roles = True
@@ -246,7 +246,7 @@ def test_testaid_unit_moleculeenv_get_roles_not_blacklisted(
     my_role_2 = tmp_path / 'roles' / 'my_role_2'
     my_role_2.mkdir()
 
-    playbook_path = msd / 'converge.yml'
+    playbook_path = msd / 'playbook.yml'
     playbook_path.write_text(my_playbook)
 
     gather_roles = True
@@ -289,7 +289,7 @@ def test_testaid_unit_moleculeenv_get_roles_whitelisted(
     my_role_2 = tmp_path / 'roles' / 'my_role_2'
     my_role_2.mkdir()
 
-    playbook_path = msd / 'converge.yml'
+    playbook_path = msd / 'playbook.yml'
     playbook_path.write_text(my_playbook)
 
     gather_roles = True

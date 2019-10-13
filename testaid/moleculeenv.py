@@ -70,7 +70,7 @@ class MoleculeEnv(object):
 
         # try to read roles from default molecule converge playbook
         if roles is None:
-            roles = self._read_roles_from_playbook_('converge.yml')
+            roles = self._read_roles_from_playbook_('playbook.yml')
 
         # if roles have been selected
         # then apply blacklist
