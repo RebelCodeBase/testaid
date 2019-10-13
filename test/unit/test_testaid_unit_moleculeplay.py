@@ -1,3 +1,4 @@
+import json
 import pytest
 from testaid.exceptions import AnsibleRunError
 
@@ -10,22 +11,13 @@ def test_testaid_unit_moleculeplay_get_host(moleculeplay):
     assert moleculeplay.get_host() == moleculeplay._host
 
 
-def test_testaid_unit_moleculeplay_exception_moleculeplayrunerror_no_debug():
+def test_testaid_unit_moleculeplay_exception_moleculeplayrunerror():
+    label = 'my_label'
     result = ['my_result']
-    msg = 'my_msg'
     with pytest.raises(AnsibleRunError) as excinfo:
-        raise AnsibleRunError(result, msg)
+        raise AnsibleRunError(label, json.dumps(result, indent=4))
     exception_msg = excinfo.value.args[0]
-    assert exception_msg == 'my_msg'
-
-
-def test_testaid_unit_moleculeplay_exception_moleculeplayrunerror_debug():
-    result = ['my_result']
-    msg = 'my_msg'
-    with pytest.raises(AnsibleRunError) as excinfo:
-        raise AnsibleRunError(result, msg, debug=True)
-    exception_msg = excinfo.value.args[0]
-    assert exception_msg == 'my_msg\n\n[\n    "my_result"\n]'
+    assert exception_msg == 'my_label\n[\n    "my_result"\n]'
 
 
 def test_testaid_unit_moleculeplay_run_playbook_minimal(moleculeplay):

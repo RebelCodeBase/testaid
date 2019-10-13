@@ -83,3 +83,4 @@ Changelog
 0.12
 ====
 * Add molecule --debug logging
+* Add low-level ansible errors to exceptions

@@ -32,8 +32,8 @@ class AnsibleRun(object):
 
         if rc.failed_playbook_run:
             raise AnsibleRunError(
-                rc.result_playbook_run,
-                'Unable to run playbook. Is your host up?')
+                'Unable to run playbook.',
+                rc.result_playbook_run[-1])
         return rc.result_playbook_run
 
 
@@ -50,5 +50,6 @@ class ResultCallback(CallbackBase):
 
     def v2_runner_on_failed(self, result, *args, **kwargs):
         self._clean_results(result._result, result._task.action)
-        self.result_playbook_run.append(result._result)
+        error = 'Error message: ' + result._result['msg']
+        self.result_playbook_run.append(error)
         self.failed_playbook_run = True

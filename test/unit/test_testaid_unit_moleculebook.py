@@ -124,30 +124,6 @@ def test_testaid_unit_moleculebook_get_vars_no_gather_facts(moleculebook):
     assert 'inventory_file' in vars
 
 
-def test_testaid_unit_moleculebook_get_vars_gather_facts_index_error(
-        moleculebook,
-        monkeypatch):
-    monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
-                        'run',
-                        lambda x: [])
-    with pytest.raises(MoleculeBookRunError) as excinfo:
-        moleculebook.get_vars()
-    exception_msg = excinfo.value.args[0]
-    assert exception_msg == 'Unable to gather ansible vars and facts.'
-
-
-def test_testaid_unit_moleculebook_get_vars_gather_facts_key_error(
-        moleculebook,
-        monkeypatch):
-    monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
-                        'run',
-                        lambda x: [{}, {}])
-    with pytest.raises(MoleculeBookRunError) as excinfo:
-        moleculebook.get_vars()
-    exception_msg = excinfo.value.args[0]
-    assert exception_msg == 'Unable to gather ansible vars and facts.'
-
-
 def test_testaid_unit_moleculebook_get_vars_no_gather_facts_index_error(
         moleculebook,
         monkeypatch):
@@ -172,22 +148,36 @@ def test_testaid_unit_moleculebook_get_vars_no_gather_facts_key_error(
         moleculebook.get_vars(gather_facts=False)
 
 
-def test_testaid_unit_moleculebook_exception_moleculebookrunerror_no_debug():
-    result = ['my_result']
+def test_testaid_unit_moleculebook_get_vars_gather_facts_index_error(
+        moleculebook,
+        monkeypatch):
+    monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
+                        'run',
+                        lambda x: [])
+    with pytest.raises(MoleculeBookRunError) as excinfo:
+        moleculebook.get_vars()
+    exception_msg = excinfo.value.args[0]
+    assert exception_msg == 'Unable to gather ansible vars and facts.'
+
+
+def test_testaid_unit_moleculebook_get_vars_gather_facts_key_error(
+        moleculebook,
+        monkeypatch):
+    monkeypatch.setattr(testaid.moleculebook.MoleculeBook,
+                        'run',
+                        lambda x: [{}, {}])
+    with pytest.raises(MoleculeBookRunError) as excinfo:
+        moleculebook.get_vars()
+    exception_msg = excinfo.value.args[0]
+    assert exception_msg == 'Unable to gather ansible vars and facts.'
+
+
+def test_testaid_unit_moleculebook_exception_moleculebookrunerror():
     msg = 'my_msg'
     with pytest.raises(MoleculeBookRunError) as excinfo:
-        raise MoleculeBookRunError(result, msg)
+        raise MoleculeBookRunError(msg)
     exception_msg = excinfo.value.args[0]
     assert exception_msg == 'my_msg'
-
-
-def test_testaid_unit_moleculebook_exception_moleculebookrunerror_debug():
-    result = ['my_result']
-    msg = 'my_msg'
-    with pytest.raises(MoleculeBookRunError) as excinfo:
-        raise MoleculeBookRunError(result, msg, debug=True)
-    exception_msg = excinfo.value.args[0]
-    assert exception_msg == 'my_msg\n\n[\n    "my_result"\n]'
 
 
 def test_testaid_unit_get_molecule_scenario_directory(moleculebook):
