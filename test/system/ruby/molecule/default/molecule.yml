@@ -37,6 +37,8 @@ verifier:
     # system
     - ../system/test_*.py
     - ../../../roles/*/molecule/default/system/test_*.py
+  env:
+    TESTVARS_ROLES_BLACKLIST: github-rvm_rvm1-ansible
   lint:
     name: flake8
 scenario:
