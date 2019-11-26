@@ -18,8 +18,9 @@ class MoleculeEnv(object):
         self._testvars_roles_blacklist = testvars_roles_blacklist
         self._testvars_roles_whitelist = testvars_roles_whitelist
         self._configure_roles_()
-        moleculelog.debug(self._get_molecule_vars_config_())
-        moleculelog.debug('Using roles: ' + ','.join(self.get_roles()))
+        self._moleculelog = moleculelog
+        self._moleculelog.debug(self._get_molecule_vars_config_())
+        self._moleculelog.debug('Using roles: ' + ','.join(self.get_roles()))
 
     def get_molecule_ephemeral_directory(self):
         return self._molecule_ephemeral_directory
@@ -156,9 +157,20 @@ class MoleculeEnv(object):
         try:
             playbook = yaml.load(playbook_path)
             roles = playbook[0]['roles']
-            return roles
         except (FileNotFoundError, ScannerError, KeyError):
             return None
+
+        # fiddle with parametrized roles
+        for i in range(len(roles)):
+            if isinstance(roles[i],dict):
+                try:
+                    roles[i] = roles[i]['role']
+                except:
+                    self._moleculelog.error(
+                        'Unable to extract role name '
+                        'from {}'.format(roles[i]));
+
+        return roles
 
     def _roles_apply_blacklist_(self, roles):
         roles_not_blacklisted = list()
