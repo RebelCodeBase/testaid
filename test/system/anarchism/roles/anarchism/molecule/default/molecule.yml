@@ -4,7 +4,7 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: molecule-anarchism
+  - name: molecule-testaid-anarchism-role-anarchism
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian10}-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
@@ -30,6 +30,8 @@ verifier:
     s: true  # capture output
   lint:
     name: flake8
+  additional_files_or_dirs:
+    - ../system/test_*.py
 scenario:
   name: default  # optional
   create_sequence:
