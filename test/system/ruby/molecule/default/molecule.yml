@@ -14,7 +14,6 @@ provisioner:
   config_options:
     defaults:
       interpreter_python: auto_silent
-      remote_tmp: /tmp/.ansible/tmp
   playbooks:
     converge: ../../site.yml
 verifier:
