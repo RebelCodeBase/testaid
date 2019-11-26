@@ -1,5 +1,6 @@
 build
 dist
+.DS_Store
 *.egg-info
 *.egg
 .eggs
