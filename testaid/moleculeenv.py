@@ -162,13 +162,13 @@ class MoleculeEnv(object):
 
         # fiddle with parametrized roles
         for i in range(len(roles)):
-            if isinstance(roles[i],dict):
+            if isinstance(roles[i], dict):
                 try:
                     roles[i] = roles[i]['role']
-                except:
+                except KeyError:
                     self._moleculelog.error(
                         'Unable to extract role name '
-                        'from {}'.format(roles[i]));
+                        'from {}'.format(roles[i]))
 
         return roles
 
