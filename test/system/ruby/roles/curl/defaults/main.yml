@@ -1,0 +1,3 @@
+---
+curl_packages:
+  - curl

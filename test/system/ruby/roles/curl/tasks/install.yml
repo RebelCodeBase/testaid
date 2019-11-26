@@ -1,0 +1,4 @@
+---
+- name: "(install) apt-get install {{ curl_packages|join(' ') }}"
+  apt:
+    name: "{{ curl_packages }}"

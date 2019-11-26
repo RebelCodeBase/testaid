@@ -1,0 +1,56 @@
+---
+driver:
+  name: docker
+lint:
+  name: yamllint
+platforms:
+  - name: molecule-testaid-ruby-role-procps
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian10}-ansible:latest"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      all:
+        anarchism_group_vars_all: my_group_vars_value
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
+  lint:
+    name: ansible-lint
+verifier:
+  name: testinfra
+  options:
+    s: true  # capture output
+  lint:
+    name: flake8
+  additional_files_or_dirs:
+    - ../system/test_*.py
+scenario:
+  name: default  # optional
+  create_sequence:
+    - create
+  check_sequence:
+    - destroy
+    - create
+    - converge
+    - check
+    - destroy
+  converge_sequence:
+    - create
+    - converge
+  destroy_sequence:
+    - destroy
+  test_sequence:
+    - lint
+    - destroy
+    - syntax
+    - create
+    - converge
+    - idempotence
+    - verify
+    - destroy

@@ -1,0 +1,4 @@
+---
+- name: "(install) apt-get install {{ procps_packages|join(' ') }}"
+  apt:
+    name: "{{ procps_packages }}"
