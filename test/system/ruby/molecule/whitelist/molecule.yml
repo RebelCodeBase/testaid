@@ -1,10 +1,8 @@
 ---
 driver:
   name: docker
-lint:
-  name: yamllint
 platforms:
-  - name: molecule-testaid-anarchism-whitelist
+  - name: molecule-testaid-ruby-whitelist
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian10}-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
@@ -16,23 +14,15 @@ provisioner:
   config_options:
     defaults:
       interpreter_python: auto_silent
-  inventory:
-    links:
-      group_vars: ../../group_vars/
+      remote_tmp: /tmp/.ansible/tmp
   playbooks:
     converge: ../../site.yml
-  lint:
-    name: ansible-lint
 verifier:
   name: testinfra
   options:
-    # m: debug
     s: true  # capture output
-    # v: true
   env:
-    TESTVARS_ROLES_WHITELIST: "anarchism"
-  lint:
-    name: flake8
+    TESTVARS_ROLES_WHITELIST: curl:vim
 scenario:
   name: whitelist
   create_sequence:
@@ -49,7 +39,6 @@ scenario:
   destroy_sequence:
     - destroy
   test_sequence:
-    - lint
     - destroy
     - syntax
     - create

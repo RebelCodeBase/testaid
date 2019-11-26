@@ -12,3 +12,4 @@
         rvm1_install_path: /usr/local/rvm,
         rvm1_install_flags: '--auto-dotfiles',
         rvm1_user: 'root' }
+    - vim

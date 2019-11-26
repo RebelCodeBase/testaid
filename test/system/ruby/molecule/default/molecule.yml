@@ -2,7 +2,7 @@
 driver:
   name: docker
 platforms:
-  - name: molecule-testaid-ruby
+  - name: molecule-testaid-ruby-default
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian10}-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
@@ -20,27 +20,16 @@ provisioner:
 verifier:
   name: testinfra
   options:
-    # testvars-debug-jsonvars: true
-    # testvars-no-gather-facts: true
-    # testvars-no-gatherfrom-moleculehost: true
-    # testvars-no-resolvevia-localhost: true
-    # testvars-no-resolve-vars: true
-    # testvars-no-gather-molecule: true
-    # testvars-no-extra-vars: true
-    # m: debug
-    # p: cacheprovider  # enable cache
     s: true  # capture output
-    # v: true
   additional_files_or_dirs:
     # integgration
-    - ../../../roles/*/molecule/default/tests/test_*.py
+    # exclude
+    - ../../../roles/((?!vim).)*/molecule/default/tests/test_*.py
     # system
     - ../system/test_*.py
     - ../../../roles/*/molecule/default/system/test_*.py
   env:
-    TESTVARS_ROLES_BLACKLIST: github-rvm_rvm1-ansible
-  lint:
-    name: flake8
+    TESTVARS_ROLES_BLACKLIST: github-rvm_rvm1-ansible:vim
 scenario:
   name: default
   create_sequence:

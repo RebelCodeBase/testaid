@@ -1,0 +1,4 @@
+---
+- name: "(install) apt-get install {{ vim_packages|join(' ') }}"
+  apt:
+    name: "{{ vim_packages }}"

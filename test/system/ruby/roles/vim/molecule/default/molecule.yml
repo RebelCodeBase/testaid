@@ -4,7 +4,7 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: molecule-testaid-anarchism-blacklist
+  - name: molecule-testaid-ruby-role-vim
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian10}-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
@@ -13,28 +13,25 @@ platforms:
     pre_build_image: true
 provisioner:
   name: ansible
+  inventory:
+    group_vars:
+      all:
+        anarchism_group_vars_all: my_group_vars_value
   config_options:
     defaults:
       interpreter_python: auto_silent
-  inventory:
-    links:
-      group_vars: ../../group_vars/
-  playbooks:
-    converge: ../../site.yml
   lint:
     name: ansible-lint
 verifier:
   name: testinfra
   options:
-    # m: debug
     s: true  # capture output
-    # v: true
-  env:
-    TESTVARS_ROLES_BLACKLIST: anarchism
   lint:
     name: flake8
+  additional_files_or_dirs:
+    - ../system/test_*.py
 scenario:
-  name: blacklist
+  name: default  # optional
   create_sequence:
     - create
   check_sequence:
