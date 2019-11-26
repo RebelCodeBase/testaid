@@ -29,7 +29,7 @@ Changelog
 ===
 
 * Read role/vars/main.yml
-* Read project vars/*.yml
+* Read project vars/\*.yml
 * Read TESTAID_EXTRA_VARS_FILES
 
 0.5
@@ -84,3 +84,8 @@ Changelog
 ====
 * Add molecule --debug logging
 * Add low-level ansible errors to exceptions
+
+0.13
+====
+* Add multi-role example
+* Add inline role parameters
