@@ -60,6 +60,7 @@ class MoleculeEnv(object):
 
         roles = None
 
+        # whitelist selects roles directly
         if self._get_testvars_roles_whitelist_():
             roles = self._get_testvars_roles_whitelist_()
 
@@ -73,6 +74,13 @@ class MoleculeEnv(object):
         if roles is None:
             roles = self._read_roles_from_playbook_('playbook.yml')
 
+        # fallback: select all roles
+        if roles is not None:
+            msd = self.get_molecule_scenario_directory()
+            roles_dir = msd / 'roles'
+            if roles_dir.exists():
+                roles = sorted([d.name for d in roles_dir.iterdir() if d.is_dir()])
+
         # if roles have been selected
         # then apply blacklist
         # then create symlinks
@@ -81,10 +89,6 @@ class MoleculeEnv(object):
             roles = self._roles_apply_blacklist_(roles)
             self._create_roles_symlinks_(roles)
             return
-
-        # fallback: create symlink in molecule ephemeral directory
-        # to roles directory in project dir which will include all roles
-        self._create_symlink_('roles')
 
     def _create_roles_symlinks_(self, roles):
         (self.get_molecule_ephemeral_directory() / 'roles').mkdir(
@@ -160,15 +164,9 @@ class MoleculeEnv(object):
         except (FileNotFoundError, ScannerError, KeyError):
             return None
 
-        # fiddle with parametrized roles
-        for i in range(len(roles)):
-            if isinstance(roles[i], dict):
-                try:
-                    roles[i] = roles[i]['role']
-                except KeyError:
-                    self._moleculelog.error(
-                        'Unable to extract role name '
-                        'from {}'.format(roles[i]))
+        # Roles are either a dict with string val, or string
+        # this normalises them to list of strings
+        roles = [r['role'] if isinstance(r, dict) else r for r in roles]
 
         return roles
 

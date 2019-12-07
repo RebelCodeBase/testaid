@@ -8,7 +8,7 @@ lint:
       rules:
         line-length: disable
 platforms:
-  - name: molecule-testaid-ruby-default
+  - name: molecule-testaid-ruby-blacklist-one
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian10}-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
@@ -31,10 +31,17 @@ verifier:
   name: testinfra
   options:
     s: true  # capture output
+  additional_files_or_dirs:
+    # integgration
+    # exclude
+    - ../../../roles/((?!vim).)*/molecule/default/tests/test_*.py
+    # system
+    - ../system/test_*.py
+    - ../../../roles/*/molecule/default/system/test_*.py
   env:
-    TESTVARS_ROLES_WHITELIST: curl:vim
+    TESTVARS_ROLES_BLACKLIST: github-rvm_rvm1-ansible
 scenario:
-  name: default  # whitelist
+  name: blacklist_one
   create_sequence:
     - create
   check_sequence:

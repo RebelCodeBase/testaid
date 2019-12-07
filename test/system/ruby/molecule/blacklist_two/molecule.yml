@@ -1,8 +1,14 @@
 ---
 driver:
   name: docker
+lint:
+  name: yamllint
+  options:
+    config-data:
+      rules:
+        line-length: disable
 platforms:
-  - name: molecule-testaid-ruby-whitelist
+  - name: molecule-testaid-ruby-blacklist-two
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian10}-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
@@ -16,14 +22,26 @@ provisioner:
       interpreter_python: auto_silent
   playbooks:
     converge: ../../site.yml
+  lint:
+    name: ansible-lint
+    options:
+      exclude:
+        - roles/github-rvm_rvm1-ansible
 verifier:
   name: testinfra
   options:
     s: true  # capture output
+  additional_files_or_dirs:
+    # integgration
+    # exclude
+    - ../../../roles/((?!vim).)*/molecule/default/tests/test_*.py
+    # system
+    - ../system/test_*.py
+    - ../../../roles/*/molecule/default/system/test_*.py
   env:
-    TESTVARS_ROLES_WHITELIST: curl:vim
+    TESTVARS_ROLES_BLACKLIST: github-rvm_rvm1-ansible:vim
 scenario:
-  name: whitelist
+  name: blacklist_two
   create_sequence:
     - create
   check_sequence:
@@ -38,6 +56,7 @@ scenario:
   destroy_sequence:
     - destroy
   test_sequence:
+    - lint
     - destroy
     - syntax
     - create
