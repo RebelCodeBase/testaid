@@ -2,5 +2,7 @@ ansible
 docker
 molecule
 pytest
+ruamel.base
+ruamel.yaml
 testaid
 testinfra
