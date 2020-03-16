@@ -90,3 +90,4 @@ Changelog
 * Add multi-role example
 * Add inline role parameters
 * Fix blacklist roles bug
+* Add ansible group var

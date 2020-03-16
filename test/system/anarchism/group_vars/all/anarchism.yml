@@ -3,4 +3,4 @@ anarchism_packages:
   - anarchism
   - fortune-anarchism
 
-anarchism_group_vars_all: my_group_vars_value
+anarchism_group_vars_all: my_group_vars_all_value
