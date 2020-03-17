@@ -1,0 +1,75 @@
+require 'rake'
+
+cmd_test_unit = 'cd test/unit && ' +
+    'pytest'
+
+cmd_test_system_anarchism_project_default = "cd " +
+    "test/system/anarchism && " +
+    'pytest --cache-clear && ' +
+    'molecule test'
+
+cmd_test_system_anarchism_role_default = "cd " +
+    "test/system/anarchism/roles/anarchism && " +
+    'pytest --cache-clear && ' +
+    'molecule test'
+
+cmd_test_system_ruby_project_default = "cd " +
+    "test/system/ruby && " +
+    'pytest --cache-clear && ' +
+    'molecule test'
+
+cmd_test_system_ruby_project_blacklist_one = "cd " +
+    "test/system/ruby && " +
+    'pytest --cache-clear && ' +
+    'molecule test --scenario-name blacklist_one'
+
+cmd_test_system_ruby_project_blacklist_two = "cd " +
+    "test/system/ruby && " +
+    'pytest --cache-clear && ' +
+    'molecule test --scenario-name blacklist_two'
+
+desc 'Run tests'
+task :test => %w(test:unit
+                 test:system:anarchism:project_default
+                 test:system:anarchism:role_default
+                 test:system:ruby:default
+                 test:system:ruby:blacklist_one
+                 test:system:ruby:blacklist_two)
+
+namespace :test do
+  desc 'Run unit tests'
+  task :unit do
+    $commands << cmd_test_unit
+  end
+
+  namespace :system do
+    namespace :anarchism do
+      desc 'Run system tests anarchism project default'
+      task :project_default do
+        $commands << cmd_test_system_anarchism_project_default
+      end
+
+      desc 'Run system tests anarchism project default'
+      task :role_default do
+        $commands << cmd_test_system_anarchism_role_default
+      end
+    end
+
+    namespace :ruby do
+      desc 'Run system tests ruby project default'
+      task :default do
+        $commands << cmd_test_system_ruby_project_default
+      end
+
+      desc 'Run system tests ruby project default'
+      task :blacklist_one do
+        $commands << cmd_test_system_ruby_project_blacklist_one
+      end
+
+      desc 'Run system tests ruby project default'
+      task :blacklist_two do
+        $commands << cmd_test_system_ruby_project_blacklist_two
+      end
+    end
+  end
+end

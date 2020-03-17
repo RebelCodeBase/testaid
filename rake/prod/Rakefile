@@ -1,0 +1,5 @@
+desc 'Build alpaka cli ruby gem'
+task :prod => %w(test
+                 package:make
+                 package:upload
+                 git:tag)

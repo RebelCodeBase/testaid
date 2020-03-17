@@ -1,0 +1,1 @@
+load 'rake/meta/Rakefile'
