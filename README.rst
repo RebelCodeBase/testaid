@@ -180,11 +180,6 @@ You can change the default behaviour with these options:
     Read variables directly from disk without running a playbook.
     It's faster but there is no inventory involved
     so e.g. groups won't work.
-- ``testvars-no-resolve-vars``
-    Do not resolve any jinja2 template.
-    This option might speed up some (unit) tests.
-    Implies ``testvars-no-gather-facts``,
-    ``testvars-no-gather-molecule`` and ``testvars-no-extra-vars``.
 - ``testvars-no-gather-molecule``
     Do not resolve molecule variables.
     You probably won't need these variables
