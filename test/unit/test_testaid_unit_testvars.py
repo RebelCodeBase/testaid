@@ -10,7 +10,6 @@ def test_testaid_unit_testvars_is_not_none(
         debug_jsonvars,
         moleculebook,
         jsonvars,
-        resolve_vars,
         gather_facts,
         extra_vars):
     gatherfrom_moleculehost = True
@@ -19,30 +18,9 @@ def test_testaid_unit_testvars_is_not_none(
                  debug_jsonvars,
                  moleculebook,
                  jsonvars,
-                 resolve_vars,
                  gatherfrom_moleculehost,
                  gather_facts,
                  extra_vars).get_testvars()
-
-
-def test_testaid_unit_testvars_no_resolve_vars(
-        moleculelog,
-        debug_jsonvars,
-        moleculebook,
-        jsonvars):
-    resolve_vars = False
-    gatherfrom_moleculehost = False
-    gather_facts = False
-    extra_vars = ''
-    testvars = TestVars(moleculelog,
-                        debug_jsonvars,
-                        moleculebook,
-                        jsonvars,
-                        resolve_vars,
-                        gatherfrom_moleculehost,
-                        gather_facts,
-                        extra_vars).get_testvars()
-    assert 'inventory_hostname' in testvars
 
 
 def test_testaid_unit_testvars_resolve_vars(
@@ -67,7 +45,6 @@ def test_testaid_unit_testvars_resolve_vars(
     monkeypatch.setattr(testaid.jsonvars.JsonVars,
                         'get',
                         lambda x: jsonvars_resolved)
-    resolve_vars = True
     gatherfrom_moleculehost = False
     gather_facts = False
     extra_vars = ''
@@ -75,7 +52,6 @@ def test_testaid_unit_testvars_resolve_vars(
                         debug_jsonvars,
                         moleculebook,
                         jsonvars,
-                        resolve_vars,
                         gatherfrom_moleculehost,
                         gather_facts,
                         extra_vars).get_testvars()

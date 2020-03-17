@@ -11,6 +11,8 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
     pre_build_image: true
+    groups:
+      - private
 provisioner:
   name: ansible
   config_options:
@@ -26,7 +28,7 @@ provisioner:
 verifier:
   name: testinfra
   options:
-    # testvars-debug-jsonvars: true
+    testvars-debug-jsonvars: true
     # testvars-no-gather-facts: true
     # testvars-no-gatherfrom-moleculehost: true
     # testvars-no-resolvevia-localhost: true

@@ -5,3 +5,4 @@ anarchism_packages:
 anarchism_install: true
 
 anarchism_my_role_defaults_var: my_role_defaults_value
+anarchism_my_role_defaults_reference: "{{ anarchism_my_role_defaults_var }}"

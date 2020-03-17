@@ -1,2 +1,3 @@
 ---
-anarchism_group_vars_private: my_group_vars_private_value
+anarchism_group_vars_private_var: my_group_vars_private_value
+anarchism_group_vars_private_var_reference: "{{ anarchism_group_vars_private_var }}"
