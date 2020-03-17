@@ -90,12 +90,6 @@ def debug_jsonvars(request):
 
 
 @pytest.fixture(scope='session')
-def resolve_vars(request):
-    '''testvars option --testvars-no-resolve-vars'''
-    return request.config.getoption("--testvars-no-resolve-vars")
-
-
-@pytest.fixture(scope='session')
 def gatherfrom_moleculehost(request):
     '''testvars option --testvars-no-gatherfrom-moleculehost'''
     return request.config.getoption("--testvars-no-gatherfrom-moleculehost")
@@ -357,7 +351,6 @@ def testvars(request,
              debug_jsonvars,
              moleculebook,
              jsonvars,
-             resolve_vars,
              gatherfrom_moleculehost,
              gather_facts,
              extra_vars,
@@ -370,7 +363,6 @@ def testvars(request,
                  debug_jsonvars,
                  moleculebook,
                  jsonvars,
-                 resolve_vars,
                  gatherfrom_moleculehost,
                  gather_facts,
                  extra_vars)

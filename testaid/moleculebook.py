@@ -114,6 +114,15 @@ class MoleculeBook(object):
             except (IndexError, KeyError):
                 raise MoleculeBookRunError(
                     'Unable to gather ansible vars.')
+
+        try:
+            ansible_hostname = result[1]['msg']['ansible_hostname']
+            hostvars = vars['hostvars'][ansible_hostname]
+            del vars['hostvars']
+            vars.update(hostvars)
+        except (IndexError, KeyError):
+            pass
+
         return vars
 
     def run(self):

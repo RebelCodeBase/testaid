@@ -14,7 +14,6 @@ class TestVars(object):
                  debug_jsonvars,
                  moleculebook,
                  jsonvars,
-                 resolve_vars,
                  gatherfrom_moleculehost,
                  gather_facts,
                  extra_vars):
@@ -32,31 +31,24 @@ class TestVars(object):
                                                     gather_facts,
                                                     extra_vars)
 
-        if not resolve_vars:
+        # convert python variables to json
+        testvars_unresolved_json = json.dumps(testvars_unresolved)
 
-            # save vars offline gathered
-            self._testvars = testvars_unresolved
+        # set jsonvars to unresolved testvars
+        jsonvars.set(testvars_unresolved_json)
 
-        else:
+        # resolve unresolved json testvars
+        jsonvars.resolve()
 
-            # convert python variables to json
-            testvars_unresolved_json = json.dumps(testvars_unresolved)
+        # print jsonvars debug info if command line flag is specified
+        if debug_jsonvars:
+            moleculelog.debug(jsonvars.get_debug())
 
-            # set jsonvars to unresolved testvars
-            jsonvars.set(testvars_unresolved_json)
+        # get resolved testvars from jsonvars
+        testvars_resolved_json = jsonvars.get()
 
-            # resolve unresolved json testvars
-            jsonvars.resolve()
-
-            # print jsonvars debug info if command line flag is specified
-            if debug_jsonvars:
-                moleculelog.debug(jsonvars.get_debug())
-
-            # get resolved testvars from jsonvars
-            testvars_resolved_json = jsonvars.get()
-
-            # convert json vars to python
-            self._testvars = json.loads(testvars_resolved_json)
+        # convert json vars to python
+        self._testvars = json.loads(testvars_resolved_json)
 
     def get_testvars(self):
         return self._testvars
