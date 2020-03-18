@@ -100,11 +100,9 @@ class MoleculeBook(object):
 
         result = self.run()
 
-        # create vars with vars['ansible_facts']
         if gather_facts:
             try:
                 vars = result[1]['msg']
-                vars['ansible_facts'] = result[0]['ansible_facts']
             except (IndexError, KeyError):
                 raise MoleculeBookRunError(
                     'Unable to gather ansible vars and facts.')
@@ -116,7 +114,7 @@ class MoleculeBook(object):
                     'Unable to gather ansible vars.')
 
         try:
-            ansible_hostname = result[1]['msg']['ansible_hostname']
+            ansible_hostname = vars['ansible_play_hosts'][0]
             hostvars = vars['hostvars'][ansible_hostname]
             del vars['hostvars']
             vars.update(hostvars)
