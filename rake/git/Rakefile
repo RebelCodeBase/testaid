@@ -1,12 +1,11 @@
-python_testaid_version = 'import pkg_resources; print(pkg_resources.require("testaid")[0].version)'
-cmd_testaid_version = "python3 -c '#{python_testaid_version}'"
+sed_expression = %q!"s/^.*version='\(.*\)',/\1/p"!
+cmd_testaid_version = "sed -n -e #{sed_expression} setup.py"
 cmd_git_tag = "git tag -s -m '%{version}' %{version} && git push --tags"
 
 namespace :git do
   desc 'Create and push git tag'
   task :tag do
-    version = `#{cmd_testaid_version}`
-    version.chomp!
+    version = `#{cmd_testaid_version}`.chomp!
     $commands <<  cmd_git_tag % {version: version}
   end
 end
