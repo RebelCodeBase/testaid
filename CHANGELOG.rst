@@ -91,3 +91,11 @@ Changelog
 * Add inline role parameters
 * Fix blacklist roles bug
 * Add ansible group var
+
+0.14
+====
+* Refactor hostvars and ansible_facts
+
+0.15
+====
+* Refactor options
