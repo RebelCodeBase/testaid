@@ -61,20 +61,10 @@ class MoleculeBook(object):
         task = dict(action=dict(module='include_vars', args=args))
         self._playbook['tasks'].append(task)
 
-    def get_vars(self, run_playbook=True, gather_facts=True, extra_vars=True):
+    def get_vars(self, gather_facts=True, extra_vars=True):
         '''Return ansible facts and vars of a molecule host.
 
         Args:
-            run_playbook (bool): run playbooks to gather and resolve vars?
-                Defaults to True.
-                A playbook will be run
-                - with ``gather_facts:true`` if gather_facts arg is True
-                - to invoke the ansible debug module to resolve "{{ vars }}"
-                - to invoke different playbook to resolve the vars
-                If False the ansible variables will be gathered
-                by the ansible VariableManager offline.
-                If False it conflicts with gather_facts=True
-                If False no templates will be resolved
             gather_facts (bool): gather ansible_facts from a molecule host?
                 Defaults to True.
                 A playbook will be run with ``gather_facts:true``.
@@ -87,9 +77,6 @@ class MoleculeBook(object):
             vars (dict): resolved ansible variables and facts
         '''
         vars = dict()
-
-        if not run_playbook:
-            return self._read_vars_()
 
         # self.create sets gather_facts=True by default so the ansible facts
         # of the default molecule host will be in result[0]['ansible_facts']
@@ -123,6 +110,12 @@ class MoleculeBook(object):
 
         return vars
 
+    def read_vars(self):
+        '''Return ansible variables without running a playbook.'''
+        self.create(gather_facts=False, host='localhost')
+        vars = self._moleculeplay.read_vars(self._playbook)
+        return vars
+
     def run(self):
         '''Run the ansible playbook'''
         return self._moleculeplay.run_playbook(self._playbook)
@@ -132,9 +125,3 @@ class MoleculeBook(object):
 
     def _get_molecule_scenario_directory_(self):
         return self._moleculeplay.get_molecule_scenario_directory()
-
-    def _read_vars_(self):
-        '''Return ansible variables without running a playbook.'''
-        self.create(gather_facts=False, host='localhost')
-        vars = self._moleculeplay.read_vars(self._playbook)
-        return vars

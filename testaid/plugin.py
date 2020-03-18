@@ -4,7 +4,6 @@ import pytest
 from testaid.ansibleres import AnsibleLoader
 from testaid.ansibleres import AnsibleInventory
 from testaid.ansibleres import AnsibleVarsManager
-from testaid.ansibleres import AnsibleLocalHost
 from testaid.ansibleres import AnsibleHost
 from testaid.moleculeenv import MoleculeEnv
 from testaid.moleculelog import MoleculeLog
@@ -52,11 +51,6 @@ def pytest_addoption(parser):
                      default=True,
                      help="do not resolve jinja2 templates")
     testvars_optiongroup.addoption(
-                     "--testvars-no-gatherfrom-moleculehost",
-                     action="store_false",
-                     default=True,
-                     help="do not gather vars from molecule host")
-    testvars_optiongroup.addoption(
                      "--testvars-no-gather-molecule",
                      action="store_false",
                      default=True,
@@ -71,11 +65,6 @@ def pytest_addoption(parser):
                      action="store_false",
                      default=True,
                      help="do not include extra vars")
-    testvars_optiongroup.addoption(
-                     "--testvars-no-resolvevia-localhost",
-                     action="store_false",
-                     default=True,
-                     help="do not resolve vars by using localhost")
 
 
 ###########################################################
@@ -87,12 +76,6 @@ def pytest_addoption(parser):
 def debug_jsonvars(request):
     '''testvars option --testvars-debug-jsonvars'''
     return request.config.getoption("--testvars-debug-jsonvars")
-
-
-@pytest.fixture(scope='session')
-def gatherfrom_moleculehost(request):
-    '''testvars option --testvars-no-gatherfrom-moleculehost'''
-    return request.config.getoption("--testvars-no-gatherfrom-moleculehost")
 
 
 @pytest.fixture(scope='session')
@@ -117,12 +100,6 @@ def gather_roles(request):
 def extra_vars(request):
     '''testvars option --testvars-no-extra-vars'''
     return request.config.getoption("--testvars-no-extra-vars")
-
-
-@pytest.fixture(scope='session')
-def resolvevia_localhost(request):
-    '''testvars option --testvars-no-resolvevia-localhost'''
-    return request.config.getoption("--testvars-no-resolvevia-localhost")
 
 
 ###########################################################
@@ -183,11 +160,6 @@ def ansiblevarsmanager(ansibleloader,
                        ansibleinventory):
     return AnsibleVarsManager(ansibleloader,
                               ansibleinventory).get()
-
-
-@pytest.fixture(scope='session')
-def ansiblelocalhost():
-    return AnsibleLocalHost().get()
 
 
 @pytest.fixture(scope='session')
@@ -259,28 +231,6 @@ def moleculeenv(moleculelog,
 
 
 @pytest.fixture(scope='session')
-def moleculelocalplay(ansibleloader,
-                      ansibleinventory,
-                      ansiblevarsmanager,
-                      ansiblelocalhost,
-                      moleculeenv):
-    '''Expose ansible python api to run playbooks against a molecule host.'''
-    return MoleculePlay(ansibleloader,
-                        ansibleinventory,
-                        ansiblevarsmanager,
-                        ansiblelocalhost,
-                        moleculeenv)
-
-
-@pytest.fixture(scope='session')
-def moleculelocalbook(testvars_extra_vars,
-                      moleculelocalplay):
-    '''Run an ansible playbook against a molecule host.'''
-    return MoleculeBook(testvars_extra_vars,
-                        moleculelocalplay)
-
-
-@pytest.fixture(scope='session')
 def moleculeplay(ansibleloader,
                  ansibleinventory,
                  ansiblevarsmanager,
@@ -308,23 +258,14 @@ def moleculebook(testvars_extra_vars,
 
 
 @pytest.fixture(scope='session')
-def localtemplates(moleculelocalbook):
-    return Templates(moleculelocalbook)
-
-
-@pytest.fixture(scope='session')
 def templates(moleculebook):
     return Templates(moleculebook)
 
 
 @pytest.fixture(scope='session')
-def jsonvars(localtemplates,
-             templates,
-             resolvevia_localhost,
+def jsonvars(templates,
              gather_molecule):
-    return JsonVars(localtemplates,
-                    templates,
-                    resolvevia_localhost,
+    return JsonVars(templates,
                     gather_molecule)
 
 
@@ -351,7 +292,6 @@ def testvars(request,
              debug_jsonvars,
              moleculebook,
              jsonvars,
-             gatherfrom_moleculehost,
              gather_facts,
              extra_vars,
              cache_key):
@@ -363,7 +303,6 @@ def testvars(request,
                  debug_jsonvars,
                  moleculebook,
                  jsonvars,
-                 gatherfrom_moleculehost,
                  gather_facts,
                  extra_vars)
         testvars = testvars_object.get_testvars()

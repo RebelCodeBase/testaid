@@ -5,16 +5,11 @@ import re
 class JsonVars(object):
 
     def __init__(self,
-                 localtemplates,
                  templates,
-                 resolvevia_localhost,
                  gather_molecule):
 
         # jinja2 templates
-        if resolvevia_localhost:
-            self._templates = localtemplates
-        else:
-            self._templates = templates
+        self._templates = templates
 
         # unresolved json variables
         self._jsonvars = dict()

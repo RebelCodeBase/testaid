@@ -8,25 +8,17 @@ def test_testaid_unit_jsonvars_is_not_none(jsonvars):
 
 
 def test_testaid_unit_jsonvars_no_localtemplates(
-        localtemplates,
         templates,
         gather_molecule):
-    resolvevia_localhost = False
-    jsonvars = JsonVars(localtemplates,
-                        templates,
-                        resolvevia_localhost,
+    jsonvars = JsonVars(templates,
                         gather_molecule)
     assert jsonvars is not None
 
 
 def test_testaid_unit_jsonvars_no_gather_molecule(
-        localtemplates,
         templates):
-    resolve_localhost = True
     gather_molecule = False
-    jsonvars = JsonVars(localtemplates,
-                        templates,
-                        resolve_localhost,
+    jsonvars = JsonVars(templates,
                         gather_molecule)
 
     r = r'(["])?{{((?:(?!.(?:MOLECULE_|molecule_file)).)*?)}}(["])?'

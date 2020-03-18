@@ -37,16 +37,6 @@ class AnsibleVarsManager(object):
         return self._variable_manager
 
 
-class AnsibleLocalHost(object):
-
-    def __init__(self):
-        host = 'localhost'
-        self._host = Host(name=host)
-
-    def get(self):
-        return self._host
-
-
 class AnsibleHost(object):
 
     def __init__(self, inventory):

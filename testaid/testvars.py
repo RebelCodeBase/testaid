@@ -14,21 +14,14 @@ class TestVars(object):
                  debug_jsonvars,
                  moleculebook,
                  jsonvars,
-                 gatherfrom_moleculehost,
                  gather_facts,
                  extra_vars):
 
         # this variable will be returned by the testvars fixture
         self._testvars = dict()
 
-        if gatherfrom_moleculehost:
-            run_playbook = True
-        else:
-            run_playbook = False
-
         # get ansible variables
-        testvars_unresolved = moleculebook.get_vars(run_playbook,
-                                                    gather_facts,
+        testvars_unresolved = moleculebook.get_vars(gather_facts,
                                                     extra_vars)
 
         # convert python variables to json

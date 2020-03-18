@@ -109,11 +109,6 @@ def test_testaid_unit_moleculebook_get_vars_default(moleculebook):
     assert 'inventory_file' in vars
 
 
-def test_testaid_unit_moleculebook_get_vars_no_run_playbook(moleculebook):
-    vars = moleculebook.get_vars(run_playbook=False)
-    assert 'inventory_hostname' in vars
-
-
 def test_testaid_unit_moleculebook_get_vars_gather_facts(moleculebook):
     vars = moleculebook.get_vars(gather_facts=True)
     assert 'ansible_facts' in vars

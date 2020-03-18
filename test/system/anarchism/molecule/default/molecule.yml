@@ -30,9 +30,6 @@ verifier:
   options:
     testvars-debug-jsonvars: true
     # testvars-no-gather-facts: true
-    # testvars-no-gatherfrom-moleculehost: true
-    # testvars-no-resolvevia-localhost: true
-    # testvars-no-resolve-vars: true
     # testvars-no-gather-molecule: true
     # testvars-no-extra-vars: true
     # m: debug

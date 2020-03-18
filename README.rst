@@ -165,9 +165,8 @@ of the verifier section:
       options:
         testvars-no-gather-facts: true
 
-By default, testvars runs a playbook against the molecule host
-to gathers ansible variables and facts.
-It then runs a playbook against localhost to resolve the variables.
+By default, testvars runs a playbook to gather ansible variables and facts.
+It then runs a playbook to resolve the variables.
 
 You can change the default behaviour with these options:
 
@@ -175,11 +174,6 @@ You can change the default behaviour with these options:
     Run playbook to gather variables with ``gather_facts: false``.
     You won't be able to access ``ansible_facts``
     but your tests will run faster.
-- ``testvars-no-gatherfrom-moleculehost``
-    Do not gather variables from molecule host.
-    Read variables directly from disk without running a playbook.
-    It's faster but there is no inventory involved
-    so e.g. groups won't work.
 - ``testvars-no-gather-molecule``
     Do not resolve molecule variables.
     You probably won't need these variables
@@ -187,10 +181,6 @@ You can change the default behaviour with these options:
 - ``testvars-no-extra-vars``
     Do not add extra variables specified in ``TESTVARS_EXTRA_VARS``.
     Ignores the environment variable.
-- ``testvars-no-resolvevia-localhost``
-    Do not resolve variables against localhost.
-    Resolve against molecule host instead.
-    This option is only a fallback in case of unknown bugs.
 
 caching
 -------
