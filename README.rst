@@ -2,6 +2,18 @@
 testaid fixtures for ansible, molecule and testinfra
 ####################################################
 
+FUTURE DEVELOPMENT
+==================
+
+This project became part of the takelage devops workflow and has migrated to takelage-var_. It has been renamed from testaid_ to takeltest_ to reflect this change.
+
+Please use the `issue tracker`_ of takelage-var to report bugs and feature requests! 
+
+.. _takelage-var: https://github.com/geospin-takelage/takelage-var
+.. _testaid: https://pypi.org/project/testaid/
+.. _takeltest: https://pypi.org/project/takeltest/
+.. _issue tracker: https://github.com/geospin-takelage/takelage-var/issues
+
 About
 =====
 
